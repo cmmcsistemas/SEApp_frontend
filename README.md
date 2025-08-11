@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Project
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.1.8.
@@ -62,3 +63,5 @@ For more information on using the Angular CLI, including detailed command refere
 # SEApp_frontend
 Frontend SEApp application
 >>>>>>> 8bd937855641cc93b22446222f41af7e5d8f8fb7
+
+

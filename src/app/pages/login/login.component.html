@@ -1,0 +1,52 @@
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-r from-emerald-100 to-emerald-200 font-sans relative overflow-hidden">
+  <div class="flex w-[900px] h-[550px] bg-white rounded-lg shadow-xl overflow-hidden">
+    <div class="flex flex-col items-center justify-center p-10 bg-white relative w-1/2">
+
+
+      <div class="text-center">
+        <h1 class="font-bold text-6xl text-gray-800 mb-2">SEApp</h1>
+        <p class="text-lg text-gray-600 mb-8">Bienvenido</p>
+      </div>
+
+      <form class="w-full max-w-xs">
+        <div class="mb-5 text-left">
+          <input type="text" id="emailOrId" name="emailOrId" placeholder="Ingresa tu correo o cédula" class="w-full p-3 border border-gray-300 rounded-md text-gray-500 text-base focus:outline-none focus:ring-2 focus:ring-emerald-700" required="true">
+        </div>
+
+        <div class="mb-7 text-left">
+          <div class="relative">
+            <input [type]="passwordVisible ? 'text' : 'password'" id="password" name="password" placeholder="Contraseña"
+                   class="w-full p-3 border border-gray-300 text rounded-md text-gray-500 text-base focus:outline-none focus:ring-2 focus:ring-emerald-700 pr-10" required="true">
+            <span class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700" (click)="togglePasswordVisibility()">
+              <mat-icon>visibility</mat-icon> </span>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center mb-6">
+          <a href="#" class="text-gray-900 text-sm hover:underline">¿Olvidaste tu contraseña?</a>
+          <button type="submit" class="bg-green-600 text-white py-3 px-6 rounded-md text-base hover:bg-green-700 transition-colors duration-300">
+            Iniciar sesión
+          </button>
+        </div>
+
+        <div class="mb-8">
+          <button type="button" class="bg-transparent text-gray-400 py-2 px-4 border border-gray-300 rounded-md text-sm hover:bg-blue-50 transition-colors duration-300">
+            Solicitar creación de cuenta
+          </button>
+        </div>
+      </form>
+
+      <div class="mt-auto text-sm text-gray-500">
+        <p>Desarrollado por la &copy; CMMC 2025</p>
+      </div>
+    </div>
+
+    <div class="flex-1 bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-end justify-end relative overflow-hidden">
+      <img src="introLogin.png" alt="Person" class="w-full h-full object-contain object-bottom-right">
+    </div>
+  </div>
+
+  <div class="absolute bottom-5 left-1/2 -translate-x-1/2 text-sm">
+    <a href="https://www.ommcolombia.org" target="_blank" class="text-shadow-white hover:underline">www.cmmcolombia.org</a>
+  </div>
+</div>

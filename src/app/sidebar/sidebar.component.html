@@ -1,0 +1,86 @@
+
+
+  <nav class="flex h-screen bg-green-600 text-white shadow-lg">
+
+  <!-- Columna 1: Iconos Principales -->
+  <div class="w-20 flex flex-col py-6 items-center">
+
+    <!-- Logo -->
+    <img src="assets/c_logo.png" alt="C Logo" class="h-12 w-12 mb-8 mx-auto">
+
+    <!-- Enlace Dashboard (ícono arriba, texto abajo) -->
+    <button (click)="toggleDashboard()" class="flex flex-col items-center py-3 px-2 rounded-full hover:bg-green-900 transition-colors duration-200 w-full"
+       routerLink="/dashboard"
+       routerLinkActive="bg-green-800" [ngClass]="{'bg-green-800': isDashboardOpen() || isAnyDashboardActive()}">
+      <i class="fa fa-fw mb-1">
+        <mat-icon>dashboard</mat-icon>
+      </i>
+      <span class="text-xs">Dashboard</span>
+    </button>
+
+    <!-- Botón Módulos (ícono arriba, texto abajo) - Muestra la segunda columna al hacer clic -->
+    <button (click)="toggleModulos()"
+            class="flex flex-col items-center py-3 px-2 rounded-full hover:bg-green-900 transition-colors duration-200 w-full mt-4"
+            [ngClass]="{'bg-green-800': isModulosOpen() || isAnyModuleActive()}">
+      <i class="fa fa-fw mb-1">
+        <mat-icon>menu_book</mat-icon>
+      </i>
+      <span class="text-xs">Módulos</span>
+    </button>
+
+    <!-- Espacio flexible para empujar los elementos inferiores -->
+    <div class="flex-1"></div>
+
+    <!-- Iconos inferiores -->
+    <button class="py-3 px-2 rounded-full hover:bg-green-600 transition-colors duration-200">
+      <mat-icon class="text-3xl text-green-300">more_horiz</mat-icon>
+    </button>
+    <a href="#" class="py-3 px-2 rounded-full hover:bg-green-600 transition-colors duration-200">
+      <mat-icon class="text-3xl text-green-300">logout</mat-icon>
+    </a>
+  </div>
+      <div [ngClass]="isDashboardOpen() ? 'w-48' : 'w-0'"
+      class="bg-gray-200 text-gray-900 min-h-screen flex-col overflow-hidden transition-all duration-300 ease-in-out">
+        <div class="mt-4">
+        <a class="block py-2 px-4 hover:bg-green-500 transition-colors duration-200"
+        routerLink="/dashboard/resumen-odp"
+        routerLinkActive="bg-green-500 rounded-lg mx-2"
+        >Resumen de ODP</a>
+        <a class="block py-2 px-4 hover:bg-green-500 transition-colors duration-200"
+          routerLink="/dashboard/resumen-participante"
+        routerLinkActive="bg-green-500 rounded-lg mx-2">Resumen de participante</a>
+        </div>
+      </div>
+
+
+      <!-- Columna 2: Sub-menú de Módulos (se muestra/oculta) -->
+  <!-- Utiliza [ngClass] para una transición suave del ancho, o un *ngIf para una aparición/desaparición instantánea -->
+  <div [ngClass]="isModulosOpen() ? 'w-48' : 'w-0'"
+       class="bg-gray-200 text-gray-900 min-h-screen flex-col overflow-hidden transition-all duration-300 ease-in-out">
+
+
+    <!-- Enlaces de los módulos -->
+    <div class="mt-4">
+
+      <a class="block py-2 px-4 hover:bg-green-500 transition-colors duration-200"
+         routerLink="/modulos/caracterizacion"
+         routerLinkActive="bg-green-500 rounded-lg mx-2">Caracterización</a>
+      <a class="block py-2 px-4 hover:bg-green-500 transition-colors duration-200"
+         routerLink="/modulos/monitoreos"
+         routerLinkActive="bg-green-500 rounded-lg mx-2">Monitoreos</a>
+      <a class="block py-2 px-4 hover:bg-green-500 transition-colors duration-200"
+         routerLink="/modulos/plan-formacion"
+         routerLinkActive="bg-green-500 rounded-lg mx-2">Plan de Formación</a>
+      <a class="block py-2 px-4 hover:bg-green-500 transition-colors duration-200"
+         routerLink="/modulos/visitas-implementacion"
+         routerLinkActive="bg-green-500 rounded-lg mx-2">Visitas de Implementación</a>
+      <a class="block py-2 px-4 hover:bg-green-500 transition-colors duration-200"
+         routerLink="/modulos/visitas-seguimiento"
+         routerLinkActive="bg-green-500 rounded-lg mx-2">Visitas de Seguimiento</a>
+      <a class="block py-2 px-4 hover:bg-green-500 transition-colors duration-200"
+         routerLink="/modulos/misiones"
+         routerLinkActive="bg-green-500 rounded-lg mx-2">Misiones</a>
+    </div>
+  </div>
+  </nav>
+

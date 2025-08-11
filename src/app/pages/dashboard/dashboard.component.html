@@ -1,0 +1,71 @@
+<div class="bg-white p-2 ">
+<div class="bg-gradient-to-br from-gray-600 to-gray-100 rounded-md shadow-md p-4 mb-4">
+  <h2 class=" text-x1 font-bold">Dashboard</h2>
+
+</div>
+
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-5">
+  <div class="bg-gradient-to-br from-gray-700 to-gray-900 shadow-gray-900 rounded-md shadow-md p-4 mb-4">
+    @for (comment of comments; track $index) {
+
+      <div class="flex items-center py-2 border-b">
+        <mat-icon>person_search</mat-icon>
+        <div class="ml-4">
+        @for (keyValuePair of comment | keyvalue; track keyValuePair.key){
+          <div class="ml-4">
+            <strong>{{ keyValuePair.key | titlecase }}: </strong>{{ keyValuePair.value }}
+          </div>
+        }
+      </div>
+
+      </div>
+
+    <p class="text-center font-black">{{comment.total}}/100%</p>
+  }
+  </div>
+  <div class="bg-gradient-to-br from-gray-200  to-gray-100 shadow-gray-400 rounded-md shadow-md p-4 mb-4">
+    <h2 class="text-x1 font-bold text-gray-700">Proyectos</h2>
+    <select class="w-full p-2 border rounded-md shadow-xl/30 text-gray-700" name="" id="">
+      <option value="" disabled selected>Proyectos del participante</option>
+      @for (comment of comments; track $index) {
+        @for (proyecto of comment.proyecto; track $index){
+          <option [value]="proyecto">{{ proyecto }}</option>
+        }
+
+      }
+    </select>
+  </div>
+  <div class="bg-gradient-to-br from-gray-200  to-gray-100 shadow-gray-400 rounded-md shadow-md p-4 mb-4">
+    <h2 class="text-x1 font-bold text-gray-700">Caracterización</h2>
+  <div class="chart-container relative "><canvas #barCanvas></canvas></div>
+  </div>
+  <div class="bg-gradient-to-br from-gray-200  to-gray-100 shadow-gray-400 rounded-md shadow-md p-4 mb-4">
+    <h2 class="text-x1 font-bold text-gray-700">Monitoreos</h2>
+    <p class="text-gray-700">Gráfica radial</p>
+  </div>
+  <div class="bg-gradient-to-br from-gray-200  to-gray-100 shadow-gray-400 rounded-md shadow-md p-4 mb-4">
+    <h2 class="text-x1 font-bold text-gray-700">Visita de implementación</h2>
+    <p class="text-gray-700">Núnemro de visitas</p>
+    <div class="mt-4 overflow-auto max-h-48">
+
+    </div>
+    <h2 class="text-x1 font-bold text-gray-700">Vista de seguimiento</h2>
+    <p class="text-gray-700">Núnemro de visitas</p>
+    <div class="mt-4 overflow-auto max-h-48">
+
+    </div>
+  </div>
+  <div class="bg-gradient-to-br from-gray-200  to-gray-100 shadow-gray-400 rounded-md shadow-md p-4 mb-4">
+    <h2 class="text-x1 font-bold text-gray-700">Plan de formación</h2>
+    <p class="text-gray-700">Modulos</p>
+    <div class="mt-4 overflow-auto max-h-48">
+
+    </div>
+    <h2 class="text-x1 font-bold text-gray-700">Servicios</h2>
+    <p class="text-gray-700">Modulos</p>
+    <div class="mt-4 overflow-auto max-h-48">
+    </div>
+  </div>
+</div>
+</div>

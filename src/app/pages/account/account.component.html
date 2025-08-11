@@ -1,0 +1,66 @@
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-r from-emerald-100 to-emerald-200 font-sans relative overflow-hidden">
+  <div class="flex w-[900px] h-[550px] bg-white rounded-xl shadow-xl overflow-hidden">
+    <div class="flex flex-col items-center justify-center p-10 bg-white relative w-1/2">
+
+
+      <div class="text-center">
+        <h1 class="font-bold text-6xl text-gray-800 mb-2">SEApp</h1>
+        <p class="text-lg text-gray-600 mb-8">Creación de usuario</p>
+      </div>
+
+      <form class="w-full max-w-sm grid grid-cols-2 gap-4">
+        <div class="mb-5 text-left col-span-1">
+          <input type="text" id="firstName" name="firstName" placeholder="Nombre" class="w-full p-3 border border-gray-300 rounded-lg text-gray-500 text-base  focus:ring-2 focus:ring-emerald-700" required="true">
+        </div>
+        <div class="col-span-1">
+          <input type="text" id="lastName" name="lastName" placeholder="Apellido" class="w-full p-3 border border-gray-300 rounded-lg text-gray-500 text-base  focus:ring-2 focus:ring-emerald-700" required="true">
+        </div>
+
+        <div class="col-span-2">
+          <input type="email" id="email" name="email" placeholder="Email"
+                 class="w-full p-3 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-emerald-700 text-gray-900 placeholder-gray-500" required>
+
+        </div>
+
+        <div class="col-span-1">
+         <input type="tel" id="phone" name="phone" placeholder="Teléfono"
+                 class="w-full p-3 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-emerald-700 text-gray-900 placeholder-gray-500" required>
+        </div>
+        <div class="col-span-1">
+         <select list="project" id="project" name="project" placeholder="Proyecto"
+                 class="w-full p-3 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-emerald-700 text-gray-900 placeholder-gray-500" required>
+            <option value="">Proyecto</option>
+         </select>
+         </div>
+        <div class="mb-7 text-left col-span-2">
+            <input [type]="passwordVisible ? 'text' : 'password'" id="password" name="password" placeholder="Contraseña"
+                   class="w-full p-3 border border-gray-300 text rounded-lg text-gray-500 text-base focus:outline-none focus:ring-2 focus:ring-emerald-700 pr-10" required="true">
+            <span class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700" (click)="togglePasswordVisibility()">
+               </span>
+        </div>
+
+        <div class="grid place-content-center mb-8 col-span-2">
+          <div class="relative">
+          <button type="submit" class="bg-green-600 text-white py-3 px-6 rounded-lg text-base hover:bg-green-700 transition-colors duration-300 place-content-center">
+            Guardar e iniciar sesión
+          </button>
+          </div>
+        </div>
+
+
+      </form>
+
+      <div class="mt-auto text-sm text-gray-500">
+        <p>Desarrollado por la &copy; CMMC 2025</p>
+      </div>
+    </div>
+
+    <div class="flex-1 bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-end justify-end relative overflow-hidden">
+      <img src="introLogin.png" alt="Person" class="w-full h-full object-contain object-bottom-right">
+    </div>
+  </div>
+
+  <div class="absolute bottom-5 left-1/2 -translate-x-1/2 text-sm">
+    <a href="https://www.ommcolombia.org" target="_blank" class="text-shadow-white hover:underline">www.cmmcolombia.org</a>
+  </div>
+</div>

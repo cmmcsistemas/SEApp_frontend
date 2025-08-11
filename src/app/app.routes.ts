@@ -10,8 +10,25 @@ import { VisitasImplementacionComponent } from './pages/modulos/visitas-implemen
 import { VisitasSeguimientoComponent } from './pages/modulos/visitas-seguimiento/visitas-seguimiento.component';
 
 export const routes: Routes = [
-  {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
-  {path: 'dashboard', loadComponent: () => import('./pages/dashboard/dashboard.component').then(m => m.DashboardComponent)},
+ {path: '', redirectTo: 'dashboard/participante', pathMatch: 'full'},
+    {
+      path: 'dashboard',
+      component: DashboardComponent, // Puedes usar un componente "contenedor" aquí si lo creas.
+                                    // Si no, puedes dejarlo sin componente y usar un 'redirectTo'
+      children: [
+        {path: '', redirectTo: 'participante', pathMatch: 'full'},
+        {
+          path: 'participante',
+          loadComponent: () => import('./pages/dashboard/dashboard-participante/dashboard-participante.component')
+            .then(m => m.DashboardParticipanteComponent)
+        },
+        {
+          path: 'odp',
+          loadComponent: () => import('./pages/dashboard/dashboard-odp/dashboard-odp.component')
+            .then(m => m.DashboardOdpComponent)
+        },
+      ]
+    },
   {path: 'modulos', loadComponent: () => import('./pages/modulos/modulos.component').then(m => m.ModulosComponent),
     children: [
         { path: 'caracterizacion', loadComponent: () => import('./pages/modulos/caracterizacion/caracterizacion.component').then(m => m.CaracterizacionComponent) },

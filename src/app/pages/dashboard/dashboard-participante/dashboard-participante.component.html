@@ -1,0 +1,180 @@
+<div class="p-6">
+  <div class="flex justify-between items-center mb-6">
+    <div class="flex items-center space-x-4">
+      <img class="h-12 w-12 rounded-full" src="assets/profile_pic_juan_carlos.jpg" alt="User Profile">
+      <h1 class="text-3xl font-bold text-gray-800">Bienvenido Juan Carlos</h1>
+    </div>
+    <div class="flex items-center space-x-2">
+      <h2 class="text-xl font-bold text-gray-700">Proyectos</h2>
+      <select class="p-2 border rounded-md shadow-md text-gray-700">
+        <option value="" disabled selected>Todos</option>
+        @for (comment of comments; track $index) {
+          @for (proyecto of comment.proyecto; track $index){
+            <option [value]="proyecto">{{ proyecto }}</option>
+          }
+        }
+      </select>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+
+    <div class="bg-white rounded-lg shadow-md p-6 col-span-2">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-semibold text-gray-700">Monitoreos</h3>
+        <select class="p-1 border rounded-md text-sm text-gray-700">
+          <option value="todos">Todos</option>
+        </select>
+      </div>
+      <div class="h-80 relative">
+        <canvas #radarCanvas></canvas>
+      </div>
+      <div class="flex justify-center space-x-8 mt-4">
+        <div class="flex items-center">
+          <span class="w-4 h-4 bg-lime-500 rounded-full mr-2"></span>
+          <span class="text-sm text-gray-600">Monitoreo 1<br>09/06/2023</span>
+        </div>
+        <div class="flex items-center">
+          <span class="w-4 h-4 bg-green-700 rounded-full mr-2"></span>
+          <span class="text-sm text-gray-600">Monitoreo 2<br>09/12/2023</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-semibold text-gray-700">Plan de formación</h3>
+        <mat-icon>keyboard_arrow_up</mat-icon>
+      </div>
+      <div class="text-gray-700">
+        <p class="font-semibold text-sm mb-2">Servicios RS</p>
+        <div class="space-y-1">
+          <div class="flex justify-between items-center text-sm">
+            <span>Desarrollo productivo y calidad</span>
+            <span class="text-xs text-gray-500">(3)</span>
+          </div>
+          <div class="flex justify-between items-center text-sm">
+            <span>Desarrollo personal y familiar</span>
+            <span class="text-xs text-gray-500">(2)</span>
+          </div>
+          <div class="flex justify-between items-center text-sm">
+            <span>Desarrollo organizacional</span>
+            <span class="text-xs text-gray-500">(2)</span>
+          </div>
+          <div class="flex justify-between items-center text-sm">
+            <span>Desarrollo tecnológico</span>
+            <span class="text-xs text-gray-500">(1)</span>
+          </div>
+          <div class="flex justify-between items-center text-sm">
+            <span>HDLT IV</span>
+            <mat-icon>keyboard_arrow_down</mat-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-semibold text-gray-700">Plan de Implementación</h3>
+        <mat-icon>keyboard_arrow_up</mat-icon>
+      </div>
+      <div class="text-gray-700">
+        <p class="font-semibold text-sm mb-2">Servicios RS</p>
+        <div class="space-y-1">
+          <div class="flex justify-between items-center text-sm">
+            <span>Desarrollo productivo y calidad</span>
+            <span class="text-xs text-gray-500">(3)</span>
+          </div>
+          <div class="flex justify-between items-center text-sm">
+            <span>Desarrollo personal y familiar</span>
+            <span class="text-xs text-gray-500">(2)</span>
+          </div>
+          <div class="flex justify-between items-center text-sm">
+            <span>Desarrollo organizacional</span>
+            <span class="text-xs text-gray-500">(2)</span>
+          </div>
+          <div class="flex justify-between items-center text-sm">
+            <span>Desarrollo tecnológico</span>
+            <span class="text-xs text-gray-500">(1)</span>
+          </div>
+          <div class="flex justify-between items-center text-sm">
+            <span>HDLT IV</span>
+            <mat-icon>keyboard_arrow_down</mat-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-semibold text-gray-700">Visitas de implementación</h3>
+        <mat-icon>keyboard_arrow_up</mat-icon>
+      </div>
+      <div class="text-gray-700">
+        <p class="font-semibold text-sm mb-2">Servicios RS</p>
+        <div class="space-y-1">
+          <div class="text-sm">Visita #1: 09/06/2023</div>
+          <div class="text-sm">Visita #2: 09/06/2023</div>
+          <div class="text-sm">Visita #3: 09/06/2023</div>
+          <a href="#" class="text-xs text-blue-500">Registrar otra visita</a>
+          <div class="flex justify-between items-center mt-2 text-sm">
+            <span>HDLT IV</span>
+            <mat-icon>keyboard_arrow_down</mat-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-semibold text-gray-700">Visitas de Seguimiento</h3>
+        <mat-icon>keyboard_arrow_up</mat-icon>
+      </div>
+      <div class="text-gray-700">
+        <p class="font-semibold text-sm mb-2">Servicios RS</p>
+        <div class="space-y-1">
+          <div class="text-sm">Visita #1: 09/06/2024</div>
+          <a href="#" class="text-xs text-blue-500">Registrar otra visita</a>
+          <div class="flex justify-between items-center mt-2 text-sm">
+            <span>HDLT IV</span>
+            <mat-icon>keyboard_arrow_down</mat-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md p-6 col-span-2">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-semibold text-gray-700">Ruta</h3>
+      </div>
+      <div class="flex space-x-2">
+        <span class="bg-green-600 text-white rounded-md px-3 py-1">CB</span>
+        <span class="bg-green-600 text-white rounded-md px-3 py-1">CA</span>
+        <span class="bg-green-600 text-white rounded-md px-3 py-1">M1</span>
+        <span class="bg-green-600 text-white rounded-md px-3 py-1">M2</span>
+        <span class="bg-gray-300 text-gray-700 rounded-md px-3 py-1">M3</span>
+        <span class="bg-gray-300 text-gray-700 rounded-md px-3 py-1">M4</span>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md p-6 col-span-2">
+      <div class="flex justify-between items-center mb-4">
+        <div class="flex items-center space-x-4">
+          <mat-icon>person</mat-icon>
+          <div>
+            <h3 class="text-xl font-semibold text-gray-700">Nombre Apellido</h3>
+            <p class="text-sm text-gray-500">CC 123456789</p>
+          </div>
+        </div>
+        <span class="text-sm text-gray-500">100/100</span>
+      </div>
+      <div class="text-sm text-gray-600 space-y-1">
+        <p>Microempresario</p>
+        <p>Correo: seap&commat;cmmcolombia.org</p>
+        <p>Nº Contacto: 313 000 0000</p>
+        <p>Correo: seap&commat;cmmcolombia.org</p>
+      </div>
+    </div>
+
+  </div>
+</div>

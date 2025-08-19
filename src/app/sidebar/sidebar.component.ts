@@ -1,6 +1,6 @@
 import { Component, signal, OnInit } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { Router, RouterModule, RouterOutlet, NavigationEnd, IsActiveMatchOptions } from '@angular/router';
+import { Router, RouterModule, RouterOutlet, NavigationEnd, IsActiveMatchOptions, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {MatIconModule} from '@angular/material/icon';
 import {filter} from 'rxjs/operators';
@@ -8,7 +8,7 @@ import {filter} from 'rxjs/operators';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterModule, RouterOutlet, CommonModule,MatIconModule],
+  imports: [RouterModule, CommonModule, MatIconModule, RouterLink, RouterLinkActive],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css',
   animations: [

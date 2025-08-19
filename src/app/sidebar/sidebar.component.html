@@ -10,8 +10,7 @@
 
     <!-- Enlace Dashboard (ícono arriba, texto abajo) -->
     <button (click)="toggleDashboard()" class="flex flex-col items-center py-3 px-2 rounded-full hover:bg-green-900 transition-colors duration-200 w-full"
-       routerLink="/dashboard"
-       routerLinkActive="bg-green-800" [ngClass]="{'bg-green-800': isDashboardOpen() || isAnyDashboardActive()}">
+       [ngClass]="{'bg-green-800': isDashboardOpen() || isAnyDashboardActive()}">
       <i class="fa fa-fw mb-1">
         <mat-icon>dashboard</mat-icon>
       </i>
@@ -43,12 +42,13 @@
       class="bg-gray-200 text-gray-900 min-h-screen flex-col overflow-hidden transition-all duration-300 ease-in-out">
         <div class="mt-4">
         <a class="block py-2 px-4 hover:bg-green-500 transition-colors duration-200"
-        routerLink="/dashboard/resumen-odp"
+        routerLink="/dashboard/odp"
         routerLinkActive="bg-green-500 rounded-lg mx-2"
-        >Resumen de ODP</a>
+        (click)="toggleDashboard()">Resumen de ODP</a>
         <a class="block py-2 px-4 hover:bg-green-500 transition-colors duration-200"
-          routerLink="/dashboard/resumen-participante"
-        routerLinkActive="bg-green-500 rounded-lg mx-2">Resumen de participante</a>
+          routerLink="/dashboard/participante"
+        routerLinkActive="bg-green-500 rounded-lg mx-2"
+        (click)="toggleDashboard()">Resumen de participante</a>
         </div>
       </div>
 

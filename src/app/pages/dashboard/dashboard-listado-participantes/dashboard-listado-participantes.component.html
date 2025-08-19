@@ -1,0 +1,65 @@
+<div class="p-6 bg-white rounded-lg shadow-md">
+  <h2 class="text-2xl font-bold text-gray-800 mb-6">Base de datos participantes</h2>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <button class="flex items-center bg-gradient-to-r justify-center w-full px-4 py-2 dark:shadow-lg dark:shadow-green-800/80 rounded-md shadow-md hover:bg-gray-100 transition-colors duration-200">
+      <mat-icon class="mr-2">person_add_alt_1</mat-icon>
+      Añadir participante
+    </button>
+
+    <div class="relative w-full">
+      <div class="absolute inset-y-0 left-0 flex items-center dark:shadow-lg dark:shadow-green-800/80 pl-3 pointer-events-none">
+        <mat-icon>search</mat-icon>
+      </div>
+      <input type="text" placeholder="Búsqueda" class="w-full pl-10 pr-4 py-2  rounded-md shadow-md dark:shadow-lg dark:shadow-green-800/80 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    </div>
+
+    <button class="flex items-center justify-center w-full px-4 py-2 dark:shadow-lg dark:shadow-green-800/80 rounded-md shadow-sm hover:bg-gray-100 transition-colors duration-200">
+      <mat-icon class="mr-2">sort</mat-icon>
+      Ordenar
+    </button>
+
+    <button class="flex items-center justify-center w-full px-4 py-2 dark:shadow-lg dark:shadow-green-800/80 bg-green-500 text-white rounded-md shadow-md hover:bg-green-600 transition-colors duration-200">
+      <mat-icon class="mr-2">filter_list</mat-icon>
+      Filtrar
+    </button>
+  </div>
+
+  <div class="overflow-x-auto rounded-lg">
+    <table class="min-w-full  bg-white  border-gray-200">
+      <thead class="bg-green-600 text-white border-b-green-300 rounded-b-lg">
+        <tr class="rounded-b-lg-lg shadow-xl dark:shadow-gray-800">
+          <th class="py-3 px-4 text-left">Nombre</th>
+          <th class="py-3 px-4 text-left">Proyecto</th>
+          <th class="py-3 px-4 text-left">Número de Identificación</th>
+          <th class="py-3 px-4 text-left">Caracterización finalizada</th>
+          <th class="py-3 px-4 text-left">Monitoreo finalizado</th>
+          <th class="py-3 px-4 text-left">Plan de formación finalizado</th>
+          <th class="py-3 px-4 text-left">Visita de implementación finalizada</th>
+          <th class="py-3 px-4 text-left">Visita de seguimiento finalizada</th>
+        </tr>
+      </thead>
+      <tbody class="text-gray-700">
+        <tr class="border-r border-gray-200 hover:bg-gray-100">
+          <td class="border-r border-gray-200 py-3 px-4">Nombre Apellido</td>
+          <td class="border-r border-gray-200 py-3 px-4">Nombre del proyecto</td>
+          <td class="border-r border-gray-200 py-3 px-4">123456</td>
+          <td class="border-r border-gray-200 py-3 px-4">Sí</td>
+          <td class="border-r border-gray-200 py-3 px-4">No</td>
+          <td class="border-r border-gray-200 py-3 px-4">Sí</td>
+          <td class="border-r border-gray-200 py-3 px-4">No</td>
+          <td class="border-r border-gray-200 py-3 px-4">No</td>
+        </tr>
+        <tr class="border-r border-gray-200 hover:bg-gray-100">
+          <td class="border-r border-gray-200 py-3 px-4">Nombre Apellido</td>
+          <td class="border-r border-gray-200 py-3 px-4">Nombre del proyecto</td>
+          <td class="border-r border-gray-200 py-3 px-4">123456</td>
+          <td class="border-r border-gray-200 py-3 px-4">Sí</td>
+          <td class="border-r border-gray-200 py-3 px-4">No</td>
+          <td class="border-r border-gray-200 py-3 px-4">Sí</td>
+          <td class="border-r border-gray-200 py-3 px-4">No</td>
+          <td class="border-r border-gray-200 py-3 px-4">No</td>
+        </tr>
+        </tbody>
+    </table>
+  </div>
+</div>

@@ -1,1 +1,139 @@
-<p>dashboard-odp works!</p>
+<div class="p-6">
+  <div class="flex justify-between items-center mb-6">
+    <div class="flex items-center space-x-4">
+      <img class="h-12 w-12 rounded-full" src="assets/profile_pic_juan_carlos.jpg" alt="User Profile">
+      <h1 class="text-3xl font-bold text-gray-800">Bienvenido Juan Carlos</h1>
+    </div>
+    <div class="flex items-center space-x-2">
+      <h2 class="text-xl font-bold text-gray-700">Proyectos</h2>
+      <select class="p-2 border rounded-md shadow-md text-gray-700">
+        <option value="" disabled selected>Todos</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+
+
+      <div class="bg-white rounded-lg shadow-md p-6 col-span-1 md:col-span-2">
+        <h3 class="text-xl font-semibold text-gray-700 mb-4">Resumen de actividad</h3>
+        <div class="flex justify-between items-center text-center">
+          <div class="flex flex-col items-center">
+            <div class="h-16 w-16 rounded-full bg-green-200 flex items-center justify-center">
+              <mat-icon class="text-green-800 text-4xl">groups</mat-icon>
+            </div>
+            <p class="font-bold text-lg mt-2">50</p>
+            <p class="text-sm text-gray-600">Participantes</p>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="relative h-16 w-16 flex items-center justify-center">
+              <svg class="h-full w-full" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" class="stroke-gray-300" stroke-width="8" fill="transparent"></circle>
+                <circle cx="50" cy="50" r="45" class="stroke-green-600 transition-all duration-300" stroke-width="8" fill="transparent"
+                        stroke-dasharray="282.7" stroke-dashoffset="28.27"></circle>
+              </svg>
+              <span class="absolute text-sm font-semibold text-gray-700">90%</span>
+            </div>
+            <p class="font-bold text-lg mt-2">CA</p>
+            <p class="text-sm text-gray-600">Participantes</p>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="relative h-16 w-16 flex items-center justify-center">
+              <svg class="h-full w-full" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" class="stroke-gray-300" stroke-width="8" fill="transparent"></circle>
+                <circle cx="50" cy="50" r="45" class="stroke-green-600 transition-all duration-300" stroke-width="8" fill="transparent"
+                        stroke-dasharray="282.7" stroke-dashoffset="56.54"></circle>
+              </svg>
+              <span class="absolute text-sm font-semibold text-gray-700">80%</span>
+            </div>
+            <p class="font-bold text-lg mt-2">M1</p>
+            <p class="text-sm text-gray-600">Participantes</p>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="relative h-16 w-16 flex items-center justify-center">
+              <svg class="h-full w-full" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" class="stroke-gray-300" stroke-width="8" fill="transparent"></circle>
+                <circle cx="50" cy="50" r="45" class="stroke-green-600 transition-all duration-300" stroke-width="8" fill="transparent"
+                        stroke-dasharray="282.7" stroke-dashoffset="141.35"></circle>
+              </svg>
+              <span class="absolute text-sm font-semibold text-gray-700">40%</span>
+            </div>
+            <p class="font-bold text-lg mt-2">M2</p>
+            <p class="text-sm text-gray-600">Participantes</p>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="relative h-16 w-16 flex items-center justify-center">
+              <svg class="h-full w-full" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" class="stroke-gray-300" stroke-width="8" fill="transparent"></circle>
+                <circle cx="50" cy="50" r="45" class="stroke-green-600 transition-all duration-300" stroke-width="8" fill="transparent"
+                        stroke-dasharray="282.7" stroke-dashoffset="282.7"></circle>
+              </svg>
+              <span class="absolute text-sm font-semibold text-gray-700">0%</span>
+            </div>
+            <p class="font-bold text-lg mt-2">M3</p>
+            <p class="text-sm text-gray-600">Participantes</p>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="relative h-16 w-16 flex items-center justify-center">
+              <svg class="h-full w-full" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" class="stroke-gray-300" stroke-width="8" fill="transparent"></circle>
+                <circle cx="50" cy="50" r="45" class="stroke-green-600 transition-all duration-300" stroke-width="8" fill="transparent"
+                        stroke-dasharray="282.7" stroke-dashoffset="282.7"></circle>
+              </svg>
+              <span class="absolute text-sm font-semibold text-gray-700">0%</span>
+            </div>
+            <p class="font-bold text-lg mt-2">M4</p>
+            <p class="text-sm text-gray-600">Participantes</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-xl font-bold text-gray-700 mb-4">Resumen</h3>
+        <ul class="space-y-4">
+          <li class="flex justify-between items-center p-4 bg-gray-100 rounded-lg">
+            <span>Participantes registrados por ti</span>
+            <span>30 participantes</span>
+            <mat-icon>chevron_right</mat-icon>
+          </li>
+          <li class="flex justify-between items-center p-4 bg-gray-100 rounded-lg">
+            <span>Participantes activos que faltan por monitoreo</span>
+            <span>10 participantes</span>
+            <mat-icon>chevron_right</mat-icon>
+          </li>
+          <li class="flex justify-between items-center p-4 bg-gray-100 rounded-lg">
+            <span>Participantes que faltan por plan de formación</span>
+            <span>2 participantes</span>
+            <mat-icon>chevron_right</mat-icon>
+          </li>
+          <li class="flex justify-between items-center p-4 bg-green-100 rounded-lg">
+            <span>Participantes que faltan por plan de seguimiento</span>
+            <span>5 participantes</span>
+            <mat-icon>chevron_right</mat-icon>
+          </li>
+        </ul>
+      </div>
+
+
+
+    <div class="flex flex-col space-y-6">
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-xl font-bold text-gray-700 mb-4">Participantes</h3>
+        <ul class="space-y-2">
+          <li class="text-gray-600 font-semibold">Nombre Apellido</li>
+          <li class="text-gray-600">CC 123456789</li>
+          <li class="text-gray-600 font-semibold">Nombre Apellido</li>
+          <li class="text-gray-600">CC 123456789</li>
+          <li class="text-gray-600 font-semibold">Nombre Apellido</li>
+          <li class="text-gray-600">CC 123456789</li>
+        </ul>
+
+      </div>
+              <!-- ✅ Botón "Listado de participantes" -->
+        <a routerLink="/dashboard/participantes" class="mt-4 inline-block w-full text-center px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200">
+          Listado de participantes
+        </a>
+    </div>
+  </div>
+</div>

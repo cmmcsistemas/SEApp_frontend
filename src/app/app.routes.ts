@@ -8,15 +8,15 @@ import { MonitoreosComponent } from './pages/modulos/monitoreos/monitoreos.compo
 import { PlanFormacionComponent } from './pages/modulos/plan-formacion/plan-formacion.component';
 import { VisitasImplementacionComponent } from './pages/modulos/visitas-implementacion/visitas-implementacion.component';
 import { VisitasSeguimientoComponent } from './pages/modulos/visitas-seguimiento/visitas-seguimiento.component';
+import { DashboardListadoParticipantesComponent } from './pages/dashboard/dashboard-listado-participantes/dashboard-listado-participantes.component';
 
 export const routes: Routes = [
- {path: '', redirectTo: 'dashboard/participante', pathMatch: 'full'},
+ {path: '', redirectTo: 'dashboard/odp', pathMatch: 'full'},
     {
       path: 'dashboard',
-      component: DashboardComponent, // Puedes usar un componente "contenedor" aquí si lo creas.
-                                    // Si no, puedes dejarlo sin componente y usar un 'redirectTo'
+      component: DashboardComponent, // Contenedor padre
       children: [
-        {path: '', redirectTo: 'participante', pathMatch: 'full'},
+        {path: '', redirectTo: 'odp', pathMatch: 'full'},
         {
           path: 'participante',
           loadComponent: () => import('./pages/dashboard/dashboard-participante/dashboard-participante.component')
@@ -27,6 +27,7 @@ export const routes: Routes = [
           loadComponent: () => import('./pages/dashboard/dashboard-odp/dashboard-odp.component')
             .then(m => m.DashboardOdpComponent)
         },
+        {path: 'participantes', loadComponent: () => import('./pages/dashboard/dashboard-listado-participantes/dashboard-listado-participantes.component').then(m => m.DashboardListadoParticipantesComponent)},
       ]
     },
   {path: 'modulos', loadComponent: () => import('./pages/modulos/modulos.component').then(m => m.ModulosComponent),
@@ -37,10 +38,18 @@ export const routes: Routes = [
         { path: 'visitas-implementacion', loadComponent: () => import('./pages/modulos/visitas-implementacion/visitas-implementacion.component').then(m => m.VisitasImplementacionComponent) },
         { path: 'visitas-seguimiento', loadComponent: () => import('./pages/modulos/visitas-seguimiento/visitas-seguimiento.component').then(m => m.VisitasSeguimientoComponent) },
         { path: 'misiones', loadComponent: () => import('./pages/modulos/misiones/misiones.component').then(m => m.MisionesComponent) },
-
+        { path: 'diagnostico',
+              loadComponent: () => import('./pages/modulos/caracterizacion/diagnostico/diagnostico.component').then(m => m.DiagnosticoComponent) },
+        { path: 'unidad-de-negocio',
+              loadComponent: () => import('./pages/modulos/caracterizacion/unidad-de-negocio/unidad-de-negocio.component').then(m => m.UnidadDeNegocioComponent)
+        },
+        { path: 'caracterizacion-ampliada',
+              loadComponent: () => import('./pages/modulos/caracterizacion/ampliada/ampliada.component').then(m => m.AmpliadaComponent)
+        }
     ]
   },
   {path: 'login', loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent)},
   {path: 'account', loadComponent: () => import('./pages/account/account.component').then(m => m.AccountComponent)},
+
 
 ];

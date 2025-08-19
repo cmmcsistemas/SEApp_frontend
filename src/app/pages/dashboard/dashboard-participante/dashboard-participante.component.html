@@ -1,25 +1,52 @@
 <div class="p-6">
-  <div class="flex justify-between items-center mb-6">
-    <div class="flex items-center space-x-4">
-      <img class="h-12 w-12 rounded-full" src="assets/profile_pic_juan_carlos.jpg" alt="User Profile">
-      <h1 class="text-3xl font-bold text-gray-800">Bienvenido Juan Carlos</h1>
+  <div class="grid grid-cols-1 lg:grid-cols-2  gap-6 mb-4">
+    <div class="bg-green-600 rounded-lg shadow-md p-6 col-span-1">
+      <div class="flex justify-between items-center mb-4">
+        <div class="flex items-center space-x-4">
+          <mat-icon>person</mat-icon>
+          <div>
+            <h3 class="text-xl font-semibold text-gray-200">Nombre Apellido</h3>
+            <p class="text-sm text-gray-200">CC 123456789</p>
+          </div>
+        </div>
+        <span class="text-sm text-gray-200">100/100</span>
+      </div>
+      <div class="text-sm text-gray-200 space-y-1">
+        <p>Microempresario</p>
+        <p>Correo: seap&commat;cmmcolombia.org</p>
+        <p>Nº Contacto: 313 000 0000</p>
+        <p>Correo: seap&commat;cmmcolombia.org</p>
+      </div>
     </div>
-    <div class="flex items-center space-x-2">
-      <h2 class="text-xl font-bold text-gray-700">Proyectos</h2>
-      <select class="p-2 border rounded-md shadow-md text-gray-700">
-        <option value="" disabled selected>Todos</option>
-        @for (comment of comments; track $index) {
-          @for (proyecto of comment.proyecto; track $index){
-            <option [value]="proyecto">{{ proyecto }}</option>
-          }
-        }
-      </select>
+    <div class="flex flex-col space-y-6">
+        <div class="bg-white rounded-lg shadow-md p-6 ">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-semibold text-gray-700">Ruta</h3>
+          </div>
+          <div class="flex space-x-2">
+            <span class="bg-green-600 text-white rounded-md px-3 py-1">CB</span>
+            <span class="bg-green-600 text-white rounded-md px-3 py-1">CA</span>
+            <span class="bg-green-600 text-white rounded-md px-3 py-1">M1</span>
+            <span class="bg-green-600 text-white rounded-md px-3 py-1">M2</span>
+            <span class="bg-gray-300 text-gray-700 rounded-md px-3 py-1">M3</span>
+            <span class="bg-gray-300 text-gray-700 rounded-md px-3 py-1">M4</span>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-green-600 rounded-lg shadow-md p-6 ">
+              <h3 class="text-xl font-semibold text-gray-200">Proyectos</h3>
+          </div>
+
+          <div class="bg-green-600 rounded-lg shadow-md p-6">
+              <h3 class="text-xl font-semibold text-gray-200">Proyectos</h3>
+          </div>
+          </div>
     </div>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+  <div class="col-span-2 grid grid-cols-2 md:grid-cols-2 gap-6">
 
-    <div class="bg-white rounded-lg shadow-md p-6 col-span-2">
+    <div class="bg-white rounded-lg shadow-md p-6 col-span-1">
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-xl font-semibold text-gray-700">Monitoreos</h3>
         <select class="p-1 border rounded-md text-sm text-gray-700">
@@ -143,38 +170,9 @@
       </div>
     </div>
 
-    <div class="bg-white rounded-lg shadow-md p-6 col-span-2">
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-xl font-semibold text-gray-700">Ruta</h3>
-      </div>
-      <div class="flex space-x-2">
-        <span class="bg-green-600 text-white rounded-md px-3 py-1">CB</span>
-        <span class="bg-green-600 text-white rounded-md px-3 py-1">CA</span>
-        <span class="bg-green-600 text-white rounded-md px-3 py-1">M1</span>
-        <span class="bg-green-600 text-white rounded-md px-3 py-1">M2</span>
-        <span class="bg-gray-300 text-gray-700 rounded-md px-3 py-1">M3</span>
-        <span class="bg-gray-300 text-gray-700 rounded-md px-3 py-1">M4</span>
-      </div>
-    </div>
 
-    <div class="bg-white rounded-lg shadow-md p-6 col-span-2">
-      <div class="flex justify-between items-center mb-4">
-        <div class="flex items-center space-x-4">
-          <mat-icon>person</mat-icon>
-          <div>
-            <h3 class="text-xl font-semibold text-gray-700">Nombre Apellido</h3>
-            <p class="text-sm text-gray-500">CC 123456789</p>
-          </div>
-        </div>
-        <span class="text-sm text-gray-500">100/100</span>
-      </div>
-      <div class="text-sm text-gray-600 space-y-1">
-        <p>Microempresario</p>
-        <p>Correo: seap&commat;cmmcolombia.org</p>
-        <p>Nº Contacto: 313 000 0000</p>
-        <p>Correo: seap&commat;cmmcolombia.org</p>
-      </div>
-    </div>
+
+
 
   </div>
 </div>

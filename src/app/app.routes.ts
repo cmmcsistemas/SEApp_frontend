@@ -32,20 +32,33 @@ export const routes: Routes = [
     },
   {path: 'modulos', loadComponent: () => import('./pages/modulos/modulos.component').then(m => m.ModulosComponent),
     children: [
-        { path: 'caracterizacion', loadComponent: () => import('./pages/modulos/caracterizacion/caracterizacion.component').then(m => m.CaracterizacionComponent) },
+
         { path: 'monitoreos', loadComponent: () => import('./pages/modulos/monitoreos/monitoreos.component').then(m => m.MonitoreosComponent) },
         { path: 'plan-formacion', loadComponent: () => import('./pages/modulos/plan-formacion/plan-formacion.component').then(m => m.PlanFormacionComponent) },
         { path: 'visitas-implementacion', loadComponent: () => import('./pages/modulos/visitas-implementacion/visitas-implementacion.component').then(m => m.VisitasImplementacionComponent) },
         { path: 'visitas-seguimiento', loadComponent: () => import('./pages/modulos/visitas-seguimiento/visitas-seguimiento.component').then(m => m.VisitasSeguimientoComponent) },
         { path: 'misiones', loadComponent: () => import('./pages/modulos/misiones/misiones.component').then(m => m.MisionesComponent) },
+
+        { path: 'caracterizacion',
+          component: CaracterizacionComponent,
+          children: [
+        {path: '', redirectTo: 'caracterizacion-basica', pathMatch: 'full'},
         { path: 'diagnostico',
               loadComponent: () => import('./pages/modulos/caracterizacion/diagnostico/diagnostico.component').then(m => m.DiagnosticoComponent) },
         { path: 'unidad-de-negocio',
               loadComponent: () => import('./pages/modulos/caracterizacion/unidad-de-negocio/unidad-de-negocio.component').then(m => m.UnidadDeNegocioComponent)
         },
+        { path: 'idea-de-negocio',
+              loadComponent: () => import('./pages/modulos/caracterizacion/idea-de-negocio/idea-de-negocio.component').then(m => m.IdeaDeNegocioComponent)
+        },
         { path: 'caracterizacion-ampliada',
               loadComponent: () => import('./pages/modulos/caracterizacion/ampliada/ampliada.component').then(m => m.AmpliadaComponent)
+        },
+        { path: 'caracterizacion-basica',
+              loadComponent: () => import('./pages/modulos/caracterizacion/basica/basica.component').then(m => m.BasicaComponent)
         }
+        ]
+        },
     ]
   },
   {path: 'login', loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent)},

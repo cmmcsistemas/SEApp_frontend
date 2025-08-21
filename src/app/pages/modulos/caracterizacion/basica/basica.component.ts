@@ -4,15 +4,16 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
+import { DataSharingService } from 'src/app/services/data-sharing.service';
 
 @Component({
-  selector: 'app-caracterizacion',
+  selector: 'app-basica',
   imports: [ReactiveFormsModule, CommonModule, RouterLink, RouterLinkActive, RouterOutlet],
-  templateUrl: './caracterizacion.component.html',
-  styleUrl: './caracterizacion.component.css'
+  templateUrl: './basica.component.html',
+  styleUrl: './basica.component.css'
 })
-export class CaracterizacionComponent implements OnInit {
-  caracterizacionForm!: FormGroup;
+export class BasicaComponent implements OnInit {
+caracterizacionForm!: FormGroup;
     // ✅ Variable para el paso actual del formulario
   pasoActual: number = 1;
     // ✅ Lista de tipos de documento
@@ -25,7 +26,19 @@ export class CaracterizacionComponent implements OnInit {
     'TARJETA DE IDENTIDAD'
   ];
 
-  constructor(private fb: FormBuilder) {}
+  grupoParticipante = [
+    'EMPRENDEDOR',
+    'MICROEMPRESARIO'
+  ];
+
+  constructor(private fb: FormBuilder, private dataSharingService: DataSharingService) {
+    this.caracterizacionForm = this.fb.group({
+      //... otros campos
+      grupoParticipante: ['', Validators.required],
+      //...
+    });
+  }
+
 
   ngOnInit(): void {
     this.caracterizacionForm = this.fb.group({
@@ -41,7 +54,7 @@ export class CaracterizacionComponent implements OnInit {
       fechaNacimiento: [''],
             // ✅ Segundo bloque de preguntas (Paso 2)
       edad: [''],
-      grupoParticipante: [''],
+      grupoParticipante: ['', Validators.required],
       paisResidencia: [''],
       departamentoResidencia: [''],
       municipioResidencia: [''],
@@ -49,9 +62,14 @@ export class CaracterizacionComponent implements OnInit {
       entornoResidencia: [''],
       direccion: [''],
       indicativo: [''],
-      numeroCelular: ['']
+      numeroCelular: [''],
+    });
+    this.caracterizacionForm.get('grupoParticipante')?.valueChanges.subscribe(value => {
+      // Cuando el valor cambia, lo envía al servicio compartido
+      this.dataSharingService.updateGrupoParticipante(value);
     });
   }
+
 
     // ✅  navegar entre pasos
   navegarAPaso(paso: number): void {

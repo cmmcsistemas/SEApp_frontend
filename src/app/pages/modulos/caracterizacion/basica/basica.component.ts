@@ -1,14 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 // Si tu componente es standalone (como se ve en la imagen)
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
-import { DataSharingService } from 'src/app/services/data-sharing.service';
+import { DataSharingService } from '../../../../services/data-sharing.service';
+
 
 @Component({
   selector: 'app-basica',
-  imports: [ReactiveFormsModule, CommonModule, RouterLink, RouterLinkActive, RouterOutlet],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './basica.component.html',
   styleUrl: './basica.component.css'
 })

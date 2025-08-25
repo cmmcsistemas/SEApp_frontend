@@ -1,24 +1,30 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DataSharingService } from '../../../services/data-sharing.service'; // Asegúrate que la ruta sea correcta
 import { Subscription } from 'rxjs';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet, RouterLinkActive } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-caracterizacion',
-  imports: [RouterLink, RouterOutlet],
+  imports: [RouterLink, RouterOutlet, CommonModule, RouterLinkActive],
   templateUrl: './caracterizacion.component.html',
   styleUrls: ['./caracterizacion.component.css']
 })
 export class CaracterizacionComponent implements OnInit, OnDestroy {
-  grupoSeleccionado: string = '';
+
   private subscription: Subscription = new Subscription();
+
+  showUnidadNegocio = false;
+  showIdeaNegocio = false;
 
   constructor(private dataSharingService: DataSharingService) {}
 
   ngOnInit(): void {
-    // Nos suscribimos al observable del servicio
+    // Suscribirse al servicio para escuchar cambios
     this.subscription = this.dataSharingService.grupoParticipante$.subscribe(grupo => {
-      this.grupoSeleccionado = grupo;
+      // Habilitar los enlaces según el grupo seleccionado
+      this.showUnidadNegocio = grupo === 'MICROEMPRESARIO';
+      this.showIdeaNegocio = grupo === 'EMPRENDEDOR';
     });
   }
 

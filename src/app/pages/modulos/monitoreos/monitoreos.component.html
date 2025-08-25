@@ -1,1 +1,242 @@
-<p>monitoreos works!</p>
+<div class="p-8 bg-gray-100 min-h-screen">
+  <div class="flex justify-start items-center space-x-4 mb-6">
+    <a routerLink="./caracterizacion-basica" routerLinkActive="bg-green-500 text-white shadow-md"
+     class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">
+      Caracterización
+    </a>
+    <a routerLink="./diagnostico" routerLinkActive="bg-green-500 text-white shadow-md"
+     class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">
+    Diagnóstico
+  </a>
+
+  <a routerLink="./caracterizacion-ampliada" routerLinkActive="bg-green-500 text-white shadow-md"
+     class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">
+    Caract. ampliada
+  </a>
+
+  <a routerLink="/modulos/monitoreos" routerLinkActive="bg-green-500 text-white shadow-md"
+     class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">
+    Monitoreo
+  </a>
+
+  <a routerLink="/modulos/plan-formacion" routerLinkActive="bg-green-500 text-white shadow-md"
+     class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">
+    Plan de formación
+  </a>
+  </div>
+
+  <div class="bg-white rounded-lg shadow-md p-8 max-w-4xl mx-auto">
+
+          <h2 class="text-2xl font-bold text-center text-gray-800 mb-2">Formulario de Diagnóstico empresarial</h2>
+    <p class="text-center text-gray-500 mb-6">Preguntas 1 a 10 de 30</p>
+    <p class="text-center text-gray-500 mb-8">
+      Paso {{ pasoActual }} de {{preguntasPorPaso}}. Por favor, responde a todas las preguntas de esta sección.
+    </p>
+    <form [formGroup]="monitoreoGeneralForm" class="space-y-6">
+    <div *ngIf="pasoActual === 1">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30">
+          <div>
+            <label for="grupoParticipante" class="block text-gray-700">Grupo de participantes</label>
+            <input type="text" id="grupoParticipante" formControlName="grupoParticipante" placeholder="" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+          </div>
+          <div>
+            <label for="estadoParticipante" class="block text-gray-700">Estado actual del participante</label>
+            <input type="text" id="estadoParticipante" formControlName="estadoParticipante" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-30">
+          <div>
+            <label for="perteneceAsociacion" class="block text-gray-700">¿Pertenece a alguna asociación?</label>
+            <input type="text" id="perteneceAsociacion" formControlName="perteneceAsociacion"  placeholder="" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+          </div>
+          <div>
+            <label for="nombreAsociacion" class="block text-gray-700">Nombre de la asociación</label>
+            <input type="text" id="nombreAsociacion" formControlName="nombreAsociacion"  placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+          </div>
+        </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-2 gap-30">
+        <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
+          <div>
+            <label for="codigoCiiu" class="block text-gray-700">Código CIIU</label>
+            <select id="codigoCiiu" formControlName="codigoCiiu" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+              <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+              <option *ngFor="let tipo of codigoCiiu" [value]="tipo">{{ tipo }}</option>
+            </select>
+          </div>
+          <div>
+            <label for="asociacionMujeres" class="block text-gray-700">¿Es una asociación de mujeres?</label>
+            <input type="text" id="asociacionMujeres" formControlName="asociacionMujeres" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+          </div>
+        </div>
+        <div>
+          <label for="nacionalidad" class="block text-gray-700">Sector empresarial</label>
+          <input type="text" id="nacionalidad" formControlName="nacionalidad" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-2 gap-30">
+          <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
+            <div>
+              <label for="expedidaEn" class="block text-gray-700">Arriendo y Servicios</label>
+              <input type="text" id="expedidaEn" formControlName="expedidaEn" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+            <div>
+              <label for="fechaExpedicion" class="block text-gray-700">Educación</label>
+              <input type="text" id="fechaExpedicion" formControlName="fechaExpedicion" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+          </div>
+          <div>
+            <label for="fechaNacimiento" class="block text-gray-700">Obligaciones financieras</label>
+            <input type="text" id="fechaNacimiento" formControlName="fechaNacimiento" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-2 gap-30">
+          <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
+            <div>
+              <label for="expedidaEn" class="block text-gray-700">Gastos ocasionales</label>
+              <input type="text" id="expedidaEn" formControlName="expedidaEn" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+            <div>
+              <label for="fechaExpedicion" class="block text-gray-700">Total de gastos</label>
+              <input type="text" id="fechaExpedicion" formControlName="fechaExpedicion" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-2 gap-30">
+          <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
+            <div>
+              <label for="expedidaEn" class="block text-gray-700">Trabajos independientes</label>
+              <input type="text" id="expedidaEn" formControlName="expedidaEn" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+            <div>
+              <label for="fechaExpedicion" class="block text-gray-700">Emprendimientos</label>
+              <input type="text" id="fechaExpedicion" formControlName="fechaExpedicion" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+          </div>
+          <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
+            <div>
+              <label for="expedidaEn" class="block text-gray-700">Otros familiares</label>
+              <input type="text" id="expedidaEn" formControlName="expedidaEn" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+            <div>
+              <label for="fechaExpedicion" class="block text-gray-700">Pensión</label>
+              <input type="text" id="fechaExpedicion" formControlName="fechaExpedicion" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-2 gap-30">
+          <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
+            <div>
+              <label for="expedidaEn" class="block text-gray-700">Empleados</label>
+              <input type="text" id="expedidaEn" formControlName="expedidaEn" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+            <div>
+              <label for="fechaExpedicion" class="block text-gray-700">Otros ingresos</label>
+              <input type="text" id="fechaExpedicion" formControlName="fechaExpedicion" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+          </div>
+          <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
+            <div>
+              <label for="expedidaEn" class="block text-gray-700">Otros (Explique cuáles)</label>
+              <input type="text" id="expedidaEn" formControlName="expedidaEn" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+            <div>
+              <label for="fechaExpedicion" class="block text-gray-700">Total de ingresos</label>
+              <input type="text" id="fechaExpedicion" formControlName="fechaExpedicion" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+          </div>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-2 gap-30">
+          <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
+            <div>
+              <label for="expedidaEn" class="block text-gray-700">Total de personas que dependen de este ingreso</label>
+              <input type="text" id="expedidaEn" formControlName="expedidaEn" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+            <div>
+              <label for="fechaExpedicion" class="block text-gray-700">¿Quién define la distribución de ingresos?</label>
+              <input type="text" id="fechaExpedicion" formControlName="fechaExpedicion" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+          </div>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-2 gap-30">
+
+      </div>
+
+    </div>
+
+    </form>
+
+
+
+    <h2 class="text-2xl font-bold text-center text-gray-800 mb-2">Formulario de Diagnóstico empresarial</h2>
+    <p class="text-center text-gray-500 mb-6">Preguntas 1 a 10 de 30</p>
+    <p class="text-center text-gray-500 mb-8">
+      Pregutas {{ pasoActual }} de {{ totalPasos }}. Por favor, responde a todas las preguntas de esta sección.
+    </p>
+
+    <form [formGroup]="monitoreoDiagnosticoForm" (ngSubmit)="guardarDiagnostico()" class="space-y-8">
+
+    <div *ngFor="let pregunta of preguntasPasoActual; let i = index" class="p-4 border-none rounded-lg bg-gray-50">
+
+        <!-- Mostramos el texto de la pregunta -->
+        <label class="block font-semibold text-gray-700 mb-3">
+          {{ ((pasoActual - 1) * preguntasPorPaso) + i + 1 }}. {{ pregunta.texto }}
+        </label>
+
+        <!-- Contenedor para las opciones de respuesta (radio buttons) -->
+        <div class="flex items-center space-x-6">
+          <!--
+            Iteramos sobre el array 'opciones' para crear los 3 radio buttons.
+          -->
+          <div *ngFor="let opcion of opciones" class="flex items-center">
+            <input
+              type="radio"
+              [id]="'pregunta_' + pregunta.id + '_' + opcion"
+              [value]="opcion"
+              [formControlName]="'pregunta_' + pregunta.id"
+              class="h-4 w-4 text-green-600 border-gray-300 focus:ring-green-500">
+            <label [for]="'pregunta_' + pregunta.id + '_' + opcion" class="ml-2 block text-sm text-gray-900">
+              {{ opcion }}
+            </label>
+          </div>
+        </div>
+
+        <!--
+          (Opcional) Mensaje de error si la pregunta no ha sido respondida.
+          Se muestra solo si el campo ha sido "tocado" y no es válido.
+        -->
+        <div *ngIf="monitoreoDiagnosticoForm.controls['pregunta_' + pregunta.id].invalid && monitoreoDiagnosticoForm.controls['pregunta_' + pregunta.id].touched"
+            class="text-red-500 text-xs mt-1">
+          Esta pregunta es obligatoria.
+        </div>
+
+    </div>
+
+      <div class="flex justify-between items-center mt-8">
+        <button type="button"
+            (click)="atras()"
+            *ngIf="pasoActual > 1"
+            class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200">
+          Atrás
+        </button>
+        <button type="submit"
+        class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200">
+          Guardar progreso
+        </button>
+
+        <button type="button"
+            (click)="siguiente()"
+            *ngIf="pasoActual < totalPasos"
+            class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200">
+          Siguiente
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div>

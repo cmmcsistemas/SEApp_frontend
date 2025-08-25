@@ -9,7 +9,7 @@ import { faCoffee } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-root',
-  imports: [ HeaderComponent, RouterOutlet, NgIf, SidebarComponent, FontAwesomeModule, SidebarComponent],
+  imports: [ HeaderComponent, RouterOutlet, SidebarComponent, FontAwesomeModule, SidebarComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

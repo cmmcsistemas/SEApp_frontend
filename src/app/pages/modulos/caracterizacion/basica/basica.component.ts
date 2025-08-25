@@ -5,7 +5,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import { DataSharingService } from '../../../../services/data-sharing.service';
-
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-basica',
@@ -13,7 +13,7 @@ import { DataSharingService } from '../../../../services/data-sharing.service';
   templateUrl: './basica.component.html',
   styleUrl: './basica.component.css'
 })
-export class BasicaComponent implements OnInit {
+export class BasicaComponent implements OnInit, OnDestroy {
 caracterizacionForm!: FormGroup;
     // ✅ Variable para el paso actual del formulario
   pasoActual: number = 1;
@@ -32,13 +32,9 @@ caracterizacionForm!: FormGroup;
     'MICROEMPRESARIO'
   ];
 
-  constructor(private fb: FormBuilder, private dataSharingService: DataSharingService) {
-    this.caracterizacionForm = this.fb.group({
-      //... otros campos
-      grupoParticipante: ['', Validators.required],
-      //...
-    });
-  }
+  private formSubscription: Subscription = new Subscription();
+
+constructor(private fb: FormBuilder, private dataSharingService: DataSharingService) {}
 
 
   ngOnInit(): void {
@@ -65,12 +61,20 @@ caracterizacionForm!: FormGroup;
       indicativo: [''],
       numeroCelular: [''],
     });
-    this.caracterizacionForm.get('grupoParticipante')?.valueChanges.subscribe(value => {
-      // Cuando el valor cambia, lo envía al servicio compartido
-      this.dataSharingService.updateGrupoParticipante(value);
-    });
+
+    // ✅ Nueva suscripción al valor del formulario completo
+    this.formSubscription.add(this.caracterizacionForm.valueChanges.subscribe(value => {
+      // Envía el valor del grupo de participante al servicio compartido
+      this.dataSharingService.updateGrupoParticipante(value.grupoParticipante);
+      // Aquí puedes realizar otras acciones basadas en los cambios de otros campos si es necesario.
+      console.log('Cambios en el formulario detectados:', value);
+    }));
   }
 
+    ngOnDestroy(): void {
+    // Es crucial desuscribirse para evitar fugas de memoria
+    this.formSubscription.unsubscribe();
+  }
 
     // ✅  navegar entre pasos
   navegarAPaso(paso: number): void {

@@ -9,15 +9,14 @@
     Diagnóstico
   </a>
 
-  <a *ngIf="grupoSeleccionado === 'EMPRENDEDOR'" routerLink="./idea-de-negocio" routerLinkActive="bg-green-500 text-white shadow-md"
-     class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">
-    Idea de Negocio
-  </a>
-
-  <a *ngIf="grupoSeleccionado === 'MICROEMPRESARIO'" routerLink="./unidad-de-negocio" routerLinkActive="bg-green-500 text-white shadow-md"
-     class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">
-    Unidad de negocio
-  </a>
+   <a *ngIf="showUnidadNegocio" routerLink="./unidad-de-negocio" routerLinkActive="bg-green-500 text-white shadow-md"
+      class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">
+      Unidad de negocio
+    </a>
+    <a *ngIf="showIdeaNegocio" routerLink="./idea-de-negocio" routerLinkActive="bg-green-500 text-white shadow-md"
+      class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">
+      Idea de negocio
+    </a>
 
   <a routerLink="./caracterizacion-ampliada" routerLinkActive="bg-green-500 text-white shadow-md"
      class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">

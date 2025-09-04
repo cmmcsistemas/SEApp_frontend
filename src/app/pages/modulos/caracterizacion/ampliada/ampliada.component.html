@@ -1,1 +1,167 @@
-<p>ampliada works!</p>
+
+    <h2 class="text-2xl font-bold text-center text-gray-800 mb-2">Formulario de registro</h2>
+    <p class="text-center text-gray-500 mb-6">Preguntas 1 a 10 de 20</p>
+
+    <form [formGroup]="caracterizacionAmpliadaForm" class="space-y-6">
+    <div *ngIf="pasoActual === 1">
+      <div class="grid grid-cols-1 sm:grid-cols-1 gap-x-30">
+        <div>
+          <label for="formacion" class="block text-gray-700">Si tiene formación superior o cursos complementarios, explique cuál o cuáles</label>
+          <input type="text" id="formacion" formControlName="formacion" placeholder="Ingrese texto" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+        </div>
+
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-30">
+          <div>
+          <label for="nivelEscolaridad" class="block text-gray-700">Nivel de escolaridad</label>
+            <select id="nivelEscolaridad" formControlName="nivelEscolaridad" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+            <option *ngFor="let nivelEscolaridad of nivelesEscolaridad" [value]="nivelEscolaridad">{{ nivelEscolaridad }}</option>
+          </select>
+        </div>
+        <div>
+          <label for="estadoCivil" class="block text-gray-700">Estado civil</label>
+            <select id="estadoCivil" formControlName="estadoCivil" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+            <option *ngFor="let estadoCivil of estadosCivil" [value]="estadoCivil">{{ estadoCivil }}</option>
+          </select>
+        </div>
+
+      </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-2 gap-30">
+      <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
+        <div>
+          <label for="vinculoLaboral" class="block text-gray-700">¿Tiene vinculación laboral con contrato?</label>
+          <select id="vinculoLaboral" formControlName="vinculoLaboral" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+            <option *ngFor="let vinculoLaboral of opciones" [value]="vinculoLaboral">{{ vinculoLaboral }}</option>
+          </select>
+        </div>
+        <div>
+          <label for="tipoContrato" class="block text-gray-700">Tipo de contrato</label>
+            <select id="tipoContrato" formControlName="tipoContrato" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+            <option *ngFor="let tipoContrato of opciones" [value]="tipoContrato">{{ tipoContrato }}</option>
+          </select>
+        </div>
+      </div>
+      <div>
+          <label for="antiguedad" class="block text-gray-700">Antiguedad del contrato</label>
+          <input type="number" id="antiguedad" formControlName="antiguedad"  placeholder="meses" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+        </div>
+
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-2 gap-30">
+        <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
+          <div>
+            <label for="independiente" class="block text-gray-700">¿Es independiente?</label>
+            <select id="independiente" formControlName="independiente" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+            <option *ngFor="let independiente of opciones" [value]="independiente">{{ independiente }}</option>
+          </select>
+          </div>
+          <div>
+            <label for="tieneRut" class="block text-gray-700">¿Tiene RUT?</label>
+            <select id="tieneRut" formControlName="tieneRut" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+            <option *ngFor="let tieneRut of opciones" [value]="tieneRut">{{ tieneRut  }}</option>
+          </select>
+          </div>
+        </div>
+     <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
+        <div>
+          <label for="promedioIngresosActividad" class="block text-gray-700">Promedio de ingresos en esta actividad</label>
+          <input type="number" step="100000" id="promedioIngresosActividad" formControlName="promedioIngresosActividad" placeholder="COP" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+        </div>
+        <div>
+          <label for="promedioIngresos" class="block text-gray-700">Promedio de ingresos por contrato</label>
+          <input type="number"  step="100000" id="promedioIngresos" formControlName="promedioIngresos" placeholder="COP" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div *ngIf="pasoActual === 2">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-30">
+          <div>
+            <label for="cabezaFamilia" class="block text-gray-700 mb-2">¿Es usted cabeza de familia?</label>
+            <select id="cabezaFamilia" formControlName="cabezaFamilia" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+            <option *ngFor="let cabezaFamilia of opciones" [value]="cabezaFamilia">{{ cabezaFamilia  }}</option>
+          </select>
+          </div>
+        <div>
+          <label for="hijos" class="block text-gray-700">Número de hijos</label>
+          <input type="number" id="hijos" formControlName="hijos" placeholder="0" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+        </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-30">
+          <div>
+            <label for="integratesHogar" class="block text-gray-700">Número de integrantes en el hogar</label>
+            <input type="number" id="integratesHogar" formControlName="integratesHogar" placeholder="0" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+          </div>
+          <div>
+            <label for="personasAcargo" class="block text-gray-700">¿Cuántas personas tiene a cargo?</label>
+            <input type="number" id="personasAcargo" formControlName="personasAcargo" placeholder="0" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-30">
+        <div>
+          <label for="sistemaSalud" class="block text-gray-700">¿Está usted afiliado a un sistema de salud?</label>
+            <select id="sistemaSalud" formControlName="sistemaSalud" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+            <option *ngFor="let sistemaSalud of opciones" [value]="sistemaSalud">{{ sistemaSalud  }}</option>
+          </select>
+        </div>
+        <div>
+          <label for="sistemaSaludCubre" class="block text-gray-700">¿Esta afiliación cubre a su grupo familiar?</label>
+            <select id="sistemaSaludCubre" formControlName="sistemaSaludCubre" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+            <option *ngFor="let sistemaSaludCubre of opciones" [value]="sistemaSaludCubre">{{ sistemaSaludCubre  }}</option>
+          </select>
+        </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-30">
+        <div>
+          <label for="cotizaPension" class="block text-gray-700">¿Cotiza usted para pensión?</label>
+            <select id="cotizaPension" formControlName="cotizaPension" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+            <option *ngFor="let cotizaPension of opciones" [value]="cotizaPension">{{ cotizaPension  }}</option>
+          </select>
+        </div>
+        <div>
+          <label for="ARL" class="block text-gray-700">¿Está usted afiliado a alguna ARL?</label>
+            <select id="ARL" formControlName="ARL" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+            <option *ngFor="let ARL of opciones" [value]="ARL">{{ ARL  }}</option>
+          </select>
+        </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-30">
+        <div>
+          <label for="factoresProyecto" class="block text-gray-700">Factores que le impiden participar en este proyecto</label>
+          <input type="text" id="factoresProyecto" formControlName="factoresProyecto" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+        </div>
+        <div>
+          <label for="observaciones" class="block text-gray-700">Observaciones y Aclaraciones</label>
+          <input type="text" id="observaciones" formControlName="observaciones" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+        </div>
+        </div>
+    </div>
+
+      <div class="flex justify-between items-center mt-8">
+        <button type="button" (click)="atras()" class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200">
+          Atrás
+        </button>
+        <button type="button" (click)="guardarProgreso()" class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200">
+          Guardar progreso
+        </button>
+        <button type="button" (click)="siguiente()" class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200">
+          Siguiente
+        </button>
+      </div>
+    </form>
+

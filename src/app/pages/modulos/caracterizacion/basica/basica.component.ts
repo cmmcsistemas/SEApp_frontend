@@ -17,6 +17,8 @@ export class BasicaComponent implements OnInit, OnDestroy {
 caracterizacionForm!: FormGroup;
     // ✅ Variable para el paso actual del formulario
   pasoActual: number = 1;
+  preguntasPorPaso = 10;
+  totalPasos = 0;
     // ✅ Lista de tipos de documento
   tiposDocumento = [
     'CEDULA DE CIUDADANIA',
@@ -32,7 +34,8 @@ caracterizacionForm!: FormGroup;
     'MICROEMPRESARIO'
   ];
 
-  private formSubscription: Subscription = new Subscription();
+private formSubscription: Subscription = new Subscription();
+private preguntas: any[] = [];
 
 constructor(private fb: FormBuilder, private dataSharingService: DataSharingService) {}
 
@@ -44,23 +47,32 @@ constructor(private fb: FormBuilder, private dataSharingService: DataSharingServ
       email: ['', [Validators.required, Validators.email]],
       proyecto: [''],
       tipoDocumento: ['', Validators.required],
-      noDocumento: [''],
-      nacionalidad: [''],
-      expedidaEn: [''],
-      fechaExpedicion: [''],
-      fechaNacimiento: [''],
+      noDocumento: ['', Validators.required],
+      nacionalidad: ['', Validators.required],
+      expedidaEn: ['', Validators.required],
+      fechaExpedicion: ['', Validators.required],
+      fechaNacimiento: ['', Validators.required],
             // ✅ Segundo bloque de preguntas (Paso 2)
-      edad: [''],
+      edad: ['', Validators.required],
       grupoParticipante: ['', Validators.required],
-      paisResidencia: [''],
-      departamentoResidencia: [''],
-      municipioResidencia: [''],
-      localidad: [''],
-      entornoResidencia: [''],
-      direccion: [''],
-      indicativo: [''],
-      numeroCelular: [''],
+      paisResidencia: ['', Validators.required],
+      departamentoResidencia: ['', Validators.required],
+      municipioResidencia: ['', Validators.required],
+      localidad: ['', Validators.required],
+      entornoResidencia: ['', Validators.required],
+      direccion: ['', Validators.required],
+      indicativo: ['', Validators.required],
+      numeroCelular: ['', Validators.required],
+      // ✅ Tercer bloque de preguntas (Paso 3)
+      sexo: ['', Validators.required],
+      genero: ['', Validators.required],
+      etnia: ['', Validators.required],
+      discapacidad: ['', Validators.required],
+      grupoVulnerable: ['', Validators.required],
     });
+
+    this.preguntas = Object.keys(this.caracterizacionForm.controls);
+    this.totalPasos = Math.ceil(this.preguntas.length / this.preguntasPorPaso);
 
     // ✅ Nueva suscripción al valor del formulario completo
     this.formSubscription.add(this.caracterizacionForm.valueChanges.subscribe(value => {
@@ -71,17 +83,16 @@ constructor(private fb: FormBuilder, private dataSharingService: DataSharingServ
     }));
   }
 
-    ngOnDestroy(): void {
+  ngOnDestroy(): void {
     // Es crucial desuscribirse para evitar fugas de memoria
     this.formSubscription.unsubscribe();
   }
 
     // ✅  navegar entre pasos
   navegarAPaso(paso: number): void {
-    // Aquí puedes agregar lógica de validación
-    // antes de cambiar de paso si lo necesitas.
     this.pasoActual = paso;
   }
+
 
     // ✅ SOLUCIÓN: Agrega el método 'atras()'
   atras(): void {
@@ -93,12 +104,11 @@ constructor(private fb: FormBuilder, private dataSharingService: DataSharingServ
 
   // ✅ SOLUCIÓN: Agrega el método 'siguiente()'
   siguiente(): void {
-        if (this.pasoActual < 3) { // Asume 3 bloques de 10 preguntas cada uno
-      this.pasoActual++;
-      console.log('Pasando al paso:', this.pasoActual);
+   if (this.pasoActual === this.totalPasos) {
+      this.guardarProgreso();
     } else {
-      // Lógica para el último paso (por ejemplo, enviar el formulario completo)
-      console.log('Formulario completado. Enviando...');
+      this.pasoActual++;
+      console.log('Avanzando al paso:', this.pasoActual);
     }
   }
 
@@ -106,15 +116,16 @@ constructor(private fb: FormBuilder, private dataSharingService: DataSharingServ
     if (this.caracterizacionForm.valid) {
       const data = this.caracterizacionForm.value;
       const jsonString = JSON.stringify(data, null, 2);
-
-      // Aquí puedes implementar la lógica para guardar el JSON
       console.log('Datos del formulario:', jsonString);
-      // Ejemplo: Enviar a un servicio o guardar en localStorage
-      // localStorage.setItem('caracterizacionForm', jsonString);
       alert('Progreso guardado correctamente.');
     } else {
       alert('Por favor, complete todos los campos requeridos.');
     }
   }
   // ... (métodos para manejar el formulario)
+    get preguntasPasoActual() {
+    const inicio = (this.pasoActual - 1) * this.preguntasPorPaso;
+    const fin = inicio + this.preguntasPorPaso;
+    return this.preguntas.slice(inicio, fin);
+  }
 }

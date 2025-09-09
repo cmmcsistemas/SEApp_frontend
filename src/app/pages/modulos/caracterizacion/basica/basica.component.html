@@ -1,6 +1,6 @@
 
     <h2 class="text-2xl font-bold text-center text-gray-800 mb-2">Formulario de registro</h2>
-    <p class="text-center text-gray-500 mb-6">Preguntas 1 a 10 de 30</p>
+    <p class="text-center text-gray-500 mb-6">Preguntas de {{ pasoActual }} a la {{ pasoActual * 10 }}   de {{ totalPasos * 10}}</p>
 
     <form [formGroup]="caracterizacionForm" class="space-y-6">
     <div *ngIf="pasoActual === 1">
@@ -152,13 +152,13 @@
     </div>
 
       <div class="flex justify-between items-center mt-8">
-        <button type="button" (click)="atras()" class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200">
+        <button type="button" [style.visibility]="pasoActual > 1 ? 'visible' : 'hidden'" (click)="atras()" class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200">
           Atrás
         </button>
-        <button type="button" (click)="guardarProgreso()" class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200">
+        <button type="button" [style.visibility]="pasoActual === totalPasos ? 'visible' : 'hidden'"(click)="guardarProgreso()" class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200">
           Guardar progreso
         </button>
-        <button type="button" (click)="siguiente()" class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200">
+        <button type="button" [style.visibility]="pasoActual < totalPasos ? 'visible' : 'hidden'" (click)="siguiente()" class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200 ">
           Siguiente
         </button>
       </div>

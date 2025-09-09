@@ -28,7 +28,7 @@
               }
             ],
             "styles": [
-              "src/styles.css"
+              "src/app/tailwind.css"
             ],
             "scripts": [],
             "server": "src/main.server.ts",

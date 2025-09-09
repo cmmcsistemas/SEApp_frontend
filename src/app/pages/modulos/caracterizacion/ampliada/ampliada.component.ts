@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit  } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, CurrencyPipe } from '@angular/common';
+import { Subscription } from 'rxjs';
+import { DataSharingService } from '../../../../services/data-sharing.service';
 
 
 @Component({
@@ -11,9 +13,11 @@ import { CommonModule, CurrencyPipe } from '@angular/common';
   styleUrl: './ampliada.component.css',
   providers: [CurrencyPipe]
 })
-export class AmpliadaComponent {
+export class AmpliadaComponent implements OnInit, OnDestroy {
   caracterizacionAmpliadaForm!: FormGroup;
   pasoActual: number = 1;
+  preguntasPorPaso = 10;
+  totalPasos = 0;
 
   opciones: string[] = ['Sí', 'No'];
 
@@ -54,9 +58,10 @@ export class AmpliadaComponent {
 
   promedioIngresosActividad: number =0;
 
+  constructor(private fb: FormBuilder, private dataSharingService: DataSharingService) {};
 
-
-  constructor(private fb: FormBuilder) {}
+  private formSubscription: Subscription = new Subscription();
+  private preguntas: any[] = [];
 
   ngOnInit(): void {
         this.caracterizacionAmpliadaForm = this.fb.group({
@@ -81,8 +86,25 @@ export class AmpliadaComponent {
       ARL: [''],
       factoresProyecto: [''],
       observaciones: ['']
+  });
+    this.preguntas = Object.keys(this.caracterizacionAmpliadaForm.controls);
+    this.totalPasos = Math.ceil(this.preguntas.length / this.preguntasPorPaso);
 
-  }) }
+    // ✅ Nueva suscripción al valor del formulario completo
+    this.formSubscription.add(this.caracterizacionAmpliadaForm.valueChanges.subscribe(value => {
+      // Envía el valor del grupo de participante al servicio compartido
+      this.dataSharingService.updateGrupoParticipante(value.grupoParticipante);
+      // Aquí puedes realizar otras acciones basadas en los cambios de otros campos si es necesario.
+      console.log('Cambios en el formulario detectados:', value);
+    }));
+
+};
+
+
+  ngOnDestroy(): void {
+    // Es crucial desuscribirse para evitar fugas de memoria
+    this.formSubscription.unsubscribe();
+  };
 
     // ✅ SOLUCIÓN: Agrega el método 'atras()'
   atras(): void {
@@ -90,16 +112,15 @@ export class AmpliadaComponent {
       this.pasoActual--;
       console.log('Volviendo al paso:', this.pasoActual);
     }
-  }
+  };
 
   // ✅ SOLUCIÓN: Agrega el método 'siguiente()'
   siguiente(): void {
-        if (this.pasoActual < 2) { // Asume 3 bloques de 10 preguntas cada uno
-      this.pasoActual++;
-      console.log('Preguntas de:', this.pasoActual);
+   if (this.pasoActual === this.totalPasos) {
+      this.guardarProgreso();
     } else {
-      // Lógica para el último paso (por ejemplo, enviar el formulario completo)
-      console.log('Formulario completado. Enviando...');
+      this.pasoActual++;
+      console.log('Avanzando al paso:', this.pasoActual);
     }
   }
 
@@ -107,15 +128,18 @@ export class AmpliadaComponent {
     if (this.caracterizacionAmpliadaForm.valid) {
       const data = this.caracterizacionAmpliadaForm.value;
       const jsonString = JSON.stringify(data, null, 2);
-
       // Aquí puedes implementar la lógica para guardar el JSON
       console.log('Datos del formulario:', jsonString);
-      // Ejemplo: Enviar a un servicio o guardar en localStorage
-      // localStorage.setItem('caracterizacionForm', jsonString);
       alert('Progreso guardado correctamente.');
     } else {
       alert('Por favor, complete todos los campos requeridos.');
     }
+  }
+
+  get preguntasPasoActual() {
+    const inicio = (this.pasoActual - 1) * this.preguntasPorPaso;
+    const fin = inicio + this.preguntasPorPaso;
+    return this.preguntas.slice(inicio, fin);
   }
 
 }

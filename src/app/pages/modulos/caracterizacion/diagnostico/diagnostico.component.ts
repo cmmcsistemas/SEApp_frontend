@@ -4,12 +4,9 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
+import { DiagnosticoService, DiagnosticoPregunta } from '../../../../services/diagnostico.service';
 
-// Interfaz para definir la estructura de una pregunta
-interface Pregunta {
-  id: number;
-  texto: string;
-}
+
 
 @Component({
   selector: 'app-diagnostico',
@@ -20,30 +17,36 @@ interface Pregunta {
 
 export class DiagnosticoComponent implements OnInit {
   diagnosticoForm!: FormGroup;
-  preguntas: Pregunta[] = [];
-  opciones: string[] = ['Sí', 'A veces', 'No'];
+  preguntas: DiagnosticoPregunta[] = [];
+
 
   pasoActual: number = 1;
   preguntasPorPaso = 10;
   totalPasos = 0;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private diagnosticoService: DiagnosticoService) {
     // Inicializamos el formulario vacío
     this.diagnosticoForm = this.fb.group({});
-  }
+ }
 
   ngOnInit(): void {
-    // Llenamos el array con las 70 preguntas
-    this.inicializarPreguntas();
+    this.diagnosticoService.getPreguntasDiagnostico().subscribe(
+      (data) => {
+        this.preguntas = data;
+        this.totalPasos = Math.ceil(this.preguntas.length / this.preguntasPorPaso);
+        this.inicializarFormulario();
+      },
+      (error) => {
+        console.error('Error al obtener las preguntas del diagnóstico:', error);
+        // Manejo de errores: por ejemplo, mostrar un mensaje al usuario
+        alert('Hubo un error al cargar las preguntas. Por favor, inténtelo de nuevo más tarde.');
+      }
+    );
+  }
 
-
-    // Calculamos el número total de pasos basado en el total de preguntas
-    this.totalPasos = Math.ceil(this.preguntas.length / this.preguntasPorPaso);
-
-    // Creamos un FormControl por cada pregunta dinámicamente
+  private inicializarFormulario(): void {
     this.preguntas.forEach(pregunta => {
-      const controlName = `pregunta_${pregunta.id}`;
-      // Añadimos un control al formGroup con un valor inicial nulo y lo marcamos como requerido
+      const controlName = `pregunta_${pregunta.id_campo}`;
       this.diagnosticoForm.addControl(
         controlName,
         this.fb.control(null, Validators.required)
@@ -51,35 +54,39 @@ export class DiagnosticoComponent implements OnInit {
     });
   }
 
-    get preguntasPasoActual(): Pregunta[] {
+  get preguntasPasoActual(): DiagnosticoPregunta[] {
     const inicio = (this.pasoActual - 1) * this.preguntasPorPaso;
     const fin = inicio + this.preguntasPorPaso;
     return this.preguntas.slice(inicio, fin);
-    }
-
-    // Método para generar las 70 preguntas
-  inicializarPreguntas(): void {
-    for (let i = 1; i <= 70; i++) {
-      this.preguntas.push({
-        id: i,
-        // Texto de ejemplo. Puedes cargar esto desde un servicio o un archivo JSON.
-        texto: `Pregunta número ${i}: ¿Descripción de la pregunta va aquí?`
-      });
-    }
   }
 
-    // ✅ SOLUCIÓN: Agrega el método 'atras()'
   atras(): void {
     if (this.pasoActual > 1) {
       this.pasoActual--;
     }
   }
 
-
-  // ✅ SOLUCIÓN: Agrega el método 'siguiente()'
   siguiente(): void {
-    if (this.pasoActual < this.totalPasos) {
+    // Validar las preguntas del paso actual antes de avanzar
+    const inicio = (this.pasoActual - 1) * this.preguntasPorPaso;
+    const fin = inicio + this.preguntasPorPaso;
+    const preguntasPaso = this.preguntas.slice(inicio, fin);
+
+    let pasoValido = true;
+    preguntasPaso.forEach(pregunta => {
+        const control = this.diagnosticoForm.get(`pregunta_${pregunta.id_campo}`);
+        if (control && control.invalid) {
+            control.markAsTouched(); // Para que se muestren los errores
+            pasoValido = false;
+        }
+    });
+
+    if (pasoValido && this.pasoActual < this.totalPasos) {
       this.pasoActual++;
+    } else if (pasoValido && this.pasoActual === this.totalPasos) {
+      this.guardarDiagnostico();
+    } else {
+        alert('Por favor, responde todas las preguntas antes de avanzar.');
     }
   }
 
@@ -87,14 +94,11 @@ export class DiagnosticoComponent implements OnInit {
     if (this.diagnosticoForm.valid) {
       console.log('Formulario válido. Respuestas:');
       console.log(this.diagnosticoForm.value);
-      // Aquí iría la lógica para enviar los datos a tu backend
       alert('Diagnóstico guardado con éxito. Revisa la consola para ver los datos.');
     } else {
       console.error('El formulario no es válido. Faltan respuestas.');
-      // Opcional: Marcar todos los campos como "tocados" para mostrar errores
       this.diagnosticoForm.markAllAsTouched();
       alert('Por favor, responde todas las preguntas antes de guardar.');
     }
   }
-
 }

@@ -16,7 +16,7 @@
               <input type="radio"
                      [formControlName]="'pregunta_' + pregunta.id_campo"
                      [value]="opcion"
-                     class="form-radio text-green-500 rounded-full">
+                     class="form-radio text-green-600 rounded-full">
               <span class="ml-2 text-gray-700">{{ opcion }}</span>
             </label>
           </ng-container>
@@ -28,12 +28,12 @@
       <button type="button"
               (click)="atras()"
               [disabled]="pasoActual === 1"
-              class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+              class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
         Atrás
       </button>
       <button type="button"
               (click)="siguiente()"
-              class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200">
+              class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200">
         {{ pasoActual === totalPasos ? 'Guardar Diagnóstico' : 'Siguiente' }}
       </button>
     </div>

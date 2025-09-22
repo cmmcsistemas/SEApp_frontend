@@ -1,31 +1,31 @@
 <div class="p-8 bg-gray-100 min-h-screen">
   <div class="flex justify-start items-center space-x-4 mb-6">
-    <a routerLink="../caracterizacion/caracterizacion-basica" routerLinkActive="bg-green-500 text-white shadow-md"
+    <a routerLink="../caracterizacion/caracterizacion-basica" routerLinkActive="bg-green-600 text-white shadow-md"
      class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">
       Caracterización
     </a>
-    <a routerLink="../caracterizacion/diagnostico" routerLinkActive="bg-green-500 text-white shadow-md"
+    <a routerLink="../caracterizacion/diagnostico" routerLinkActive="bg-green-600 text-white shadow-md"
      class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">
     Diagnóstico
   </a>
 
-  <a routerLink="../caracterizacion/caracterizacion-ampliada" routerLinkActive="bg-green-500 text-white shadow-md"
+  <a routerLink="../caracterizacion/caracterizacion-ampliada" routerLinkActive="bg-green-600 text-white shadow-md"
      class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">
     Caract. ampliada
   </a>
 
-  <a routerLink="/modulos/monitoreos" routerLinkActive="bg-green-500 text-white shadow-md"
+  <a routerLink="/modulos/monitoreos" routerLinkActive="bg-green-600 text-white shadow-md"
      class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">
     Monitoreo
   </a>
 
-  <a routerLink="/modulos/plan-formacion" routerLinkActive="bg-green-500 text-white shadow-md"
+  <a routerLink="/modulos/plan-formacion" routerLinkActive="bg-green-600 text-white shadow-md"
      class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">
     Plan de formación
   </a>
   </div>
 
-  <div class="bg-white rounded-lg shadow-md p-8 max-w-4xl mx-auto">
+  <div class="bg-white rounded-lg shadow-md p-8 max-w-20 mx-auto">
 
           <h2 class="text-2xl font-bold text-center text-gray-800 mb-2">Formulario de Diagnóstico empresarial</h2>
     <p class="text-center text-gray-500 mb-6">Preguntas 1 a 10 de 30</p>
@@ -34,7 +34,7 @@
     </p>
     <form [formGroup]="monitoreoGeneralForm" class="space-y-6">
     <div *ngIf="pasoActual === 1">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30 mb-4">
           <div>
             <label for="grupoParticipante" class="block text-gray-700">Grupo de participantes</label>
             <input type="text" id="grupoParticipante" formControlName="grupoParticipante" placeholder="" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
@@ -45,7 +45,7 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-30">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-30 mb-4">
           <div>
             <label for="perteneceAsociacion" class="block text-gray-700">¿Pertenece a alguna asociación?</label>
             <input type="text" id="perteneceAsociacion" formControlName="perteneceAsociacion"  placeholder="" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
@@ -56,7 +56,7 @@
           </div>
         </div>
 
-      <div class="grid grid-cols-2 md:grid-cols-2 gap-30">
+      <div class="grid grid-cols-2 md:grid-cols-2 gap-30 mb-4">
         <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
           <div>
             <label for="codigoCiiu" class="block text-gray-700">Código CIIU</label>
@@ -76,7 +76,7 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-2 md:grid-cols-2 gap-30">
+      <div class="grid grid-cols-2 md:grid-cols-2 gap-30 mb-4">
           <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
             <div>
               <label for="expedidaEn" class="block text-gray-700">Arriendo y Servicios</label>
@@ -93,7 +93,7 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-2 gap-30">
+        <div class="grid grid-cols-2 md:grid-cols-2 gap-30 mb-4">
           <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
             <div>
               <label for="expedidaEn" class="block text-gray-700">Gastos ocasionales</label>
@@ -105,7 +105,7 @@
             </div>
           </div>
         </div>
-        <div class="grid grid-cols-2 md:grid-cols-2 gap-30">
+        <div class="grid grid-cols-2 md:grid-cols-2 gap-30 mb-4">
           <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
             <div>
               <label for="expedidaEn" class="block text-gray-700">Trabajos independientes</label>
@@ -127,7 +127,7 @@
             </div>
           </div>
         </div>
-        <div class="grid grid-cols-2 md:grid-cols-2 gap-30">
+        <div class="grid grid-cols-2 md:grid-cols-2 gap-30 mb-4">
           <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
             <div>
               <label for="expedidaEn" class="block text-gray-700">Empleados</label>
@@ -150,7 +150,7 @@
           </div>
       </div>
 
-      <div class="grid grid-cols-2 md:grid-cols-2 gap-30">
+      <div class="grid grid-cols-2 md:grid-cols-2 gap-30 mb-4">
           <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
             <div>
               <label for="expedidaEn" class="block text-gray-700">Total de personas que dependen de este ingreso</label>
@@ -221,18 +221,18 @@
         <button type="button"
             (click)="atras()"
             *ngIf="pasoActual > 1"
-            class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200">
+            class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200">
           Atrás
         </button>
         <button type="submit"
-        class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200">
+        class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200">
           Guardar progreso
         </button>
 
         <button type="button"
             (click)="siguiente()"
             *ngIf="pasoActual < totalPasos"
-            class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200">
+            class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200">
           Siguiente
         </button>
       </div>

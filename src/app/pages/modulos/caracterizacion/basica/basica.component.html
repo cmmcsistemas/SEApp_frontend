@@ -1,10 +1,10 @@
 
     <h2 class="text-2xl font-bold text-center text-gray-800 mb-2">Formulario de registro</h2>
-    <p class="text-center text-gray-500 mb-6">Preguntas de {{ pasoActual }} a la {{ pasoActual * 10 }}   de {{ totalPasos * 10}}</p>
+    <p class="text-center text-gray-500 mb-6">Pregunta {{ contador }}  de {{ totalPasos}}</p>
 
     <form [formGroup]="caracterizacionForm" class="space-y-6">
     <div *ngIf="pasoActual === 1">
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30 mb-4">
         <div>
           <label for="nombre" class="block text-gray-700"></label>
           <input type="text" id="nombre" formControlName="nombre" placeholder="Nombre" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
@@ -15,18 +15,20 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-30">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-30 mb-4">
         <div>
           <label for="email" class="block text-gray-700"></label>
           <input type="email" id="email" formControlName="email"  placeholder="Correo" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
         </div>
         <div>
           <label for="proyecto" class="block text-gray-700"></label>
-          <input type="text" id="proyecto" formControlName="proyecto"  placeholder="Proyecto" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <select id="proyecto" formControlName="proyecto" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+             <option class="text-gray-500" value="" disabled selected>Seleccione un proyecto</option>
+              <option *ngFor="let proyecto of proyectos" [value]="proyecto">{{ proyecto }}</option>
+            </select>
         </div>
       </div>
-
-    <div class="grid grid-cols-2 md:grid-cols-2 gap-30">
+    <div class="grid grid-cols-2 md:grid-cols-2 gap-30 mb-4">
       <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
         <div>
           <label for="tipoDocumento" class="block text-gray-700">Tipo documento</label>
@@ -42,34 +44,45 @@
       </div>
       <div>
         <label for="nacionalidad" class="block text-gray-700">Nacionalidad</label>
-        <input type="text" id="nacionalidad" formControlName="nacionalidad" placeholder="País" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+          <select id="nacionalidad" formControlName="nacionalidad" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <option class="text-gray-500" value="" disabled selected>País</option>
+            <option *ngFor="let pais of paises" [value]="pais">{{ pais }}</option>
+          </select>
       </div>
     </div>
 
-    <div class="grid grid-cols-2 md:grid-cols-2 gap-30">
+    <div class="grid grid-cols-2 md:grid-cols-2 gap-30 mb-4">
         <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
           <div>
             <label for="expedidaEn" class="block text-gray-700">Expedida en.</label>
-            <input type="text" id="expedidaEn" formControlName="expedidaEn" placeholder="Ciudad" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+          <input
+          type="text"
+          id="expedidaEn"
+          formControlName="expedidaEn"
+          placeholder="Digite y busque un municipio"
+          list="municipios-list"
+          (input)="onInputChange($event)"
+          class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500"
+          >
+          <datalist id="municipios-list">
+            <option *ngFor="let expedida of municipiosFiltrados" [value]="expedida"></option>
+          </datalist>
+
           </div>
           <div>
             <label for="fechaExpedicion" class="block text-gray-700">Fecha expedición.</label>
-            <input type="text" id="fechaExpedicion" formControlName="fechaExpedicion" placeholder="dd/mm/aa" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <input type="date" id="fechaExpedicion" formControlName="fechaExpedicion"  class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
           </div>
         </div>
         <div>
           <label for="fechaNacimiento" class="block text-gray-700">Fecha de nacimiento.</label>
-          <input type="text" id="fechaNacimiento" formControlName="fechaNacimiento" placeholder="dd/mm/aa" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+          <input type="date" id="fechaNacimiento" formControlName="fechaNacimiento"  class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
         </div>
       </div>
 
   </div>
   <div *ngIf="pasoActual === 2">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-30">
-          <div>
-            <label for="edad" class="block text-gray-700"></label>
-            <input type="number" id="edad" formControlName="edad" placeholder="Edad" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
-          </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-30 mb-4">
         <div>
           <label for="grupoParticipante" class="block text-gray-700"></label>
           <select id="grupoParticipante" formControlName="grupoParticipante" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
@@ -77,88 +90,111 @@
             <option *ngFor="let tipo of grupoParticipante" [value]="tipo">{{ tipo }}</option>
           </select>
         </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-30">
           <div>
             <label for="paisResidencia" class="block text-gray-700"></label>
-            <input type="text" id="paisResidencia" formControlName="paisResidencia" placeholder="País de residencia" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <select id="paisResidencia" formControlName="paisResidencia" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <option class="text-gray-500" value="" disabled selected>País de residencia</option>
+            <option *ngFor="let paisResidencia of paises" [value]="paisResidencia">{{ paisResidencia }}</option>
+          </select>
+          </div>
+        </div>
+
+        <div *ngIf="caracterizacionForm.get('paisResidencia')?.value === 'COLOMBIA'" class="grid grid-cols-1 md:grid-cols-2 gap-30 mb-4">
+        <div>
+           <label for="departamentoResidencia" class="block text-gray-700">Departamento</label>
+            <input type="text" id="departamentoResidencia" formControlName="departamentoResidencia" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
+          <div>
+                     <label for="municipioResidencia" class="block text-gray-700">Municipio de residencia</label>
+          <input
+          type="text"
+          id="municipioResidencia"
+          formControlName="municipioResidencia"
+          placeholder="Digite y busque un municipio"
+          list="municipios-list"
+          (input)="onMunicipioInputChange($event)"
+          class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500"
+          >
+          <datalist id="municipios-list">
+            <option *ngFor="let municipio of municipiosFiltrados" [value]="municipio"></option>
+          </datalist>
           </div>
           <div>
-            <label for="departamentoResidencia" class="block text-gray-700"></label>
-            <input type="text" id="departamentoResidencia" formControlName="departamentoResidencia" placeholder="Departamento de residencia" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <label for="localidad" class="block text-gray-700">Localidad</label>
+            <input type="text" id="localidad" formControlName="localidad" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
           </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-30">
-        <div>
-          <label for="municipioResidencia" class="block text-gray-700">Municipio de residencia</label>
-          <input type="text" id="municipioResidencia" formControlName="municipioResidencia" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+
         </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-30 mb-4">
         <div>
-          <label for="municipioResidencia" class="block text-gray-700">Localidad</label>
-          <input type="text" id="municipioResidencia" formControlName="municipioResidencia" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
-        </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-30">
-        <div>
-          <label for="municipioResidencia" class="block text-gray-700">Entorno de residencia</label>
-          <input type="text" id="municipioResidencia" formControlName="municipioResidencia" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+          <label for="entornoResidencia" class="block text-gray-700">Entorno de residencia</label>
+          <select id="entornoResidencia" formControlName="entornoResidencia" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+          <option class="text-gray-500" value="" disabled selected>Entorno de residencia</option>
+          <option *ngFor="let tipo of entornosResidencia" [value]="tipo">{{ tipo }}</option>
+          </select>
         </div>
         <div>
-          <label for="municipioResidencia" class="block text-gray-700">Dirección</label>
-          <input type="text" id="municipioResidencia" formControlName="municipioResidencia" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+          <label for="direccion" class="block text-gray-700">Dirección</label>
+          <input type="text" id="direccion" formControlName="direccion" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
         </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-30">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-30 mb-4">
         <div>
-          <label for="municipioResidencia" class="block text-gray-700">Indicativo</label>
-          <input type="text" id="municipioResidencia" formControlName="municipioResidencia" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+          <label for="numeroCelular" class="block text-gray-700">Numero celular</label>
+          <input type="number" id="numeroCelular" formControlName="numeroCelular" placeholder="312 1234567" class="text-gray-500 mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
         </div>
         <div>
-          <label for="municipioResidencia" class="block text-gray-700">Numero celular</label>
-          <input type="text" id="municipioResidencia" formControlName="municipioResidencia" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
-        </div>
+          <label for="sexo" class="block text-gray-700">Sexo</label>
+          <select id="sexo" formControlName="sexo" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+          <option class="text-gray-500" value=""  selected *ngFor="let tipo of sexos" [value]="tipo">{{ tipo }}</option>
+          </select>
+          </div>
         </div>
     </div>
 
       <div *ngIf="pasoActual === 3">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-30">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-30 mb-4">
           <div>
-            <label for="edad" class="block text-gray-700">Sexo</label>
-            <input type="number" id="edad" formControlName="edad" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <label for="genero" class="block text-gray-700">Género</label>
+            <select id="genero" formControlName="genero" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <option class="text-gray-500" value="" selected *ngFor="let genero of generos" [value]="genero">{{ genero }}</option>
+            </select>
           </div>
           <div>
-            <label for="grupoParticipante" class="block text-gray-700">Género</label>
-            <input type="text" id="grupoParticipante" formControlName="grupoParticipante" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
-          </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-30">
-          <div>
-            <label for="paisResidencia" class="block text-gray-700">Etnia</label>
-            <input type="text" id="paisResidencia" formControlName="paisResidencia" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
-          </div>
-          <div>
-            <label for="departamentoResidencia" class="block text-gray-700">Condición de discapacidad</label>
-            <input type="text" id="departamentoResidencia" formControlName="departamentoResidencia" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <label for="etnia" class="block text-gray-700">Etnia</label>
+            <select id="etnia" formControlName="etnia" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <option class="text-gray-500" value="" selected *ngFor="let etnia of etnias" [value]="etnia">{{ etnia }}</option>
+            </select>
           </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-30">
-        <div>
-          <label for="municipioResidencia" class="block text-gray-700">Grupo o poblacional vulnerable</label>
-          <input type="text" id="municipioResidencia" formControlName="municipioResidencia" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-30 mb-4">
+          <div>
+            <label for="discapacidad" class="block text-gray-700">Condición de discapacidad</label>
+            <select id="discapacidad" formControlName="discapacidad" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <option class="text-gray-500" value="" selected *ngFor="let discapacidad of discapacidades" [value]="discapacidad">{{ discapacidad }}</option>
+            </select>
+          </div>
+          <div>
+            <label for="grupoVulnerable" class="block text-gray-700">Grupo o poblacional vulnerable</label>
+            <select id="grupoVulnerable" formControlName="grupoVulnerable" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <option class="text-gray-500" value="" selected *ngFor="let grupoVulnerable of gruposVulnerables" [value]="grupoVulnerable">{{ grupoVulnerable }}</option>
+            </select>
         </div>
-
         </div>
 
     </div>
 
       <div class="flex justify-between items-center mt-8">
-        <button type="button" [style.visibility]="pasoActual > 1 ? 'visible' : 'hidden'" (click)="atras()" class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200">
+        <button type="button" [style.visibility]="pasoActual > 1 ? 'visible' : 'hidden'" (click)="atras()" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200">
           Atrás
         </button>
-        <button type="button" [style.visibility]="pasoActual === totalPasos ? 'visible' : 'hidden'"(click)="guardarProgreso()" class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200">
+        <button type="button" [style.visibility]="pasoActual === paginas ? 'visible' : 'hidden'"(click)="guardarProgreso()" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200">
           Guardar progreso
         </button>
-        <button type="button" [style.visibility]="pasoActual < totalPasos ? 'visible' : 'hidden'" (click)="siguiente()" class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200 ">
+        <button type="button" [style.visibility]="pasoActual < paginas ? 'visible' : 'hidden'" (click)="siguiente()" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200 ">
           Siguiente
         </button>
       </div>

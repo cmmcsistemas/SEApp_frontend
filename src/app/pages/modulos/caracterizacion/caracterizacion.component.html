@@ -1,40 +1,40 @@
 <div class="p-8 bg-gray-100 min-h-screen">
   <div class="flex justify-start items-center space-x-4 mb-6">
-    <a routerLink="./caracterizacion-basica" routerLinkActive="bg-green-500 text-white shadow-md"
+    <a routerLink="./caracterizacion-basica" routerLinkActive="bg-green-600 text-white shadow-md"
      class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">
       Caracterización
     </a>
-    <a routerLink="./diagnostico" routerLinkActive="bg-green-500 text-white shadow-md"
+    <a routerLink="./diagnostico" routerLinkActive="bg-green-600 text-white shadow-md"
      class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">
     Diagnóstico
   </a>
 
-   <a *ngIf="showUnidadNegocio" routerLink="./unidad-de-negocio" routerLinkActive="bg-green-500 text-white shadow-md"
+   <a *ngIf="showUnidadNegocio" routerLink="./unidad-de-negocio" routerLinkActive="bg-green-600 text-white shadow-md"
       class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">
       Unidad de negocio
     </a>
-    <a *ngIf="showIdeaNegocio" routerLink="./idea-de-negocio" routerLinkActive="bg-green-500 text-white shadow-md"
+    <a *ngIf="showIdeaNegocio" routerLink="./idea-de-negocio" routerLinkActive="bg-green-600 text-white shadow-md"
       class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">
       Idea de negocio
     </a>
 
-  <a routerLink="./caracterizacion-ampliada" routerLinkActive="bg-green-500 text-white shadow-md"
+  <a routerLink="./caracterizacion-ampliada" routerLinkActive="bg-green-600 text-white shadow-md"
      class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">
     Caract. ampliada
   </a>
 
-  <a routerLink="/modulos/monitoreos" routerLinkActive="bg-green-500 text-white shadow-md"
+  <a routerLink="/modulos/monitoreos" routerLinkActive="bg-green-600 text-white shadow-md"
      class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">
     Monitoreo
   </a>
 
-  <a routerLink="/modulos/plan-formacion" routerLinkActive="bg-green-500 text-white shadow-md"
+  <a routerLink="/modulos/plan-formacion" routerLinkActive="bg-green-600 text-white shadow-md"
      class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">
     Plan de formación
   </a>
   </div>
 
-  <div class="bg-white rounded-lg shadow-md p-8 max-w-4xl mx-auto">
+  <div class="bg-white rounded-lg shadow-md p-8 max-w-20 mx-auto">
     <router-outlet></router-outlet>
   </div>
 </div>

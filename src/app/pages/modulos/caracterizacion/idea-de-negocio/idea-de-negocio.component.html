@@ -6,7 +6,7 @@
     <form [formGroup]="ideaDeNegocioForm" class="space-y-6">
       <!-- Sección del formulario que cambia por cada paso -->
       <div *ngIf="pasoActual === 1">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30 mb-4">
           <div>
             <label for="nombreUnidad" class="block text-gray-700">Nombre de la unidad de negocio</label>
             <input type="text" id="nombreUnidad" formControlName="nombreUnidad" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
@@ -19,7 +19,7 @@
             </select>
           </div>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30 mb-4">
           <div>
             <label for="ciudadUbicacion" class="block text-gray-700">Ciudad donde está ubicado su negocio</label>
             <select id="ciudadUbicacion" formControlName="ciudadUbicacion" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
@@ -35,7 +35,7 @@
             </select>
           </div>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30 mb-4">
           <div>
             <label for="rotulo" class="block text-gray-700">Rótulo</label>
             <select id="rotulo" formControlName="rotulo" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
@@ -48,7 +48,7 @@
             <input type="text" id="direccion" formControlName="direccion" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
           </div>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30 mb-4">
           <div>
             <label for="indicativo" class="block text-gray-700">Indicativo</label>
             <select id="indicativo" formControlName="indicativo" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
@@ -64,7 +64,7 @@
       </div>
 
       <div *ngIf="pasoActual === 2">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30 mb-4">
           <div>
             <label for="celular1" class="block text-gray-700">Celular 1</label>
             <input type="text" id="celular1" formControlName="celular1" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
@@ -74,7 +74,7 @@
             <input type="text" id="celular2" formControlName="celular2" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
           </div>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30 mb-4">
           <div>
             <label for="email" class="block text-gray-700">E-mail</label>
             <input type="email" id="email" formControlName="email" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
@@ -87,13 +87,13 @@
       </div>
 
       <div class="flex justify-between items-center mt-8">
-        <button type="button" (click)="atras()" class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200" [disabled]="pasoActual === 1">
+        <button type="button" (click)="atras()" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200" [disabled]="pasoActual === 1">
           Atrás
         </button>
-        <button type="button" (click)="guardarProgreso()" class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200">
+        <button type="button" (click)="guardarProgreso()" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200">
           Guardar progreso
         </button>
-        <button type="button" (click)="siguiente()" class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200" [disabled]="pasoActual === 2">
+        <button type="button" (click)="siguiente()" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200" [disabled]="pasoActual === 2">
           Siguiente
         </button>
       </div>

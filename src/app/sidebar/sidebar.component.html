@@ -31,23 +31,23 @@
     <div class="flex-1"></div>
 
     <!-- Iconos inferiores -->
-    <button class="py-3 px-2 rounded-full hover:bg-green-600 transition-colors duration-200">
+    <button class="py-3 px-2 rounded-full hover:bg-green-800 transition-colors duration-200">
       <mat-icon class="text-3xl text-green-300">more_horiz</mat-icon>
     </button>
-    <a href="#" class="py-3 px-2 rounded-full hover:bg-green-600 transition-colors duration-200">
+    <a href="#" class="py-3 px-2 rounded-full hover:bg-green-800 transition-colors duration-200">
       <mat-icon class="text-3xl text-green-300">logout</mat-icon>
     </a>
   </div>
       <div [ngClass]="isDashboardOpen() ? 'w-48' : 'w-0'"
       class="bg-gray-200 text-gray-900 min-h-screen flex-col overflow-hidden transition-all duration-300 ease-in-out">
         <div class="mt-4">
-        <a class="block py-2 px-4 hover:bg-green-500 transition-colors duration-200"
+        <a class="block py-2 px-4 hover:bg-green-600 transition-colors duration-200"
         routerLink="/dashboard/odp"
-        routerLinkActive="bg-green-500 rounded-lg mx-2"
+        routerLinkActive="bg-green-600 rounded-lg mx-2"
         (click)="toggleDashboard()">Resumen de ODP</a>
-        <a class="block py-2 px-4 hover:bg-green-500 transition-colors duration-200"
+        <a class="block py-2 px-4 hover:bg-green-600 transition-colors duration-200"
           routerLink="/dashboard/participante"
-        routerLinkActive="bg-green-500 rounded-lg mx-2"
+        routerLinkActive="bg-green-600 rounded-lg mx-2"
         (click)="toggleDashboard()">Resumen de participante</a>
         </div>
       </div>
@@ -62,24 +62,24 @@
     <!-- Enlaces de los módulos -->
     <div class="mt-4">
 
-      <a class="block py-2 px-4 hover:bg-green-500 transition-colors duration-200"
+      <a class="block py-2 px-4 hover:bg-green-600 transition-colors duration-200"
          routerLink="/modulos/caracterizacion"
-         routerLinkActive="bg-green-500 rounded-lg mx-2">Caracterización</a>
-      <a class="block py-2 px-4 hover:bg-green-500 transition-colors duration-200"
+         routerLinkActive="bg-green-600 rounded-lg mx-2">Caracterización</a>
+      <a class="block py-2 px-4 hover:bg-green-600 transition-colors duration-200"
          routerLink="/modulos/monitoreos"
-         routerLinkActive="bg-green-500 rounded-lg mx-2">Monitoreos</a>
-      <a class="block py-2 px-4 hover:bg-green-500 transition-colors duration-200"
+         routerLinkActive="bg-green-600 rounded-lg mx-2">Monitoreos</a>
+      <a class="block py-2 px-4 hover:bg-green-600 transition-colors duration-200"
          routerLink="/modulos/plan-formacion"
-         routerLinkActive="bg-green-500 rounded-lg mx-2">Plan de Formación</a>
-      <a class="block py-2 px-4 hover:bg-green-500 transition-colors duration-200"
+         routerLinkActive="bg-green-600 rounded-lg mx-2">Plan de Formación</a>
+      <a class="block py-2 px-4 hover:bg-green-600 transition-colors duration-200"
          routerLink="/modulos/visitas-implementacion"
-         routerLinkActive="bg-green-500 rounded-lg mx-2">Visitas de Implementación</a>
-      <a class="block py-2 px-4 hover:bg-green-500 transition-colors duration-200"
+         routerLinkActive="bg-green-600 rounded-lg mx-2">Visitas de Implementación</a>
+      <a class="block py-2 px-4 hover:bg-green-600 transition-colors duration-200"
          routerLink="/modulos/visitas-seguimiento"
-         routerLinkActive="bg-green-500 rounded-lg mx-2">Visitas de Seguimiento</a>
-      <a class="block py-2 px-4 hover:bg-green-500 transition-colors duration-200"
+         routerLinkActive="bg-green-600 rounded-lg mx-2">Visitas de Seguimiento</a>
+      <a class="block py-2 px-4 hover:bg-green-600 transition-colors duration-200"
          routerLink="/modulos/misiones"
-         routerLinkActive="bg-green-500 rounded-lg mx-2">Misiones</a>
+         routerLinkActive="bg-green-600 rounded-lg mx-2">Misiones</a>
     </div>
   </div>
   </nav>

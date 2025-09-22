@@ -1,7 +1,7 @@
 <header class="bg-white shadow-sm py-3 px-6 flex items-center justify-between">
 
   <div class="flex items-center space-x-2">
-    <h1 class="text-3xl font-bold text-gray-800">SEApp</h1>
+    <h1 class="poppins-bold text-3xl text-gray-800">SEApp</h1>
   </div>
 
   <div class="relative w-1/3">
@@ -17,14 +17,15 @@
   <div class="flex items-center space-x-4">
     <button class="text-gray-500 hover:text-gray-700 focus:outline-none">
       <div class="relative">
-      <mat-icon class="text-2xl">notifications</mat-icon>
+          <img src="bell.svg" alt="notificaciones" class="h-10 w-10">
           <span class="absolute -top-1 -right-1 bg-green-900 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center border-2 border-white">
             1
           </span></div>
       </button>
-
     <button class="text-gray-500 hover:text-gray-700 focus:outline-none">
-      <mat-icon class="text-2xl">settings</mat-icon> </button>
+          <img src="settings.svg" alt="" class="h-10 w-10">
+    </button>
+
 
     <div class="relative">
       <button class="flex items-center focus:outline-none" (click)="toggleProfileMenu()">

@@ -1,39 +1,57 @@
 
-    <h2 class="text-2xl font-bold text-center text-gray-800 mb-2">Formulario de Diagnóstico</h2>
-    <p class="text-center text-gray-500 mb-8">
-      Preguntas de <strong>{{ pasoActual }}</strong> a la <strong>{{ pasoActual * 10 }}</strong> de <strong>{{ totalPasos * 10 }}</strong>. Por favor, responde a todas las preguntas de esta sección.
-    </p>
+  <h2 class="text-2xl font-bold text-center text-gray-800 mb-2">Diagnóstico de Perfil Productivo</h2>
+  <p class="text-center text-gray-500 mb-8">
+    <strong>Preguntas contestadas, {{ contador }} de {{ totalPreguntas}}</strong>. Por favor, responde a todas las preguntas de esta sección.
+  </p>
 
-  <form [formGroup]="diagnosticoForm" class="space-y-6">
-    <div class="space-y-4" *ngFor="let pregunta of preguntasPasoActual">
-      <div>
-        <label class="block text-gray-700 font-medium">
-          {{ pregunta.nombre_campo }}
-        </label>
-        <div class="mt-2 space-x-4">
-          <ng-container *ngFor="let opcion of pregunta.opciones">
-            <label class="inline-flex items-center">
-              <input type="radio"
-                     [formControlName]="'pregunta_' + pregunta.id_campo"
-                     [value]="opcion"
-                     class="form-radio text-green-600 rounded-full">
-              <span class="ml-2 text-gray-700">{{ opcion }}</span>
-            </label>
-          </ng-container>
+  <!-- 💡 Ajuste 1: Eliminar space-y-6 del formulario principal, el espaciado lo dará el padding de las filas. -->
+  <form [formGroup]="diagnosticoForm">
+
+    <!-- 💡 Ajuste 2: Usar *ngFor con index para aplicar el color alternado. -->
+    <!-- Se asume que preguntasPasoActual es un arreglo y su índice 'i' se usa para la alternancia -->
+    <ng-container *ngFor="let pregunta of preguntasPasoActual; index as i">
+      <!-- 💡 Aplicación del color alternado (blanco y gris claro) y la estructura de GRID -->
+      <!-- Usamos grid para definir las dos columnas: pregunta (8/12) y opciones (4/12) -->
+      <div class="grid grid-cols-2 md:grid-cols-12 gap-4 py-3 mb-4 px-4 rounded-lg transition-colors duration-150 hover:bg-gray-100 border-b border-gray-100 items-center"
+           [ngClass]="i % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
+
+        <!-- COLUMNA 1: Etiqueta de la pregunta (Ocupa 8 columnas en md y todas en móvil) -->
+        <div class="col-span-1 md:col-span-8">
+          <label class="block text-gray-700 font-medium">
+            <!-- Se asume que `nombre_campo` es el texto de la pregunta -->
+            {{ pregunta.nombre_campo }}
+          </label>
         </div>
-      </div>
-    </div>
 
-    <div class="flex justify-between items-center mt-8">
+        <!-- COLUMNA 2: Contenedor de las opciones (Ocupa 4 columnas en md y se alinea a la derecha) -->
+        <div class="col-span-1 md:col-span-4 flex justify-start md:justify-end">
+          <div class="flex items-center space-x-6 shrink-0">
+            <ng-container *ngFor="let opcion of pregunta.opciones">
+              <label class="inline-flex items-center cursor-pointer">
+                <input type="radio"
+                       [formControlName]="'pregunta_' + pregunta.id_campo"
+                       [value]="opcion"
+                       class="form-radio text-green-600 rounded-full focus:ring-green-600">
+                <span class="ml-2 text-gray-700">{{ opcion }}</span>
+              </label>
+            </ng-container>
+          </div>
+        </div>
+
+      </div>
+    </ng-container>
+
+    <!-- Botones de navegación, separados visualmente del contenido -->
+    <div class="flex justify-between items-center pt-6  mt-6 border-t border-gray-200">
       <button type="button"
               (click)="atras()"
               [disabled]="pasoActual === 1"
-              class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+              class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
         Atrás
       </button>
       <button type="button"
               (click)="siguiente()"
-              class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200">
+              class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors duration-200">
         {{ pasoActual === totalPasos ? 'Guardar Diagnóstico' : 'Siguiente' }}
       </button>
     </div>

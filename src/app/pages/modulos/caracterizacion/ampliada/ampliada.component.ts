@@ -24,7 +24,7 @@ export class AmpliadaComponent implements OnInit, OnDestroy {
   nivelesEscolaridad = [
     'ANALFABETA',
     'ESPECIALIZACIADO O MAESTRIA',
-    'ND',
+    'NO DICE',
     'NINGUNA',
     'POSTGRADO',
     'PREESCOLAR',
@@ -40,20 +40,12 @@ export class AmpliadaComponent implements OnInit, OnDestroy {
     'UNIVERSIDAD PROFESIONAL'
   ];
 
-  estadosCivil = [
-    'SOLTERO(A)',
-    'CASADO(A)',
-    'UNION LIBRE',
-    'DIVORCIADO(A)',
-    'VIUDO(A)'
-  ];
-
     tiposContrato = [
     'TERMINO FIJO',
     'TEMPORAL',
     'INDEFINIDO',
     'NO APLICA',
-    'ND'
+    'NO DICE'
   ];
 
   promedioIngresosActividad: number =0;
@@ -67,7 +59,6 @@ export class AmpliadaComponent implements OnInit, OnDestroy {
         this.caracterizacionAmpliadaForm = this.fb.group({
       formacion: ['', Validators.required],
       nivelEscolaridad: ['', Validators.required],
-      estadoCivil: ['', [Validators.required, Validators.email]],
       vinculoLaboral: [''],
       antiguedad: ['', Validators.required],
       tipoContrato: [''],

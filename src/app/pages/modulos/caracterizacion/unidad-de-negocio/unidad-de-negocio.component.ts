@@ -1,6 +1,8 @@
-import { Component,OnInit } from '@angular/core';
+import { Component,OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Subscription, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-unidad-de-negocio',
@@ -8,32 +10,117 @@ import { CommonModule } from '@angular/common';
   templateUrl: './unidad-de-negocio.component.html',
   styleUrl: './unidad-de-negocio.component.css'
 })
-export class UnidadDeNegocioComponent {
-  unidadDeNegocioForm: FormGroup;
-  pasoActual = 1;
+export class UnidadDeNegocioComponent implements OnInit, OnDestroy {
+  unidadDeNegocioForm!: FormGroup;
+  pasoActual: number =  1;
+  totalPasos: number =  0;
+  preguntasPorPaso = 6;
+  paginas = 0;
+  contador = 0;
 
-  constructor(private fb: FormBuilder) {
+  private formSubscription: Subscription = new Subscription();
+  private preguntas: any[] = [];
+  departamentos: any[] = [];
+  municipios: any[] = [];
+
+  constructor(private fb: FormBuilder, private http: HttpClient) {}
+
+ngOnInit(): void {
     this.unidadDeNegocioForm = this.fb.group({
       nombreUnidad: ['', Validators.required],
       dptoUbicacion: ['', Validators.required],
-      ciudadUbicacion: ['', Validators.required],
-      localidadUbicacion: ['', Validators.required],
-      rotulo: ['', Validators.required],
+      ciudadUbicacion: ['', [Validators.required]],
+      localidadUbicacion: [''],
       direccion: ['', Validators.required],
-      indicativo: ['', Validators.required],
-      telefonoFijo: ['', Validators.required],
-      celular1: ['', Validators.required],
-      celular2: [''],
-      email: ['', [Validators.required, Validators.email]],
-      paginaWeb: ['']
+      telefonoFijo: [''],
+            // ✅ Segundo bloque de preguntas (Paso 2)
+      celular: ['', Validators.required],
+      email: [''],
+      paginaWeb: [''],
+      descripcionUnidad: ['', Validators.required],
+      listadoProducto: [''],
+      fechaCreacion: ['']
     });
+
+    this.preguntas = Object.keys(this.unidadDeNegocioForm.controls);
+    this.paginas = Math.ceil(this.preguntas.length / this.preguntasPorPaso); ;
+    this.totalPasos = this.preguntas.length ;
+
+
+    this.unidadDeNegocioForm.get('dptoUbicacion')?.valueChanges.subscribe(departamentoSeleccionado => {
+      if (departamentoSeleccionado) {
+        this.obtenerMunicipiosPorDepartamento(departamentoSeleccionado.id_departamento);
+        this.unidadDeNegocioForm.get('ciudadUbicacion')?.enable();
+      } else {
+        this.unidadDeNegocioForm.get('ciudadUbicacion')?.disable();
+        this.unidadDeNegocioForm.get('ciudadUbicacion')?.reset('');
+        this.municipios = [];
+      }
+    });
+
+    // ✅ Nueva suscripción al valor del formulario completo
+    this.formSubscription.add(this.unidadDeNegocioForm.valueChanges.subscribe(value => {
+      this.actualizarContador();
+      console.log('Cambios en el formulario detectados:', value);
+    }));
+
+    this.actualizarContador();
+    this.obtenerDptoUbicacion();
+
   }
 
-  ngOnInit(): void {
+  ngOnDestroy(): void {
+    // Es crucial desuscribirse para evitar fugas de memoria
+    this.formSubscription.unsubscribe();
+  }
+
+  actualizarContador(): void {
+    let count = 0;
+    // Recorre todos los controles del formulario
+    for (const controlName in this.unidadDeNegocioForm.controls) {
+      if (this.unidadDeNegocioForm.controls.hasOwnProperty(controlName)) {
+        const control = this.unidadDeNegocioForm.controls[controlName];
+        // Comprueba si el control tiene un valor que no sea nulo o un string vacío
+        if (control.value !== null && control.value !== '' && (typeof control.value !== 'string' || control.value.trim() !== '')) {
+          count++;
+        }
+      }
+    }
+    this.contador = count;
+    console.log(`Preguntas completadas: ${this.contador} de ${this.preguntas.length}`);
+  }
+
+  obtenerDptoUbicacion(): void {
+    // Realiza la petición GET a la API y almacena la respuesta en la variable 'paises'
+    this.http.get<any[]>('http://192.168.0.18:3900/api/basica/departamentos')
+      .subscribe({
+        next: (data) => {
+          this.departamentos = data.sort((a, b) => a.nombre_departamento.localeCompare(b.nombre_departamento));
+          console.log('Departamentos obtenidos de la API:', this.departamentos);
+        },
+        error: (error) => {
+          console.error('Error al obtener los departamentos:', error);
+        }
+      });
+  };
+
+    // ✅ Nueva función para obtener municipios filtrados por el ID del departamento
+  obtenerMunicipiosPorDepartamento(idDepartamento: number): void {
+    this.http.get<any[]>(`http://192.168.0.18:3900/api/basica/municipios/${idDepartamento}`)
+      .subscribe({
+        next: (data) => {
+          this.municipios = data.sort((a, b) => a.nombre_municipio.localeCompare(b.nombre_municipio));
+          console.log(`Municipios para el departamento con ID ${idDepartamento} obtenidos:`, this.municipios);
+        },
+        error: (error) => {
+          console.error(`Error al obtener los municipios para el ID ${idDepartamento}:`, error);
+          this.municipios = []; // Limpiar la lista en caso de error
+        }
+      });
   }
 
   siguiente(): void {
-    if (this.pasoActual < 2) { // Asume 2 pasos
+    if (this.pasoActual < this.totalPasos) { // Asume 2 pasos
       this.pasoActual++;
     }
   }
@@ -46,10 +133,28 @@ export class UnidadDeNegocioComponent {
 
   guardarProgreso(): void {
     if (this.unidadDeNegocioForm.valid) {
-      console.log('Progreso guardado:', this.unidadDeNegocioForm.value);
-      // Aquí se implementaría la lógica para guardar en un servicio
+      const data = this.unidadDeNegocioForm.value;
+
+      const sanitizedData = {
+        ...data,
+        dptoUbicacion: data.dptoUbicacion?.nombre_departamento || null,
+        ciudadUbicacion: data.ciudadUbicacion?.nombre_municipio || null,
+      };
+      const jsonString = JSON.stringify(sanitizedData, null, 2);
+      console.log('Datos del formulario:', jsonString);
+      alert('Progreso guardado correctamente.');
     } else {
-      console.log('Formulario inválido. Por favor, revisa los campos.');
+      // ✅ Líneas añadidas para depuración
+      this.unidadDeNegocioForm.markAllAsTouched();
+      console.error('El formulario no es válido. Los siguientes campos tienen errores:');
+      Object.keys(this.unidadDeNegocioForm.controls).forEach(controlName => {
+        const control = this.unidadDeNegocioForm.get(controlName);
+        if (control?.invalid) {
+          console.error(`Campo: ${controlName}, Errores: `, control.errors);
+        }
+      });
+      alert('Por favor, complete todos los campos requeridos.');
     }
+
   }
 }

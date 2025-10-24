@@ -6,12 +6,12 @@ import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import { DataSharingService } from '../../../../services/data-sharing.service';
 import { Subscription, Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 
 @Component({
   selector: 'app-basica',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, HttpClientModule],
   templateUrl: './basica.component.html',
   styleUrl: './basica.component.css'
 })
@@ -29,7 +29,7 @@ caracterizacionForm!: FormGroup;
     'CEDULA DE EXTRANJERIA',
     'OTRO',
     'PASAPORTE',
-    'PEPPERMISO DE PROTECCION TEMPORAL',
+    'PERMISO DE PROTECCION TEMPORAL',
     'TARJETA DE IDENTIDAD'
   ];
 
@@ -47,10 +47,19 @@ caracterizacionForm!: FormGroup;
     'HOMBRE',
     'MUJER',
     'INTERSEXUAL'
-  ]
+  ];
+
+  estadosCivil = [
+    'SOLTERO(A)',
+    'CASADO(A)',
+    'UNION LIBRE',
+    'DIVORCIADO(A)',
+    'VIUDO(A)'
+  ];
 
 
   proyectos: any[] = [];
+  departamentos: any[] = [];
   municipios: any[] = [];
   paises: any[] = [];
   municipiosFiltrados: any[] = [];
@@ -72,10 +81,11 @@ constructor(private fb: FormBuilder, private dataSharingService: DataSharingServ
       email: ['', [Validators.required, Validators.email]],
       proyecto: ['', Validators.required],
       tipoDocumento: ['', Validators.required],
-      noDocumento: ['', Validators.required],
+      noDocumento: ['', Validators.required, Validators.minLength(5)],
       nacionalidad: ['', Validators.required],
-      expedidaEn: ['', Validators.required],
-      fechaExpedicion: ['', Validators.required],
+      estadoCivil: ['', Validators.required],
+      dptoExpedicion: ['', Validators.required],
+      ciudadExpedicion: ['', Validators.required],
       fechaNacimiento: ['', Validators.required],
             // ✅ Segundo bloque de preguntas (Paso 2)
       edad: [''],
@@ -134,6 +144,7 @@ constructor(private fb: FormBuilder, private dataSharingService: DataSharingServ
 
     this.obtenerProyectos();
     this.obtenerPaises();
+    this.obtenerDepartamentos();
     this.obtenerMunicipios();
     this.obtenerGeneros();
     this.obtenerEtnias(),
@@ -161,7 +172,7 @@ constructor(private fb: FormBuilder, private dataSharingService: DataSharingServ
 
     obtenerProyectos(): void {
     // Realiza la petición GET a la API y almacena la respuesta en la variable 'proyectos'
-    this.http.get<any[]>('http://192.168.0.16:3900/api/basica/subproyectos')
+    this.http.get<any[]>('http://192.168.0.18:3900/api/basica/subproyectos')
       .subscribe({
         next: (data) => {
           this.proyectos = data.map(proyecto => proyecto.nombre_subproyecto);
@@ -173,9 +184,25 @@ constructor(private fb: FormBuilder, private dataSharingService: DataSharingServ
       });
   }
 
+  obtenerDepartamentos(): void {
+    // Realiza la petición GET a la API y almacena la respuesta en la variable 'municipios'
+    this.http.get<any[]>('http://192.168.0.18:3900/api/basica/departamentos')
+      .subscribe({
+        next: (data) => {
+          const listadoDepartamentos = data.map(departamento => departamento.nombre_departamento);
+          this.departamentos = listadoDepartamentos.sort((a,b) => a.localeCompare(b));
+
+          console.log('Municipios obtenidos de la API:', this.departamentos);
+        },
+        error: (error) => {
+          console.error('Error al obtener los proyectos:', error);
+        }
+      });
+  };
+
     obtenerMunicipios(): void {
     // Realiza la petición GET a la API y almacena la respuesta en la variable 'municipios'
-    this.http.get<any[]>('http://192.168.0.16:3900/api/basica/municipios')
+    this.http.get<any[]>('http://192.168.0.18:3900/api/basica/municipios')
       .subscribe({
         next: (data) => {
           const listadoMunicipios = data.map(municipio => municipio.nombre_municipio);
@@ -191,7 +218,7 @@ constructor(private fb: FormBuilder, private dataSharingService: DataSharingServ
 
     obtenerPaises(): void {
     // Realiza la petición GET a la API y almacena la respuesta en la variable 'paises'
-    this.http.get<any[]>('http://192.168.0.16:3900/api/basica/paises')
+    this.http.get<any[]>('http://192.168.0.18:3900/api/basica/paises')
       .subscribe({
         next: (data) => {
           const listadoPaises = data.map(pais => pais.nombre_pais);
@@ -207,7 +234,7 @@ constructor(private fb: FormBuilder, private dataSharingService: DataSharingServ
 
     obtenerGeneros(): void {
     // Realiza la petición GET a la API y almacena la respuesta en la variable 'paises'
-    this.http.get<any[]>('http://192.168.0.16:3900/api/basica/generos')
+    this.http.get<any[]>('http://192.168.0.18:3900/api/basica/generos')
       .subscribe({
         next: (data) => {
           const listadoGeneros = data.map(genero => genero.tipo_genero);
@@ -223,7 +250,7 @@ constructor(private fb: FormBuilder, private dataSharingService: DataSharingServ
 
     obtenerDiscapacidades(): void {
     // Realiza la petición GET a la API y almacena la respuesta en la variable 'paises'
-    this.http.get<any[]>('http://192.168.0.16:3900/api/basica/discapacidades')
+    this.http.get<any[]>('http://192.168.0.18:3900/api/basica/discapacidades')
       .subscribe({
         next: (data) => {
           const listadoDiscapacidades = data.map(discapacidad => discapacidad.tipo_discapacidad);
@@ -239,7 +266,7 @@ constructor(private fb: FormBuilder, private dataSharingService: DataSharingServ
 
     obtenerEtnias(): void {
     // Realiza la petición GET a la API y almacena la respuesta en la variable 'paises'
-    this.http.get<any[]>('http://192.168.0.16:3900/api/basica/etnias')
+    this.http.get<any[]>('http://192.168.0.18:3900/api/basica/etnias')
       .subscribe({
         next: (data) => {
           const listadoEtnias = data.map(etnia => etnia.tipo_etnia);
@@ -255,7 +282,7 @@ constructor(private fb: FormBuilder, private dataSharingService: DataSharingServ
 
     obtenerGruposVulnerables(): void {
     // Realiza la petición GET a la API y almacena la respuesta en la variable 'paises'
-    this.http.get<any[]>('http://192.168.0.16:3900/api/basica/vulnerable')
+    this.http.get<any[]>('http://192.168.0.18:3900/api/basica/vulnerable')
       .subscribe({
         next: (data) => {
           const listadoGruposVulneravilidades = data.map(grupo_vulnerable => grupo_vulnerable.tipo_grupo);

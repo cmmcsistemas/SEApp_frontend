@@ -1,18 +1,18 @@
 
     <!-- El router-outlet aquí mostrará el contenido del componente hijo -->
     <h2 class="text-2xl font-bold text-center text-gray-800 mb-2">Formulario de Idea de Negocio</h2>
-    <p class="text-center text-gray-500 mb-6">Preguntas {{ (pasoActual - 1) * 10 + 1 }} a {{ pasoActual * 10 }} de 14</p>
+    <p class="text-center text-gray-500 mb-6">Preguntas contestadas {{ contador }} de {{totalPasos}} </p>
 
     <form [formGroup]="ideaDeNegocioForm" class="space-y-6">
       <!-- Sección del formulario que cambia por cada paso -->
       <div *ngIf="pasoActual === 1">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30 mb-4">
           <div>
-            <label for="nombreUnidad" class="block text-gray-700">Nombre de la unidad de negocio</label>
-            <input type="text" id="nombreUnidad" formControlName="nombreUnidad" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <label for="nombreEmprendimiento" class="block text-gray-700">Nombre del emprendimiento</label>
+            <input type="text" id="nombreEmprendimiento" formControlName="nombreEmprendimiento" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
           </div>
           <div>
-            <label for="dptoUbicacion" class="block text-gray-700">Departamento donde está ubicado su negocio</label>
+            <label for="dptoUbicacion" class="block text-gray-700">Departamento</label>
             <select id="dptoUbicacion" formControlName="dptoUbicacion" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
               <option value="" disabled selected>Seleccione</option>
               <!-- Opciones del select -->
@@ -21,14 +21,14 @@
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30 mb-4">
           <div>
-            <label for="ciudadUbicacion" class="block text-gray-700">Ciudad donde está ubicado su negocio</label>
+            <label for="ciudadUbicacion" class="block text-gray-700">Ciudad</label>
             <select id="ciudadUbicacion" formControlName="ciudadUbicacion" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
               <option value="" disabled selected>Seleccione</option>
               <!-- Opciones del select -->
             </select>
           </div>
           <div>
-            <label for="localidadUbicacion" class="block text-gray-700">Localidad donde está ubicado su negocio</label>
+            <label for="localidadUbicacion" class="block text-gray-700">Localidad</label>
             <select id="localidadUbicacion" formControlName="localidadUbicacion" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
               <option value="" disabled selected>Seleccione</option>
               <!-- Opciones del select -->
@@ -37,63 +37,168 @@
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30 mb-4">
           <div>
-            <label for="rotulo" class="block text-gray-700">Rótulo</label>
-            <select id="rotulo" formControlName="rotulo" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
-              <option value="" disabled selected>Seleccione</option>
-              <!-- Opciones del select -->
-            </select>
+            <label for="ubicacionNegocio" class="block text-gray-700">¿Dónde se ubicará su negocio?</label>
+            <input type="text" id="ubicacionNegocio" formControlName="ubicacionNegocio" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
           </div>
           <div>
-            <label for="direccion" class="block text-gray-700">Dirección</label>
-            <input type="text" id="direccion" formControlName="direccion" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <label for="sectorEmpresarial" class="block text-gray-700">Sector empresarial</label>
+            <input type="number" id="sectorEmpresarial" formControlName="sectorEmpresarial" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
           </div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30 mb-4">
           <div>
-            <label for="indicativo" class="block text-gray-700">Indicativo</label>
-            <select id="indicativo" formControlName="indicativo" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
-              <option value="" disabled selected>Seleccione</option>
-              <!-- Opciones del select -->
-            </select>
+            <label for="infoEmprendimiento" class="block text-gray-700">¿Cómo se imagina su emprendimiento?</label>
+            <input type="text" id="infoEmprendimiento" formControlName="infoEmprendimiento" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
           </div>
           <div>
-            <label for="telefonoFijo" class="block text-gray-700">Teléfono fijo</label>
-            <input type="text" id="telefonoFijo" formControlName="telefonoFijo" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <label for="ideaNegocio" class="block text-gray-700">¿Cómo surgió la idea de negocio?</label>
+            <input type="text" id="ideaNegocio" formControlName="ideaNegocio" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30 mb-4">
+          <div>
+            <label for="cualesClientes" class="block text-gray-700">¿Quiénes serán sus clientes?</label>
+            <input type="text" id="cualesClientes" formControlName="cualesClientes" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+          </div>
+          <div>
+            <label for="necesidad" class="block text-gray-700">¿Qué necesidad desea satisfacer?</label>
+            <input type="text" id="necesidad" formControlName="necesidad" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
           </div>
         </div>
       </div>
 
       <div *ngIf="pasoActual === 2">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30 mb-4">
-          <div>
-            <label for="celular1" class="block text-gray-700">Celular 1</label>
-            <input type="text" id="celular1" formControlName="celular1" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
-          </div>
-          <div>
-            <label for="celular2" class="block text-gray-700">Celular 2 (Opcional)</label>
-            <input type="text" id="celular2" formControlName="celular2" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
-          </div>
+            <div>
+              <label for="listadoProductoServicio" class="block text-gray-700">¿Qué productos o servicios va a ofrecer?</label>
+              <input type="text" id="listadoProductoServicio" formControlName="listadoProductoServicio" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+            <div>
+              <label for="productoAgropecuario" class="block text-gray-700">¿Su producto o servicio es agropecuario?</label>
+               <select id="productoAgropecuario" formControlName="productoAgropecuario" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+                <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+                <option *ngFor="let productoAgropecuario of opciones" [value]="productoAgropecuario">{{ productoAgropecuario }}</option>
+               </select>
+            </div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30 mb-4">
-          <div>
-            <label for="email" class="block text-gray-700">E-mail</label>
-            <input type="email" id="email" formControlName="email" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
-          </div>
-          <div>
-            <label for="paginaWeb" class="block text-gray-700">Página web</label>
-            <input type="text" id="paginaWeb" formControlName="paginaWeb" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
-          </div>
+            <div>
+              <label for="colaboradores" class="block text-gray-700">¿Necesita colaboradores para poner en marcha su emprendimiento?</label>
+              <select id="colaboradores" formControlName="colaboradores" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+                <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+                <option *ngFor="let colaboradores of opciones" [value]="colaboradores">{{ colaboradores }}</option>
+              </select>
+            </div>
+            <div>
+              <label for="quienes" class="block text-gray-700">¿Quiénes?</label>
+              <input type="text" id="quienes" formControlName="quienes" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+        </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30 mb-4">
+            <div>
+              <label for="tiempoMarchaEmprendimiento" class="block text-gray-700">¿Cuánto tiempo (meses) lleva en marcha su emprendimiento?</label>
+              <input type="number" id="tiempoMarchaEmprendimiento" formControlName="tiempoMarchaEmprendimiento" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+            <div>
+              <label for="tiempoDedicaEmprendimiento" class="block text-gray-700">¿Cuánto tiempo le va a dedicar a su emprendimiento?</label>
+              <input type="text" id="tiempoDedicaEmprendimiento" formControlName="tiempoDedicaEmprendimiento" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+        </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30 mb-4">
+            <div>
+              <label for="tiempoFormacionEmprendimiento" class="block text-gray-700">¿Cuánto tiempo le va a dedicar a la formación de su emprendimiento semanalmente?</label>
+              <input type="text" id="tiempoFormacionEmprendimiento" formControlName="tiempoFormacionEmprendimiento" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+            <div>
+              <label for="conocimientoEmprendimiento" class="block text-gray-700">¿Tiene conocimientos previos sobre el tema de su emprendimiento?</label>
+              <select id="conocimientoEmprendimiento" formControlName="conocimientoEmprendimiento" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+                <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+                <option *ngFor="let colaboradores of opciones" [value]="colaboradores">{{ colaboradores }}</option>
+              </select>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30 mb-4">
+            <div>
+              <label for="experienciaEmprendimiento" class="block text-gray-700">¿Tiene experiencia en este tipo de emprendimiento?</label>
+              <select id="experienciaEmprendimiento" formControlName="experienciaEmprendimiento" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+                <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+                <option *ngFor="let experienciaEmprendimiento of opciones" [value]="experienciaEmprendimiento">{{ experienciaEmprendimiento }}</option>
+              </select>
+            </div>
+            <div>
+              <label for="razonEmprendimiento" class="block text-gray-700">¿Por qué no había empezado antes su emprendimiento?</label>
+              <input type="text" id="razonEmprendimiento" formControlName="razonEmprendimiento" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30 mb-4">
+            <div>
+              <label for="siOtros" class="block text-gray-700">Si su respuesta fue "otros", aclare.</label>
+              <input type="text" id="siOtros" formControlName="siOtros" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+        </div>
+      </div>
+      <div *ngIf="pasoActual === 3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30 mb-4">
+            <div>
+              <label for="listadoProductos" class="block text-gray-700">Listado de productos</label>
+              <input type="text" id="listadoProductos" formControlName="listadoProductos" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+            <div>
+              <label for="cuantoNecesitaInversion" class="block text-gray-700">¿Cuánto dinero de inversión necesita para la compra de activos?</label>
+              <input type="text" id="cuantoNecesitaInversion" formControlName="cuantoNecesitaInversion" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30 mb-4">
+            <div>
+              <label for="cuantoNecesitaCapital" class="block text-gray-700">¿Cuánto dinero de inversión necesita para el capital de trabajo?</label>
+              <input type="text" id="cuantoNecesitaCapital" formControlName="cuantoNecesitaCapital" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+            <div>
+              <label for="totalInversion" class="block text-gray-700">Total de inversión necesaria</label>
+              <input type="text" id="totalInversion" formControlName="totalInversion" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30 mb-4">
+            <div>
+              <label for="porcentajeInversionActual" class="block text-gray-700">¿Con que porcentaje (%) de inversión cuenta actualmente?</label>
+              <input type="text" id="porcentajeInversionActual" formControlName="porcentajeInversionActual" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+            <div>
+              <label for="ventasPrimerMes" class="block text-gray-700">¿Cuánto espera vender el primer mes?</label>
+              <input type="text" id="ventasPrimerMes" formControlName="ventasPrimerMes" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30 mb-4">
+            <div>
+              <label for="ventasPrimerAno" class="block text-gray-700">¿Cuánto espera vender en el primer año?</label>
+              <input type="text" id="ventasPrimerAno" formControlName="ventasPrimerAno" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+            <div>
+              <label for="perteneceA" class="block text-gray-700">¿Pertenece usted a una asociación, cooperativa, etc.?</label>
+              <select id="conocimientoEmprendimiento" formControlName="conocimientoEmprendimiento" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+                <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+                <option *ngFor="let colaboradores of opciones" [value]="colaboradores">{{ colaboradores }}</option>
+              </select>
+            </div>
+        </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30 mb-4">
+            <div>
+              <label for="perteneceACual" class="block text-gray-700">¿Cuál?</label>
+              <input type="text" id="perteneceACual" formControlName="perteneceACual" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+
         </div>
       </div>
 
+
       <div class="flex justify-between items-center mt-8">
-        <button type="button" (click)="atras()" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200" [disabled]="pasoActual === 1">
+        <button type="button" [style.visibility]="pasoActual > 1 ? 'visible' : 'hidden'" (click)="atras()" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200">
           Atrás
         </button>
-        <button type="button" (click)="guardarProgreso()" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200">
+        <button type="button" [style.visibility]="pasoActual === paginas ? 'visible' : 'hidden'"(click)="guardarProgreso()" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200">
           Guardar progreso
         </button>
-        <button type="button" (click)="siguiente()" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200" [disabled]="pasoActual === 2">
+        <button type="button" [style.visibility]="pasoActual < paginas ? 'visible' : 'hidden'" (click)="siguiente()" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200 ">
           Siguiente
         </button>
       </div>

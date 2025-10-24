@@ -4,16 +4,8 @@
 
     <form [formGroup]="caracterizacionAmpliadaForm" class="space-y-6">
     <div *ngIf="pasoActual === 1">
-      <div class="grid grid-cols-1 sm:grid-cols-1 gap-x-30">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-4">
         <div>
-          <label for="formacion" class="block text-gray-700">Si tiene formación superior o cursos complementarios, explique cuál o cuáles</label>
-          <input type="text" id="formacion" formControlName="formacion" placeholder="Ingrese texto" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
-        </div>
-
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-30 mb-4">
-          <div>
           <label for="nivelEscolaridad" class="block text-gray-700">Nivel de escolaridad</label>
             <select id="nivelEscolaridad" formControlName="nivelEscolaridad" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
             <option class="text-gray-500" value="" disabled selected>Seleccione</option>
@@ -21,16 +13,13 @@
           </select>
         </div>
         <div>
-          <label for="estadoCivil" class="block text-gray-700">Estado civil</label>
-            <select id="estadoCivil" formControlName="estadoCivil" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
-            <option class="text-gray-500" value="" disabled selected>Seleccione</option>
-            <option *ngFor="let estadoCivil of estadosCivil" [value]="estadoCivil">{{ estadoCivil }}</option>
-          </select>
+          <label for="formacion" class="block text-gray-700">Si tiene formación superior o cursos complementarios, explique cuál o cuáles</label>
+          <input type="text" id="formacion" formControlName="formacion" placeholder="Ingrese texto" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
         </div>
 
       </div>
 
-    <div class="grid grid-cols-2 md:grid-cols-2 gap-30 mb-4">
+    <div class="grid grid-cols-2 md:grid-cols-2 gap-6 mb-4">
       <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
         <div>
           <label for="vinculoLaboral" class="block text-gray-700">¿Tiene vinculación laboral con contrato?</label>
@@ -43,7 +32,7 @@
           <label for="tipoContrato" class="block text-gray-700">Tipo de contrato</label>
             <select id="tipoContrato" formControlName="tipoContrato" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
             <option class="text-gray-500" value="" disabled selected>Seleccione</option>
-            <option *ngFor="let tipoContrato of opciones" [value]="tipoContrato">{{ tipoContrato }}</option>
+            <option *ngFor="let tipoContrato of tiposContrato" [value]="tipoContrato">{{ tipoContrato }}</option>
           </select>
         </div>
       </div>
@@ -54,7 +43,7 @@
 
     </div>
 
-    <div class="grid grid-cols-2 md:grid-cols-2 gap-30 mb-4">
+    <div class="grid grid-cols-2 md:grid-cols-2 gap-6 mb-4">
         <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
           <div>
             <label for="independiente" class="block text-gray-700">¿Es independiente?</label>
@@ -71,9 +60,9 @@
           </select>
           </div>
         </div>
-     <div class="grid grid-cols-2 md:grid-cols-2 gap-6 mb-4">
-        <div>
-          <label for="promedioIngresosActividad" class="block text-gray-700">Promedio de ingresos en esta actividad</label>
+     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+        <div >
+          <label for="promedioIngresosActividad" class="block text-gray-700">Promedio de ingresos como independiente</label>
           <input type="number" step="100000" id="promedioIngresosActividad" formControlName="promedioIngresosActividad" placeholder="COP" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
         </div>
         <div>
@@ -85,7 +74,7 @@
 
   </div>
   <div *ngIf="pasoActual === 2">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-30 mb-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
           <div>
             <label for="cabezaFamilia" class="block text-gray-700 mb-2">¿Es usted cabeza de familia?</label>
             <select id="cabezaFamilia" formControlName="cabezaFamilia" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
@@ -98,7 +87,7 @@
           <input type="number" id="hijos" formControlName="hijos" placeholder="0" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
         </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-30 mb-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
           <div>
             <label for="integratesHogar" class="block text-gray-700">Número de integrantes en el hogar</label>
             <input type="number" id="integratesHogar" formControlName="integratesHogar" placeholder="0" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
@@ -108,7 +97,7 @@
             <input type="number" id="personasAcargo" formControlName="personasAcargo" placeholder="0" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
           </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-30 mb-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
         <div>
           <label for="sistemaSalud" class="block text-gray-700">¿Está usted afiliado a un sistema de salud?</label>
             <select id="sistemaSalud" formControlName="sistemaSalud" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
@@ -124,7 +113,7 @@
           </select>
         </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-30 mb-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
         <div>
           <label for="cotizaPension" class="block text-gray-700">¿Cotiza usted para pensión?</label>
             <select id="cotizaPension" formControlName="cotizaPension" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
@@ -140,7 +129,7 @@
           </select>
         </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-30 mb-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
         <div>
           <label for="factoresProyecto" class="block text-gray-700">Factores que le impiden participar en este proyecto</label>
           <input type="text" id="factoresProyecto" formControlName="factoresProyecto" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">

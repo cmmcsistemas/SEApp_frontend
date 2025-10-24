@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
-// Si tu componente es standalone (como se ve en la imagen)
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import { DiagnosticoService, DiagnosticoPregunta } from '../../../../services/diagnostico.service';
+import { Subscription } from 'rxjs';
+
 
 
 
@@ -15,7 +16,7 @@ import { DiagnosticoService, DiagnosticoPregunta } from '../../../../services/di
   styleUrl: './diagnostico.component.css'
 })
 
-export class DiagnosticoComponent implements OnInit {
+export class DiagnosticoComponent implements OnInit, OnDestroy {
   diagnosticoForm!: FormGroup;
   preguntas: DiagnosticoPregunta[] = [];
 
@@ -23,6 +24,10 @@ export class DiagnosticoComponent implements OnInit {
   pasoActual: number = 1;
   preguntasPorPaso = 10;
   totalPasos = 0;
+  totalPreguntas = 0;
+  contador = 0;
+
+  private formValueChangesSubscription: Subscription = new Subscription();
 
   constructor(private fb: FormBuilder, private diagnosticoService: DiagnosticoService) {
     // Inicializamos el formulario vacío
@@ -34,7 +39,13 @@ export class DiagnosticoComponent implements OnInit {
       (data) => {
         this.preguntas = data;
         this.totalPasos = Math.ceil(this.preguntas.length / this.preguntasPorPaso);
+        this.totalPreguntas = this.preguntas.length;
         this.inicializarFormulario();
+        this.formValueChangesSubscription.add(
+            this.diagnosticoForm.valueChanges.subscribe(() => {
+                this.actualizarContador(); // 👈 Llama al contador con cada cambio
+            })
+        );
       },
       (error) => {
         console.error('Error al obtener las preguntas del diagnóstico:', error);
@@ -42,6 +53,14 @@ export class DiagnosticoComponent implements OnInit {
         alert('Hubo un error al cargar las preguntas. Por favor, inténtelo de nuevo más tarde.');
       }
     );
+
+
+  }
+
+  ngOnDestroy(): void {
+    if (this.formValueChangesSubscription) {
+      this.formValueChangesSubscription.unsubscribe();
+    }
   }
 
   private inicializarFormulario(): void {
@@ -58,6 +77,22 @@ export class DiagnosticoComponent implements OnInit {
     const inicio = (this.pasoActual - 1) * this.preguntasPorPaso;
     const fin = inicio + this.preguntasPorPaso;
     return this.preguntas.slice(inicio, fin);
+  }
+
+  actualizarContador(): void {
+    let count = 0;
+    // Recorre todos los controles del formulario
+    for (const controlName in this.diagnosticoForm.controls) {
+      if (this.diagnosticoForm.controls.hasOwnProperty(controlName)) {
+        const control = this.diagnosticoForm.controls[controlName];
+        // Comprueba si el control tiene un valor que no sea nulo o un string vacío
+        if (control.value !== null && control.value !== '' && (typeof control.value !== 'string' || control.value.trim() !== '')) {
+          count++;
+        }
+      }
+    }
+    this.contador = count;
+    console.log(`Preguntas completadas: ${this.contador} de ${this.preguntas.length}`);
   }
 
   atras(): void {

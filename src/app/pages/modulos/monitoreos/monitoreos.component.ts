@@ -1,37 +1,46 @@
 import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
-import { CommonModule, NgFor, NgIf } from '@angular/common';
+import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
+import { CommonModule, NgFor, NgIf, NgClass } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { MonitoreoService } from '../../../services/monitoreo.service';
 
 
 interface Pregunta {
-  id: number;
-  texto: string;
+  id_campo: number;
+  nombre_campo: string;
+  opciones: string[];
 }
 
 @Component({
   selector: 'app-monitoreos',
-  imports: [ReactiveFormsModule, NgIf, NgFor, RouterLink, RouterLinkActive],
+  imports: [ReactiveFormsModule, NgIf, NgFor, NgClass, RouterLink, RouterLinkActive],
   templateUrl: './monitoreos.component.html',
   styleUrl: './monitoreos.component.css'
 })
 export class MonitoreosComponent implements OnInit {
   monitoreoGeneralForm!: FormGroup;
   monitoreoDiagnosticoForm!: FormGroup;
+  monitoreoAccesoFinancieroForm!: FormGroup; // Formulario para la sección estática "Acceso Financiero" (Paso 2 y 3)
+  monitoreoDiagnosticoEmpresarialForm!: FormGroup; // Formulario para la sección dinámica "Diagnóstico Empresarial" (Paso 4)
 
-  preguntas: Pregunta[] = [];
+
+  preguntasAccesoFinanciero: Pregunta[] = [];
+  preguntasHogar: Pregunta[] = []; //13 preguntas extraidas de la base de datos
+  preguntasDiagnosticoEmpresarial: Pregunta[] = []; //45 preguntas extraidas de la base de datos
+
+
+
   opciones: string[] = [];
-  codigoCiiu = [
-    'EMPRENDEDOR',
-    'MICROEMPRESARIO'
-  ];
+  codigoCiiu = ['CIIU 1', 'CIIU 2', 'CIIU 3'];
+  private preguntas: any[] = [];
 
   pasoActual: number = 1;
-  preguntasPorPaso = 10;
-  totalPasos = 0;
+  preguntasPorPaso = 13;
+  totalPasos = 4;
+  pasoActualDiagnostico: number = 1;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private apiService: MonitoreoService) {
     // Inicializamos el formulario vacío
     this.monitoreoDiagnosticoForm = this.fb.group({});
   }
@@ -44,24 +53,28 @@ export class MonitoreosComponent implements OnInit {
       nombreAsociacion: [''],
       asociacionMujeres: ['', Validators.required],
       codigoCiiu: ['', Validators.required],
-      nacionalidad: [''],
-      expedidaEn: [''],
-      fechaExpedicion: [''],
-      fechaNacimiento: [''],
-            // ✅ Segundo bloque de preguntas (Paso 2)
-      edad: [''],
-      paisResidencia: [''],
-      departamentoResidencia: [''],
-      municipioResidencia: [''],
-      localidad: [''],
-      entornoResidencia: [''],
-      direccion: [''],
-      indicativo: [''],
-      numeroCelular: [''],
-    });
-    // Llenamos el array con las 70 preguntas
-    this.inicializarPreguntas();
+      sectorEmpresarial: [''],
+      arriendoServicios: [''],
+      educacion: [''],
+      obligaciones: [''],
+      gastosOcacionales: [''],
+      gastosTotales: [''],
+      trabajosIndependientes: [''],
+      emprendimientos: [''],
+      otrosFamiliares: [''],
+      pension: [''],
+      empleados: [''],
+      otrosIngresos: [''],
+      otrosExplique: [''],
+      totalIngresos: [''],
+      totalIngresosDependiente: [''],
+      distribucionIngresos:['']
 
+           // ✅ Segundo bloque de preguntas (Paso 2)
+    });
+
+    //preguntas de si y no
+    this.loadPreguntasHogar();
 
     // Calculamos el número total de pasos basado en el total de preguntas
     this.totalPasos = Math.ceil(this.preguntas.length / this.preguntasPorPaso);
@@ -77,22 +90,39 @@ export class MonitoreosComponent implements OnInit {
     });
   }
 
-    get preguntasPasoActual(): Pregunta[] {
+    loadPreguntasHogar(): void {
+    // Llamada a la API para obtener las preguntas tipo M1 (109-121)
+    this.apiService.getPreguntasMonitoreo().subscribe({
+      next: (preguntas) => {
+        this.preguntasHogar = preguntas;
+        // Añadir dinámicamente los controles al formulario de diagnóstico
+        preguntas.forEach(pregunta => {
+          const controlName = `pregunta_${pregunta.id_campo}`;
+          // Añadimos el control con el validador de requerido
+          this.monitoreoDiagnosticoForm.addControl(controlName, new FormControl('', Validators.required));
+        });
+        console.log('Preguntas de hogar cargadas y formulario actualizado.');
+      },
+      error: (err) => {
+        console.error('Error al cargar preguntas del hogar:', err);
+        // Manejo de error: podrías mostrar un mensaje al usuario
+      }
+    });
+  }
+
+  get preguntasPasoActualHogar(): Pregunta[] {
+    const inicio = (this.pasoActualDiagnostico - 1) * this.preguntasPorPaso;
+    const fin = inicio + this.preguntasPorPaso;
+    return this.preguntasHogar.slice(inicio, fin);
+  }
+
+  get preguntasPasoActual(): Pregunta[] {
     const inicio = (this.pasoActual - 1) * this.preguntasPorPaso;
     const fin = inicio + this.preguntasPorPaso;
-    return this.preguntas.slice(inicio, fin);
+    return this.preguntasHogar.slice(inicio, fin);
     }
 
-    // Método para generar las 70 preguntas
-  inicializarPreguntas(): void {
-    for (let i = 1; i <= 45; i++) {
-      this.preguntas.push({
-        id: i,
-        // Texto de ejemplo. Puedes cargar esto desde un servicio o un archivo JSON.
-        texto: `Pregunta número ${i}: ¿Descripción de la pregunta va aquí?`
-      });
-    }
-  }
+
 
     // ✅ SOLUCIÓN: Agrega el método 'atras()'
   atras(): void {

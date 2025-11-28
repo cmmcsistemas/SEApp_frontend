@@ -9,7 +9,7 @@
     "test": "ng test",
     "build:tailwind": "npx tailwindcss -i ./src/styles.css -o ./src/app/tailwind.css --jit",
     "serve:ssr:project": "node dist/project/server/server.mjs",
-    "build:prod": "npm run build:tailwind && ng build --configuration production",
+    "build:prod": "npm run build:tailwind && ng build --configuration production"
   },
   "private": true,
   "dependencies": {

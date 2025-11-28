@@ -13,7 +13,7 @@ export interface DiagnosticoPregunta {
   providedIn: 'root'
 })
 export class DiagnosticoService {
-  private apiUrl = 'http://192.168.0.18:3900/api/formularios/por-tipo/2';
+  private apiUrl = 'http://20.81.172.55:3900/api/formularios/por-tipo/2';
 
   constructor(private http: HttpClient) { }
 

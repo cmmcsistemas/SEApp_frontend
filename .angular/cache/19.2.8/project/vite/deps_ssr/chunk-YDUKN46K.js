@@ -4,22 +4,22 @@ import {
   BrowserModule,
   EVENT_MANAGER_PLUGINS,
   EventManagerPlugin
-} from "./chunk-SPP5WKYQ.js";
+} from "./chunk-IKEKJAU5.js";
 import {
   HTTP_ROOT_INTERCEPTOR_FNS
-} from "./chunk-UIXT6ENZ.js";
+} from "./chunk-G7TVHKQS.js";
 import {
   NullViewportScroller,
   PlatformLocation,
   ViewportScroller,
   getDOM,
   setRootDomAdapter
-} from "./chunk-67KXMAWV.js";
+} from "./chunk-KXIDSWWM.js";
 import {
   DOCUMENT,
   PLATFORM_SERVER_ID,
   XhrFactory
-} from "./chunk-XXRDYXKV.js";
+} from "./chunk-YRPTRWJS.js";
 import {
   ALLOW_MULTIPLE_PLATFORMS,
   APP_ID,
@@ -53,16 +53,16 @@ import {
   ɵɵdefineInjector,
   ɵɵdefineNgModule,
   ɵɵinject
-} from "./chunk-GO6K2HFG.js";
+} from "./chunk-4UBR7WAK.js";
 import {
   require_cjs
-} from "./chunk-TLFTQUMM.js";
+} from "./chunk-ZUJ64LXG.js";
 import {
   __async,
   __toESM
 } from "./chunk-YHCV7DAQ.js";
 
-// ../../../node_modules/@angular/platform-server/fesm2022/server-BPmC12ZL.mjs
+// node_modules/@angular/platform-server/fesm2022/server-BPmC12ZL.mjs
 var import_rxjs = __toESM(require_cjs(), 1);
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -16325,7 +16325,7 @@ var ServerXhr = class _ServerXhr {
       if (!this.xhrImpl) {
         const {
           default: xhr
-        } = yield import("./xhr2-3JANGJDL.js");
+        } = yield import("./xhr2-TXIMV6CV.js");
         this.xhrImpl = xhr;
       }
     });
@@ -16703,7 +16703,7 @@ function platformServer(extraProviders) {
   return platform;
 }
 
-// ../../../node_modules/@angular/platform-server/fesm2022/platform-server.mjs
+// node_modules/@angular/platform-server/fesm2022/platform-server.mjs
 var import_rxjs2 = __toESM(require_cjs(), 1);
 function provideServerRendering() {
   if (false) {
@@ -16908,4 +16908,4 @@ export {
    * License: MIT
    *)
 */
-//# sourceMappingURL=chunk-D74YV3GI.js.map
+//# sourceMappingURL=chunk-YDUKN46K.js.map

@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray, FormControl, AbstractControl } from '@angular/forms';
 import { CommonModule, NgFor, NgIf, NgClass } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MonitoreoService } from '../../../services/monitoreo.service';
+import { MonitoreoDiagnosticoService } from '../../../services/monitoreo-diagnostico.service';
 
 
 interface Pregunta {
@@ -12,82 +13,217 @@ interface Pregunta {
   opciones: string[];
 }
 
+// Interfaz para preguntas estáticas (para Pasos 2 y 3)
+interface PreguntaEstatica {
+  controlName: string;
+  label: string;
+  opciones: string[]; // Opciones predefinidas
+  type?: 'number' | 'text' | 'select';
+}
+
 @Component({
   selector: 'app-monitoreos',
-  imports: [ReactiveFormsModule, NgIf, NgFor, NgClass, RouterLink, RouterLinkActive],
+  imports: [ReactiveFormsModule, NgIf, NgFor, NgClass, RouterLink, RouterLinkActive, CommonModule],
   templateUrl: './monitoreos.component.html',
   styleUrl: './monitoreos.component.css'
 })
 export class MonitoreosComponent implements OnInit {
-  monitoreoGeneralForm!: FormGroup;
-  monitoreoDiagnosticoForm!: FormGroup;
+  monitoreoGeneralForm!: FormGroup; // Paso 1 (Parte A)
+  monitoreoDiagnosticoForm!: FormGroup; // Paso 1 (Parte B)
   monitoreoAccesoFinancieroForm!: FormGroup; // Formulario para la sección estática "Acceso Financiero" (Paso 2 y 3)
   monitoreoDiagnosticoEmpresarialForm!: FormGroup; // Formulario para la sección dinámica "Diagnóstico Empresarial" (Paso 4)
 
+  // --- Almacenes de Preguntas ---
+  preguntasHogar: Pregunta[] = []; // 13 dinámicas (Paso 1B)
+  preguntasDiagnosticoEmpresarial: Pregunta[] = []; // Dinámicas (Paso 4)
 
   preguntasAccesoFinanciero: Pregunta[] = [];
-  preguntasHogar: Pregunta[] = []; //13 preguntas extraidas de la base de datos
-  preguntasDiagnosticoEmpresarial: Pregunta[] = []; //45 preguntas extraidas de la base de datos
 
+  // Preguntas ESTÁTICAS para Acceso Financiero (Pasos 2 y 3)
 
+  preguntasAF_Paso2: PreguntaEstatica[] = [
+    { controlName: 'tieneCuentaAhorros', label: '¿Tiene cuenta de ahorros?', opciones: ['Si', 'No'], type: 'select' },
+    { controlName: 'tieneCuentaCorriente', label: '¿Tiene cuenta corriente?', opciones: ['Si', 'No'], type: 'select' },
+    { controlName: 'tieneCDT', label: '¿Tiene créditos?', opciones: ['Si', 'No'], type: 'select' },
+    { controlName: 'montoCredito', label: 'Monto del crédito', opciones: [], type: 'number' }, // Tipo texto
+    { controlName: 'numeroCuotas', label: 'Número de cuotas', opciones: [], type: 'number' },
+    { controlName: 'tieneSeguros', label: '¿Tiene seguros?', opciones: ['Si', 'No'], type: 'select'  },
+    { controlName: 'tieneOtros', label: 'Otro', opciones: ['Si', 'No'], type: 'select'  },
+    { controlName: 'dependeEconomicamente', label: '¿Depende económicamente de alguien?', opciones: ['Si', 'No'], type: 'select'  },
+    { controlName: 'deQuienDepende', label: '¿De quién depende?', opciones: [], type: 'text'  }, // Tipo texto
+    { controlName: 'horasCuidado', label: '¿Cuántas horas a la semana dedica al cuidado de personas a cargo?', opciones: [], type: 'number'  }, // Tipo texto
+    { controlName: 'horasRecreacion', label: '¿Cuántas horas a la semana dedica a la recreación?', opciones: [] }, // Tipo texto
+    { controlName: 'negocioTieneRUT', label: '¿El negocio tiene RUT?', opciones: ['Si', 'No'], type: 'select'  },
+    { controlName: 'registradoCC', label: '¿El negocio está registrado en la Cámara de Comercio?', opciones: ['Si', 'No'], type: 'select'  }, // Tipo texto
+    { controlName: 'negocioNit', label: '¿El negocio tiene NIT?', opciones: ['Si', 'No'], type: 'select'  }, // Tipo texto
+    { controlName: 'numeroNit', label: 'Número NIT', opciones: [], type: 'number'  },
+    { controlName: 'dondeOpera', label: '¿Dónde opera su unidad productiva?', opciones: ['Desde la vivienda', 'Local independiente a la vivienda con menos de 1 año de operación', 'Local independiente a la vivienda con 1-3 años de operación', 'Local independiente a la vivienda con más de 3 años de operación', 'No aplica'], type: 'select'  }
+  ];
+
+  preguntasAF_Paso3: PreguntaEstatica[] = [
+    { controlName: 'ingresosNegocio', label: 'Ingresos del negocio (Mensuales)', opciones: [], type: 'number' },
+    { controlName: 'costosDirectos', label: 'Costos directos (Mensuales)', opciones: [], type: 'number' },
+    { controlName: 'costosIndirectos', label: 'Costos indirectos (Mensuales)', opciones: [], type: 'number' },
+    { controlName: 'gastosTotales', label: 'Gastos totales (Mensuales)', opciones: [], type: 'number' },
+    { controlName: 'excedentesNegocio', label: 'Excedentes del negocio', opciones: [], type: 'number' },
+    { controlName: 'activoFijo', label: 'Activo fijo', opciones: [], type: 'number' },
+    { controlName: 'activoNoFijo', label: 'Activo no fijo', opciones: [], type: 'number' },
+    { controlName: 'totalActivos', label: 'Total activos', opciones: [], type: 'number' },
+    { controlName: 'pasivoCorto', label: 'Pasivo corto', opciones: [], type: 'number' },
+    { controlName: 'pasivoLargo', label: 'Pasivo largo', opciones: [], type: 'number' },
+    { controlName: 'totalPasivos', label: 'Total pasivos (Deudas del negocio)', opciones: [], type: 'number' },
+    { controlName: 'patrimonio', label: 'Patrimonio del negocio', opciones: [], type: 'number' },
+    { controlName: 'trabajadoresContrato', label: 'Total de trabajadores con contrato', opciones: [], type: 'number' },
+    { controlName: 'trabajadoresSinContrato', label: 'Total de trabajadores sin contrato', opciones: [], type: 'number' },
+    { controlName: 'totalTrabajadores', label: 'Total de trabajadores', opciones: [], type: 'number' },
+    { controlName: 'numeroSocios', label: 'Cantidad de socios', opciones: [], type: 'number' },
+    { controlName: 'tipoLocal', label: 'Tipo de local', opciones: ['Propio','Arriendo','Familiar','Otro'], type: 'select' }
+  ];
 
   opciones: string[] = [];
+  opcionesSiNo: string[] = ['Sí', 'No'];
+  opcionesGrupoParticipante: string[] = ['MICROEMPRESARIO', 'EMPRENDEDOR'];
+  opcionesEstadoParticipante: string[] =['ACTIVO', 'INACTIVO'];
+  opcionesSectorEmpresarial: string[] = ['Sector Industrial', 'Sector de Servicios', 'Sector de Comercio', 'Sector Agropecuario', 'Sector de Transporte', 'Sector Financiero','Sector de la Construcción', 'Sector Minero y Energético', 'Sector Solidario', 'Sector de Comunicaciones'];
+  opcionesCombustibleCocina: string[] = ['Gas natural','Pipeta de gas','Gasolina','ACPM','Leña','Carbón','Energía eléctrica'];
+  opcionesTiempoVivienda: string[] = ['0 a 6 meses','6 a 12 meses', '13 a 24 meses', '25 a 36 meses', '37 a 48 meses', 'Más de 4 años'];
+  opcionesDistribucionIngresos: string[] = ['Él o ella misma', 'Esposo (a) o compañero (a)', 'Todos los que aportan al ingreso familiar', 'Todos los integrantes del hogar']
   codigoCiiu = ['CIIU 1', 'CIIU 2', 'CIIU 3'];
-  private preguntas: any[] = [];
 
+  private preguntas: any[] = [];
   pasoActual: number = 1;
-  preguntasPorPaso = 13;
+  preguntasPorPaso = 22;
   totalPasos = 4;
+  paginas = 0;
+  contador = 0;
+  totalPreguntasCalculado: number = 0;
   pasoActualDiagnostico: number = 1;
 
-  constructor(private fb: FormBuilder, private apiService: MonitoreoService) {
-    // Inicializamos el formulario vacío
-    this.monitoreoDiagnosticoForm = this.fb.group({});
-  }
+  constructor(private fb: FormBuilder, private apiService: MonitoreoService, private apiDiagnosticoService: MonitoreoDiagnosticoService, private el: ElementRef) {  }
 
   ngOnInit(): void {
     this.monitoreoGeneralForm = this.fb.group({
       grupoParticipante: ['', Validators.required],
       estadoParticipante: ['', Validators.required],
-      perteneceAsociacion: ['', [Validators.required, Validators.email]],
-      nombreAsociacion: [''],
+      perteneceAsociacion: ['', [Validators.required]],
+      nombreAsociacion: ['', [Validators.required]],
       asociacionMujeres: ['', Validators.required],
       codigoCiiu: ['', Validators.required],
-      sectorEmpresarial: [''],
-      arriendoServicios: [''],
-      educacion: [''],
-      obligaciones: [''],
-      gastosOcacionales: [''],
-      gastosTotales: [''],
-      trabajosIndependientes: [''],
-      emprendimientos: [''],
-      otrosFamiliares: [''],
-      pension: [''],
-      empleados: [''],
-      otrosIngresos: [''],
-      otrosExplique: [''],
-      totalIngresos: [''],
-      totalIngresosDependiente: [''],
-      distribucionIngresos:['']
-
-           // ✅ Segundo bloque de preguntas (Paso 2)
+      sectorEmpresarial: ['', [Validators.required]],
+      arriendoServicios: ['', [Validators.required]],
+      educacion: ['', [Validators.required]],
+      obligaciones: ['', [Validators.required]],
+      gastosOcacionales: ['', [Validators.required]],
+      gastosTotales: ['', [Validators.required]],
+      trabajosIndependientes: ['', [Validators.required]],
+      emprendimientos: ['', [Validators.required]],
+      otrosFamiliares: ['', [Validators.required]],
+      pension: ['', [Validators.required]],
+      empleados: ['', [Validators.required]],
+      otrosIngresos: ['', [Validators.required]],
+      otrosExplique: ['', [Validators.required]],
+      totalIngresos: ['', [Validators.required]],
+      totalIngresosDependiente: ['', [Validators.required]],
+      distribucionIngresos:['', [Validators.required]]
+    });
+    // ✅ Segundo bloque de preguntas (Paso 2)
+    this.monitoreoDiagnosticoForm = this.fb.group({
+      // Las 6 preguntas estáticas de "Hogar"
+      tipoVivienda: ['', Validators.required],
+      materialVivienda: ['', Validators.required],
+      numeroDormitorios: ['', Validators.required], // Asumo este controlName
+      combustibleCocina: ['', Validators.required], // Asumo este controlName
+      estrato: ['', Validators.required], // Asumo este controlName
+      tiempoVivienda: ['', Validators.required] // Asumo este controlName
     });
 
-    //preguntas de si y no
     this.loadPreguntasHogar();
 
+
+    this.monitoreoAccesoFinancieroForm = this.fb.group({});
+
+    this.preguntasAF_Paso2.forEach(pregunta => {
+      this.monitoreoAccesoFinancieroForm.addControl(pregunta.controlName, new FormControl('', Validators.required));
+    });
+
+    this.preguntasAF_Paso3.forEach(pregunta => {
+      this.monitoreoAccesoFinancieroForm.addControl(pregunta.controlName, new FormControl('', Validators.required));
+    });
+
+    const todasPreguntasAF = [...this.preguntasAF_Paso2, ...this.preguntasAF_Paso3];
+
+    todasPreguntasAF.forEach(pregunta => {
+      let validators = [Validators.required];
+
+      if (pregunta.type === 'number') {
+        // 🟢 Regex que permite solo dígitos (números enteros positivos)
+        validators.push(Validators.pattern('^[0-9]+$'));
+      }
+      this.monitoreoAccesoFinancieroForm.addControl(pregunta.controlName, new FormControl('', validators));
+    });
+
+    this.monitoreoDiagnosticoEmpresarialForm = this.fb.group({});
+    this.loadPreguntasDiagnosticoEmpresarial();
+
     // Calculamos el número total de pasos basado en el total de preguntas
-    this.totalPasos = Math.ceil(this.preguntas.length / this.preguntasPorPaso);
+    //this.totalPasos = Math.ceil(this.preguntas.length / this.preguntasPorPaso);
+    this.paginas = Math.ceil(this.preguntas.length / this.preguntasPorPaso);
 
     // Creamos un FormControl por cada pregunta dinámicamente
-    this.preguntas.forEach(pregunta => {
-      const controlName = `pregunta_${pregunta.id}`;
+    //this.preguntas.forEach(pregunta => {
+     // const controlName = `pregunta_${pregunta.id}`;
       // Añadimos un control al formGroup con un valor inicial nulo y lo marcamos como requerido
-      this.monitoreoDiagnosticoForm.addControl(
-        controlName,
-        this.fb.control(null, Validators.required)
-      );
+     // this.monitoreoDiagnosticoForm.addControl(
+     //   controlName,
+      //  this.fb.control(null, Validators.required)
+    //  );
+   // });
+   this.monitoreoGeneralForm.valueChanges.subscribe(() => this.actualizarContador());
+    this.monitoreoDiagnosticoForm.valueChanges.subscribe(() => this.actualizarContador());
+    this.monitoreoAccesoFinancieroForm.valueChanges.subscribe(() => this.actualizarContador());
+    this.monitoreoDiagnosticoEmpresarialForm.valueChanges.subscribe(() => this.actualizarContador());
+
+    // Llamada inicial para ver el estado al cargar (probablemente 0)
+    // Nota: Es mejor llamar a esto TAMBIÉN después de cargar las preguntas dinámicas en tus 'subscribe'
+    this.actualizarContador();
+  }
+
+  actualizarContador(): void {
+    let respuestas = 0;
+    let totalControles = 0;
+
+    // Array con todos tus formularios activos
+    const formularios = [
+      this.monitoreoGeneralForm,
+      this.monitoreoDiagnosticoForm,
+      this.monitoreoAccesoFinancieroForm,
+      this.monitoreoDiagnosticoEmpresarialForm
+    ];
+
+    formularios.forEach(form => {
+      // Asegurarnos de que el formulario esté inicializado
+      if (form && form.controls) {
+        for (const controlName in form.controls) {
+          if (form.controls.hasOwnProperty(controlName)) {
+            totalControles++; // Cuenta este control como una "pregunta"
+
+            const control = form.controls[controlName];
+            const valor = control.value;
+
+            // Tu lógica de validación para saber si está respondida
+            if (valor !== null && valor !== undefined && valor !== '' && (typeof valor !== 'string' || valor.trim() !== '')) {
+              respuestas++;
+            }
+          }
+        }
+      }
     });
+
+    this.contador = respuestas;
+    this.totalPreguntasCalculado = totalControles;
+
+    // Mostrar en consola
+    console.log(`📊 Progreso General: ${this.contador} de ${this.totalPreguntasCalculado} preguntas completadas.`);
   }
 
     loadPreguntasHogar(): void {
@@ -107,6 +243,20 @@ export class MonitoreosComponent implements OnInit {
         console.error('Error al cargar preguntas del hogar:', err);
         // Manejo de error: podrías mostrar un mensaje al usuario
       }
+    });
+  }
+
+  loadPreguntasDiagnosticoEmpresarial(): void {
+     this.apiDiagnosticoService.getPreguntasDiagnostico().subscribe({
+      next: (preguntas) => {
+        this.preguntasDiagnosticoEmpresarial = preguntas;
+        preguntas.forEach(pregunta => {
+          const controlName = `pregunta_${pregunta.id_campo}`;
+           this.monitoreoDiagnosticoEmpresarialForm.addControl(controlName, new FormControl('', Validators.required));
+        });
+         console.log('Preguntas de Diagnóstico Empresarial cargadas.');
+      },
+      error: (err) => console.error('Error al cargar preguntas de Diagnóstico Empresarial:', err)
     });
   }
 
@@ -134,22 +284,129 @@ export class MonitoreosComponent implements OnInit {
 
   // ✅ SOLUCIÓN: Agrega el método 'siguiente()'
   siguiente(): void {
+// Valida el/los formularios del paso actual
+    if (!this.validarPasoActual()) {
+      //alert('Por favor, responde todas las preguntas obligatorias de esta sección.');
+      this.scrollToFirstInvalidControl();
+      return;
+    }
+    // Avanza si es válido
     if (this.pasoActual < this.totalPasos) {
       this.pasoActual++;
     }
   }
 
-  guardarDiagnostico(): void {
-    if (this.monitoreoDiagnosticoForm.valid) {
-      console.log('Formulario válido. Respuestas:');
-      console.log(this.monitoreoDiagnosticoForm.value);
-      // Aquí iría la lógica para enviar los datos a tu backend
-      alert('Diagnóstico guardado con éxito. Revisa la consola para ver los datos.');
-    } else {
-      console.error('El formulario no es válido. Faltan respuestas.');
-      // Opcional: Marcar todos los campos como "tocados" para mostrar errores
-      this.monitoreoDiagnosticoForm.markAllAsTouched();
-      alert('Por favor, responde todas las preguntas antes de guardar.');
+  validarPasoActual(): boolean {
+    let esValido = true;
+    if (this.pasoActual === 1) {
+      // Validar AMBOS formularios del Paso 1
+      if (this.monitoreoGeneralForm.invalid) {
+        this.monitoreoGeneralForm.markAllAsTouched();
+        esValido = false;
+      }
+      if (this.monitoreoDiagnosticoForm.invalid) {
+        this.monitoreoDiagnosticoForm.markAllAsTouched();
+        esValido = false;
+      }
+    } else if (this.pasoActual === 2) {
+      // Validar solo los controles visibles del Paso 2
+      esValido = this.validarControlesEstaticos(this.preguntasAF_Paso2, this.monitoreoAccesoFinancieroForm);
+    } else if (this.pasoActual === 3) {
+      // Validar solo los controles visibles del Paso 3
+      esValido = this.validarControlesEstaticos(this.preguntasAF_Paso3, this.monitoreoAccesoFinancieroForm);
+    } else if (this.pasoActual === 4) {
+      if (this.monitoreoDiagnosticoEmpresarialForm.invalid) {
+        this.monitoreoDiagnosticoEmpresarialForm.markAllAsTouched();
+        esValido = false;
+      }
     }
+    return esValido;
+  }
+
+  scrollToFirstInvalidControl(): void {
+    let formsToSearch: FormGroup[] = [];
+
+    // 1. Identifica qué formularios revisar según el paso
+    if (this.pasoActual === 1) {
+      formsToSearch = [this.monitoreoGeneralForm, this.monitoreoDiagnosticoForm];
+    } else if (this.pasoActual === 2 || this.pasoActual === 3) {
+      formsToSearch = [this.monitoreoAccesoFinancieroForm];
+    } else if (this.pasoActual === 4) {
+      formsToSearch = [this.monitoreoDiagnosticoEmpresarialForm];
+    }
+
+    // 2. Itera sobre los formularios de este paso
+    for (const form of formsToSearch) {
+      for (const controlName in form.controls) {
+        // 3. Encuentra el primer control que sea inválido
+        if (form.controls[controlName].invalid) {
+
+          console.error(`Error de validación: El campo "${controlName}" es inválido.`);
+
+          // 4. Busca el elemento en el HTML usando su formControlName
+          const invalidControl = this.el.nativeElement.querySelector(
+            `[formControlName="${controlName}"]`
+          );
+
+          if (invalidControl) {
+            // 5. Si lo encuentra, hace scroll y lo enfoca
+            invalidControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            invalidControl.focus();
+
+            // Muestra un mensaje más útil
+            console.warn(`Se ha movido el foco al campo "${controlName}" que falta por completar.`);
+            return; // Se detiene en el primer error que encuentra
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Helper para validar solo los controles estáticos visibles en Pasos 2 y 3
+   */
+  validarControlesEstaticos(preguntas: PreguntaEstatica[], form: FormGroup): boolean {
+    let esValido = true;
+    for (const pregunta of preguntas) {
+      const control = form.get(pregunta.controlName);
+      if (control?.invalid) {
+        control.markAsTouched();
+        esValido = false;
+      }
+    }
+    return esValido;
+  }
+
+  guardarFormularioCompleto(): void {
+    if (this.monitoreoGeneralForm.valid &&
+        this.monitoreoDiagnosticoForm.valid &&
+        this.monitoreoAccesoFinancieroForm.valid &&
+        this.monitoreoDiagnosticoEmpresarialForm.valid) {
+
+      const datosCompletos = {
+        general: this.monitoreoGeneralForm.value,
+        diagnosticoHogar: this.monitoreoDiagnosticoForm.value,
+        accesoFinanciero: this.monitoreoAccesoFinancieroForm.value,
+        diagnosticoEmpresarial: this.monitoreoDiagnosticoEmpresarialForm.value
+      };
+
+      console.log('FORMULARIO COMPLETO GUARDADO:', datosCompletos);
+      alert('Monitoreo guardado con éxito. Revisa la consola.');
+      // Aquí iría la llamada final al servicio
+      // this.apiService.guardarMonitoreoCompleto(datosCompletos).subscribe(...)
+
+    } else {
+      console.error('El formulario no es válido. Revisa todos los pasos.');
+      // Marcar todos los campos de todos los formularios como "tocados"
+      this.monitoreoGeneralForm.markAllAsTouched();
+      this.monitoreoDiagnosticoForm.markAllAsTouched();
+      this.monitoreoAccesoFinancieroForm.markAllAsTouched();
+      this.monitoreoDiagnosticoEmpresarialForm.markAllAsTouched();
+      alert('Error: Faltan respuestas en uno o más pasos. Por favor, revisa.');
+    }
+  }
+
+  getControlEstatico(controlName: string): AbstractControl | null {
+    return this.monitoreoAccesoFinancieroForm.get(controlName);
   }
 }

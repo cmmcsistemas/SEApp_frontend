@@ -111,7 +111,7 @@ ngOnInit(): void {
 
   obtenerDepartamentos(): void {
     // Realiza la petición GET a la API y almacena la respuesta en la variable 'municipios'
-    this.http.get<any[]>('http://192.168.0.18:3900/api/basica/departamentos')
+    this.http.get<any[]>('http://20.81.172.55:3900/api/basica/departamentos')
       .subscribe({
         next: (data) => {
           const listadoDepartamentos = data.map(departamento => departamento.nombre_departamento);
@@ -127,7 +127,7 @@ ngOnInit(): void {
 
     obtenerMunicipios(): void {
     // Realiza la petición GET a la API y almacena la respuesta en la variable 'municipios'
-    this.http.get<any[]>('http://192.168.0.18:3900/api/basica/municipios')
+    this.http.get<any[]>('http://20.81.172.55:3900/api/basica/municipios')
       .subscribe({
         next: (data) => {
           const listadoMunicipios = data.map(municipio => municipio.nombre_municipio);

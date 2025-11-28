@@ -19,7 +19,7 @@ export interface DiagnosticoPregunta {
 export class MonitoreoService {
   // URL de la API para obtener las preguntas de Monitoreo
   // El endpoint 'M1' indica que son las preguntas de monitoreo.
-  private apiUrl = 'http://192.168.0.18:3900/api/formularios/por-tipo/M1';
+  private apiUrl = 'http://20.81.172.55:3900/api/formularios/por-tipo/M1';
 
   // Opciones estándar para las preguntas de Sí/No
   private opcionesSiNo: string[] = ['Sí', 'No'];

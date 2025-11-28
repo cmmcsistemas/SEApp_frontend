@@ -1,11 +1,11 @@
 import {
   DomSanitizer
-} from "./chunk-6RSO2BAP.js";
-import "./chunk-ZZOOYNZX.js";
-import "./chunk-V3CVQTKF.js";
+} from "./chunk-REJJQYRW.js";
+import "./chunk-K2TNBKKT.js";
+import "./chunk-C3WFKXUX.js";
 import {
   DOCUMENT
-} from "./chunk-2PSDDKNW.js";
+} from "./chunk-FUZKBC3W.js";
 import {
   Component,
   Directive,
@@ -33,13 +33,13 @@ import {
   ɵɵprojection,
   ɵɵprojectionDef,
   ɵɵsanitizeHtml
-} from "./chunk-MKMD7KSU.js";
-import "./chunk-CGJMYSBH.js";
-import "./chunk-MD4MEXAA.js";
-import "./chunk-TYOVXHQK.js";
+} from "./chunk-VGC7NQQD.js";
+import "./chunk-PEBH6BBU.js";
+import "./chunk-WPM5VTLQ.js";
+import "./chunk-4S3KYZTJ.js";
 import "./chunk-WDMUDEB6.js";
 
-// ../../../node_modules/@fortawesome/fontawesome-svg-core/index.mjs
+// node_modules/@fortawesome/fontawesome-svg-core/index.mjs
 function _defineProperty(e, r2, t2) {
   return (r2 = _toPropertyKey(r2)) in e ? Object.defineProperty(e, r2, {
     value: t2,
@@ -2917,7 +2917,7 @@ var layer = api.layer;
 var text = api.text;
 var counter = api.counter;
 
-// ../../../node_modules/@fortawesome/angular-fontawesome/fesm2022/angular-fontawesome.mjs
+// node_modules/@fortawesome/angular-fontawesome/fesm2022/angular-fontawesome.mjs
 var _c0 = ["*"];
 var faWarnIfIconDefinitionMissing = (iconSpec) => {
   throw new Error(`Could not find icon with iconName=${iconSpec.iconName} and prefix=${iconSpec.prefix} in the icon library.`);

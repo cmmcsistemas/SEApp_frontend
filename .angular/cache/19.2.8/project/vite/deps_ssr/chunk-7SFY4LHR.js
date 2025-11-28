@@ -1,6 +1,6 @@
 import { createRequire } from 'module';const require = createRequire(import.meta.url);
 
-// ../../../node_modules/@angular/animations/fesm2022/private_export-CacKMzxJ.mjs
+// node_modules/@angular/animations/fesm2022/private_export-CacKMzxJ.mjs
 var AnimationMetadataType;
 (function(AnimationMetadataType2) {
   AnimationMetadataType2[AnimationMetadataType2["State"] = 0] = "State";
@@ -363,4 +363,4 @@ export {
    * License: MIT
    *)
 */
-//# sourceMappingURL=chunk-AVMANXIU.js.map
+//# sourceMappingURL=chunk-7SFY4LHR.js.map

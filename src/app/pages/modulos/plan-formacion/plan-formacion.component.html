@@ -1,1 +1,185 @@
-<p>plan-formacion works!</p>
+<div class="p-8 bg-gray-100 min-h-screen">
+  <div class="flex justify-start items-center space-x-4 mb-6">
+    <a routerLink="../caracterizacion/caracterizacion-basica" routerLinkActive="bg-green-600 text-white shadow-md"
+     class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">
+      Caracterización
+    </a>
+    <a routerLink="../caracterizacion/diagnostico" routerLinkActive="bg-green-600 text-white shadow-md"
+     class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">
+    Diagnóstico
+  </a>
+
+  <a routerLink="../caracterizacion/caracterizacion-ampliada" routerLinkActive="bg-green-600 text-white shadow-md"
+     class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">
+    Caract. ampliada
+  </a>
+
+  <a routerLink="/modulos/monitoreos" routerLinkActive="bg-green-600 text-white shadow-md"
+     class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">
+    Monitoreo
+  </a>
+
+  <a routerLink="/modulos/plan-formacion" routerLinkActive="bg-green-600 text-white shadow-md"
+     class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">
+    Plan de formación
+  </a>
+  </div>
+
+  <!-- Contenedor principal del formulario -->
+  <div class="bg-white rounded-lg shadow-xl p-8 max-w-6xl mx-auto">
+
+    <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Formulario de Plan de formación</h2>
+
+    <!-- ============================================== -->
+    <!-- PASO 1: SELECCIÓN DE PROGRAMAS (Tabla) -->
+    <!-- ============================================== -->
+    <div *ngIf="paso === 1">
+
+      <!-- Búsqueda -->
+      <div class="flex justify-center mb-8">
+        <div class="relative w-full max-w-lg">
+          <input
+            type="text"
+            [formControl]="busquedaControl"
+            placeholder="Búsqueda por cartilla..."
+            class="w-full pl-10 pr-4 py-2 border-2 border-gray-300 rounded-full focus:border-green-500 focus:ring-green-500 transition-shadow shadow-md">
+          <fa-icon [icon]="faSearch" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></fa-icon>
+        </div>
+      </div>
+
+      <!-- Tabla de Programas -->
+      <div class="overflow-x-auto shadow-lg rounded-lg border border-gray-200">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Componente SEA</th>
+              <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Línea de desarrollo empresarial</th>
+              <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Nivel</th>
+              <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Cartillas</th>
+              <th class="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Inscribir</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-100">
+            <tr *ngIf="programasFiltrados.length === 0">
+              <td colspan="5" class="px-6 py-4 text-center text-gray-500">No se encontraron programas de formación.</td>
+            </tr>
+            <tr *ngFor="let programa of programasFiltrados; let i = index" class="hover:bg-green-50 transition-colors duration-150">
+              <!-- 🟢 CORRECCIÓN: Las propiedades ahora existen en el tipo ProgramaConSeleccion -->
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ programa.nombre_programa }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ programa.nombre_linea }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ programa.nombre_nivel }}</td>
+              <td class="px-6 py-4 text-sm font-medium text-green-700">{{ programa.nombre_titulo_programa }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-center">
+                <input
+                  type="checkbox"
+                  [checked]="programa.seleccionado"
+                  (change)="toggleSeleccion(programa)"
+                  class="h-5 w-5 text-green-600 border-gray-300 rounded focus:ring-green-500 cursor-pointer">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Botones del Paso 1 -->
+      <div class="flex justify-between items-center mt-8">
+        <button
+          type="button"
+          class="px-6 py-3  bg-green-600 text-white rounded-lg font-semibold shadow-xl hover:bg-green-700 transition-colors duration-200">
+          Limpiar
+        </button>
+        <button
+          type="button"
+          (click)="asignarFechas()"
+          class="px-8 py-3 bg-green-600 text-white rounded-lg font-semibold shadow-xl hover:bg-green-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+          Asignar fechas
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ============================================== -->
+    <!-- PASO 2: ASIGNACIÓN DE FECHAS -->
+    <!-- ============================================== -->
+    <div *ngIf="paso === 2">
+
+      <p class="text-center text-gray-500 mb-8">Asignación de fechas para {{ cartillasArray.length }} cartilla(s) seleccionada(s).</p>
+
+      <form [formGroup]="fechasForm">
+        <!-- Tabla de Asignación de Fechas -->
+        <div class="overflow-x-auto shadow-lg rounded-lg border border-gray-200">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-100">
+              <tr>
+                <th class="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Borrar</th>
+                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Nombre de Cartilla</th>
+                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Fecha Propuesta (dd/mm/aaaa)</th>
+                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Fecha Final (dd/mm/aaaa)</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-100">
+                <tr *ngFor="let control of cartillasArray.controls; let i = index"
+                  [formGroup]="getCartillaFormGroup(control)"
+                  class="hover:bg-red-50/50 transition-colors duration-150">
+                <!-- Borrar -->
+                <td class="px-6 py-4 whitespace-nowrap text-center">
+                  <button type="button" (click)="eliminarCartilla(i)" title="Eliminar cartilla de la lista">
+                    <fa-icon [icon]="faTrashAlt" class="text-red-500 hover:text-red-700 transition-colors duration-150 cursor-pointer text-lg"></fa-icon>
+                  </button>
+                </td>
+
+                <!-- Nombre de Cartilla -->
+                <td class="px-6 py-4 text-sm font-medium text-gray-900">
+                  {{ getCartillaFormGroup(control).get('nombre_titulo_programa')?.value }}
+                </td>
+
+                <!-- Fecha Propuesta -->
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <input
+                    type="date"
+                    formControlName="fecha_propuesta"
+                    class="border border-gray-300 rounded-md p-2 w-full focus:ring-green-500 focus:border-green-500"
+                    [ngClass]="{'border-red-500': getCartillaFormGroup(control).get('fecha_propuesta')?.invalid && getCartillaFormGroup(control).get('fecha_propuesta')?.touched}">
+                  <div *ngIf="getCartillaFormGroup(control).get('fecha_propuesta')?.invalid && getCartillaFormGroup(control).get('fecha_propuesta')?.touched" class="text-red-500 text-xs mt-1">
+                    Fecha requerida.
+                  </div>
+                </td>
+
+                <!-- Fecha Final -->
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <input
+                    type="date"
+                    formControlName="fecha_final"
+                    class="border border-gray-300 rounded-md p-2 w-full focus:ring-green-500 focus:border-green-500"
+                    [ngClass]="{'border-red-500': getCartillaFormGroup(control).get('fecha_final')?.invalid && getCartillaFormGroup(control).get('fecha_final')?.touched}">
+                  <div *ngIf="getCartillaFormGroup(control).get('fecha_final')?.invalid && getCartillaFormGroup(control).get('fecha_final')?.touched" class="text-red-500 text-xs mt-1">
+                    Fecha requerida.
+                  </div>
+                </td>
+
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </form>
+
+      <!-- Botones del Paso 2 -->
+      <div class="flex justify-between items-center mt-8">
+        <button
+          type="button"
+          (click)="atras()"
+          class="px-6 py-3 bg-green-600 text-white rounded-lg font-semibold shadow-xl hover:bg-green-700 transition-colors duration-200">
+          Atrás
+        </button>
+        <button
+          type="button"
+          (click)="confirmarFechas()"
+          [disabled]="fechasForm.invalid"
+          class="px-8 py-3 bg-green-600 text-white rounded-lg font-semibold shadow-xl hover:bg-green-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+          Confirmar fechas
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+

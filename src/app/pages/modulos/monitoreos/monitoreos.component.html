@@ -25,264 +25,315 @@
   </a>
   </div>
 
-  <div class="bg-white rounded-lg shadow-md p-8 max-w-20 mx-auto">
-
+  <div class="bg-white rounded-lg shadow-md p-8 w-full  mx-auto ">
     <h2 class="text-2xl font-bold text-center text-gray-800 mb-2">Monitoreo</h2>
-    <p class="text-center text-gray-500 mb-6">Preguntas respondidas</p>
+  <!--<p class="text-center text-gray-500 mb-6">Preguntas respondidas</p> -->
     <p class="text-center text-gray-500 mb-8">
-      Paso {{ pasoActual }} de {{preguntasPorPaso}}. Por favor, responde a todas las preguntas de esta sección.
+      Página {{ pasoActual }} de {{ totalPasos }}. Por favor, responde a todas las preguntas de esta sección.
     </p>
-    <form [formGroup]="monitoreoGeneralForm" class="space-y-3">
-      <div *ngIf="pasoActual === 1">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-4">
-            <div>
+    <div *ngIf="pasoActual === 1" >
+      <h3 class="text-xl font-semibold text-gray-700 mb-4 border-b pb-2">Información General</h3>
+       <form [formGroup]="monitoreoGeneralForm" class="space-y-4">
+          <div class="flex gap-4 sm:flex-none sm:grid sm:grid-cols-1">
+            <div class="flex-1 w-32 gap-4">
               <label for="grupoParticipante" class="block text-gray-700">Grupo de participantes</label>
-              <input type="text" id="grupoParticipante" formControlName="grupoParticipante" placeholder="" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+              <select id="grupoParticipante" formControlName="grupoParticipante" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+                <option *ngFor="let grupoParticipante of opcionesGrupoParticipante" [value]="grupoParticipante">{{ grupoParticipante }}</option>
+                <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+          </select>
             </div>
-            <div>
+            <div class="flex-1 w-32 gap-4">
               <label for="estadoParticipante" class="block text-gray-700">Estado actual del participante</label>
-              <input type="text" id="estadoParticipante" formControlName="estadoParticipante" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+                <select id="estadoParticipante" formControlName="estadoParticipante" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+                <option *ngFor="let estadoParticipante of opcionesEstadoParticipante" [value]="estadoParticipante">{{ estadoParticipante }}</option>
+                <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+                </select>
             </div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
-            <div>
+            <div class="flex-1 w-32 gap-4">
               <label for="perteneceAsociacion" class="block text-gray-700">¿Pertenece a alguna asociación?</label>
-              <input type="text" id="perteneceAsociacion" formControlName="perteneceAsociacion"  placeholder="" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+                <select id="perteneceAsociacion" formControlName="perteneceAsociacion" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+                <option *ngFor="let perteneceAsociacion of opcionesSiNo" [value]="perteneceAsociacion">{{ perteneceAsociacion }}</option>
+                <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+                </select>
             </div>
-            <div>
+            </div>
+          <div class="flex gap-4">
+            <div class="flex-1 w-32 gap-4">
               <label for="nombreAsociacion" class="block text-gray-700">Nombre de la asociación</label>
               <input type="text" id="nombreAsociacion" formControlName="nombreAsociacion"  placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
             </div>
-          </div>
-
-        <div class="grid grid-cols-2 md:grid-cols-2 gap-6 mb-4">
-          <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
-            <div>
+            <div class="flex-1 w-32 gap-4">
               <label for="codigoCiiu" class="block text-gray-700">Código CIIU</label>
               <select id="codigoCiiu" formControlName="codigoCiiu" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
                 <option class="text-gray-500" value="" disabled selected>Seleccione</option>
                 <option *ngFor="let tipo of codigoCiiu" [value]="tipo">{{ tipo }}</option>
               </select>
             </div>
-            <div>
+            <div class="flex-1 w-32 gap-4">
               <label for="asociacionMujeres" class="block text-gray-700">¿Es una asociación de mujeres?</label>
-              <input type="text" id="asociacionMujeres" formControlName="asociacionMujeres" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+              <select id="asociacionMujeres" formControlName="asociacionMujeres" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+                <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+                <option *ngFor="let asociacionMujeres of opcionesSiNo" [value]="asociacionMujeres">{{ asociacionMujeres }}</option>
+              </select>
             </div>
           </div>
-          <div>
+          <div class="flex gap-4">
+            <div class="flex-1 w-32 gap-4">
             <label for="sectorEmpresarial" class="block text-gray-700">Sector empresarial</label>
-            <input type="text" id="sectorEmpresarial" formControlName="sectorEmpresarial" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2 md:grid-cols-2 gap-6 mb-4">
-            <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
-              <div>
-                <label for="arriendoServicios" class="block text-gray-700">Arriendo y Servicios</label>
-                <input type="text" id="arriendoServicios" formControlName="arriendoServicios" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
-              </div>
-              <div>
-                <label for="educacion" class="block text-gray-700">Educación</label>
-                <input type="text" id="educacion" formControlName="educacion" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
-              </div>
+              <select id="sectorEmpresarial" formControlName="sectorEmpresarial" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+                <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+                <option *ngFor="let sectorEmpresarial of opcionesSectorEmpresarial" [value]="sectorEmpresarial">{{ sectorEmpresarial }}</option>
+              </select>
+            </div>
             </div>
             <div>
-              <label for="obligaciones" class="block text-gray-700">Obligaciones financieras</label>
-              <input type="text" id="obligaciones" formControlName="obligaciones" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+              <h2 class="underline">Formato gastos del grupo familiar</h2>
             </div>
-          </div>
-
-          <div class="grid grid-cols-2 md:grid-cols-2 gap-6 mb-4">
-            <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
-              <div>
-                <label for="gastosOcacionales" class="block text-gray-700">Gastos ocasionales</label>
-                <input type="text" id="gastosOcacionales" formControlName="gastosOcacionales" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+              <div class="flex gap-4">
+                <div class="flex-1 w-32 gap-4">
+                  <label for="arriendoServicios" class="block text-gray-700">Arriendo y Servicios</label>
+                  <input type="number" id="arriendoServicios" formControlName="arriendoServicios" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+                </div>
+                <div class="flex-1 w-32 gap-4">
+                  <label for="educacion" class="block text-gray-700">Educación</label>
+                  <input type="number" id="educacion" formControlName="educacion" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+                </div>
+                <div class="flex-1 w-32 gap-4">
+                  <label for="obligaciones" class="block text-gray-700">Obligaciones financieras</label>
+                  <input type="number" id="obligaciones" formControlName="obligaciones" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+                </div>
+                 <div class="flex-1 w-32 gap-4">
+                  <label for="gastosOcacionales" class="block text-gray-700">Gastos ocasionales</label>
+                  <input type="number" id="gastosOcacionales" formControlName="gastosOcacionales" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+                </div>
               </div>
-              <div>
-                <label for="gastosTotales" class="block text-gray-700">Total de gastos</label>
-                <input type="text" id="gastosTotales" formControlName="gastosTotales" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
-              </div>
+            <div class="flex gap-4">
+                <div class="flex-1 w-32 gap-4">
+                  <label for="gastosTotales" class="block text-gray-700">Total de gastos</label>
+                  <input type="number" id="gastosTotales" formControlName="gastosTotales" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+                </div>
             </div>
-          </div>
-          <div class="grid grid-cols-2 md:grid-cols-2 gap-6 mb-4">
-            <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
-              <div>
-                <label for="trabajosIndependientes" class="block text-gray-700">Trabajos independientes</label>
-                <input type="text" id="trabajosIndependientes" formControlName="trabajosIndependientes" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
-              </div>
-              <div>
-                <label for="emprendimientos" class="block text-gray-700">Emprendimientos</label>
-                <input type="text" id="emprendimientos" formControlName="emprendimientos" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
-              </div>
+            <div>
+              <h2 class="underline">Formato ingresos del grupo familiar</h2>
             </div>
-            <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
-              <div>
-                <label for="otrosFamiliares" class="block text-gray-700">Otros familiares</label>
-                <input type="text" id="otrosFamiliares" formControlName="otrosFamiliares" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+              <div class="flex gap-4">
+                <div class="flex-1 w-32 gap-4">
+                  <label for="trabajosIndependientes" class="block text-gray-700">Trabajos independientes</label>
+                  <input type="number" id="trabajosIndependientes" formControlName="trabajosIndependientes" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+                </div>
+                <div class="flex-1 w-32 gap-4">
+                  <label for="emprendimientos" class="block text-gray-700">Emprendimientos</label>
+                  <input type="number" id="emprendimientos" formControlName="emprendimientos" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+                </div>
+                <div class="flex-1 w-32 gap-4">
+                  <label for="otrosFamiliares" class="block text-gray-700">Otros familiares</label>
+                  <input type="number" id="otrosFamiliares" formControlName="otrosFamiliares" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+                </div>
               </div>
-              <div>
-                <label for="pension" class="block text-gray-700">Pensión</label>
-                <input type="text" id="pension" formControlName="pension" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+              <div class="flex gap-4">
+                <div class="flex-1 w-32 gap-4">
+                  <label for="pension" class="block text-gray-700">Pensión</label>
+                  <input type="number" id="pension" formControlName="pension" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+                </div>
+                <div class="flex-1 w-32 gap-4">
+                  <label for="empleados" class="block text-gray-700">Empleados</label>
+                  <input type="number" id="empleados" formControlName="empleados" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+                </div>
+                <div class="flex-1 w-32 gap-4">
+                  <label for="otrosIngresos" class="block text-gray-700">Otros ingresos</label>
+                  <input type="number" id="otrosIngresos" formControlName="otrosIngresos" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+                </div>
               </div>
-            </div>
-          </div>
-          <div class="grid grid-cols-2 md:grid-cols-2 gap-6 mb-4">
-            <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
-              <div>
-                <label for="empleados" class="block text-gray-700">Empleados</label>
-                <input type="text" id="empleados" formControlName="empleados" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
-              </div>
-              <div>
-                <label for="otrosIngresos" class="block text-gray-700">Otros ingresos</label>
-                <input type="text" id="otrosIngresos" formControlName="otrosIngresos" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
-              </div>
-            </div>
-            <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
-              <div>
-                <label for="otrosExplique" class="block text-gray-700">Otros (Explique cuáles)</label>
-                <input type="text" id="otrosExplique" formControlName="otrosExplique" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
-              </div>
-              <div>
-                <label for="totalIngresos" class="block text-gray-700">Total de ingresos</label>
-                <input type="text" id="totalIngresos" formControlName="totalIngresos" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
-              </div>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-2 md:grid-cols-2 gap-6 mb-4">
-            <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
-              <div>
-                <label for="totalIngresosDependiente" class="block text-gray-700">Total de personas que dependen de este ingreso</label>
-                <input type="text" id="totalIngresosDependiente" formControlName="totalIngresosDependiente" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
-              </div>
-              <div>
+                <div class="flex gap-4">
+                  <div class="flex-1 w-32 gap-4">
+                    <label for="otrosExplique" class="block text-gray-700">Otros (Explique cuáles)</label>
+                    <input type="text" id="otrosExplique" formControlName="otrosExplique" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+                  </div>
+                  <div class="flex-1 w-32 gap-4">
+                    <label for="totalIngresos" class="block text-gray-700">Total de ingresos</label>
+                    <input type="number" id="totalIngresos" formControlName="totalIngresos" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+                  </div>
+                  <div class="flex-1 w-32 gap-4">
+                      <label for="totalIngresosDependiente" class="block text-gray-700">Total de personas que dependen de este ingreso</label>
+                      <input type="number" id="totalIngresosDependiente" formControlName="totalIngresosDependiente" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+                  </div>
+                </div>
+              <div class="gap-4">
                 <label for="distribucionIngresos" class="block text-gray-700">¿Quién define la distribución de ingresos?</label>
-                <input type="text" id="distribucionIngresos" formControlName="distribucionIngresos" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+                <select id="distribucionIngresos" formControlName="distribucionIngresos" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+                <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+                <option *ngFor="let distribucionIngresos of opcionesDistribucionIngresos" [value]="distribucionIngresos">{{ distribucionIngresos }}</option>
+              </select>
               </div>
-            </div>
-        </div>
-      </div>
-    </form>
-
-    <h2 class="text-2xl font-bold text-center text-gray-800 mb-2">Características del hogar </h2>
-    <p class="text-center text-gray-500 mb-6">Preguntas de Sí o No</p>
-    <p class="text-center text-gray-500 mb-8">
-      Pregutas {{ pasoActual }} de {{ totalPasos }}. Por favor, responde a todas las preguntas de esta sección.
-    </p>
-
-    <form [formGroup]="monitoreoDiagnosticoForm" (ngSubmit)="guardarDiagnostico()" class="space-y-4">
-
-    <div class="grid grid-cols-2 md:grid-cols-2 gap-6 mb-4">
+         </form>
+    <h2 class="text-xl font-semibold text-gray-700 mb-4 border-b mt-4">Características del hogar</h2>
+      <form [formGroup]="monitoreoDiagnosticoForm" class="space-y-4">
+        <div class="grid grid-cols-2 md:grid-cols-2 gap-4 mb-4">
           <div>
             <label for="tipoVivienda" class="block text-gray-700">Tipo de vivienda</label>
-            <input type="text" id="tipoVivienda" formControlName="tipoVivienda" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <input type="text" id="tipoVivienda" formControlName="tipoVivienda" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
           </div>
           <div>
             <label for="materialVivienda" class="block text-gray-700">Material predominante de la vivienda</label>
-            <input type="text" id="materialVivienda" formControlName="materialVivienda" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <input type="text" id="materialVivienda" formControlName="materialVivienda" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
           </div>
-    </div>
-
-    <div class="grid grid-cols-2 md:grid-cols-2 gap-6 mb-4">
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-2 gap-4 mb-4">
           <div>
-            <label for="tipoVivienda" class="block text-gray-700">Número de dormitorios</label>
-            <input type="text" id="tipoVivienda" formControlName="tipoVivienda" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
-          </div>
-          <div>
-            <label for="materialVivienda" class="block text-gray-700">Combustible de cocina</label>
-            <input type="text" id="materialVivienda" formControlName="materialVivienda" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
-          </div>
-    </div>
-
-    <div class="grid grid-cols-2 md:grid-cols-2 gap-6 mb-4">
-          <div>
-            <label for="tipoVivienda" class="block text-gray-700">Estrato</label>
-            <input type="text" id="tipoVivienda" formControlName="tipoVivienda" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <label for="numeroDormitorios" class="block text-gray-700">Número de dormitorios</label>
+            <input type="text" id="numeroDormitorios" formControlName="numeroDormitorios" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
           </div>
           <div>
-            <label for="materialVivienda" class="block text-gray-700">Tiempo en la vivienda</label>
-            <input type="text" id="materialVivienda" formControlName="materialVivienda" placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <label for="combustibleCocina" class="block text-gray-700">Combustible de cocina</label>
+            <input type="text" id="combustibleCocina" formControlName="combustibleCocina" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
           </div>
-    </div>
-
-      <!-- 💡 APLICACIÓN DEL GRID PARA LAS PREGUNTAS DINÁMICAS (2 COLUMNAS) -->
-      <div *ngIf="preguntasHogar.length === 0" class="text-center py-10 text-gray-500">
-        Cargando preguntas de características del hogar...
-      </div>
-
-      <!-- Iteración sobre las preguntas del paso actual -->
-      <div *ngFor="let pregunta of preguntasPasoActualHogar; let i = index">
-        <!-- Usamos GRID de 12 columnas: 8 para pregunta, 4 para opciones (en desktop) -->
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 py-3 px-4 rounded-lg transition-colors duration-150 border-b border-gray-100 items-start"
-            [ngClass]="i % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
-
-          <!-- COLUMNA 1: Etiqueta de la pregunta (8/12) -->
-          <div class="col-span-1 md:col-span-8">
-            <label [for]="'pregunta_' + pregunta.id_campo" class="block text-gray-700 font-medium">
-              <!-- Muestra el nombre_campo que viene del backend -->
-              {{ pregunta.nombre_campo }}
-            </label>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-2 gap-6 mb-4">
+          <div>
+            <label for="estrato" class="block text-gray-700">Estrato</label>
+            <input type="text" id="estrato" formControlName="estrato" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
           </div>
-
-
-          <div class="col-span-1 md:col-span-4 flex justify-start md:justify-end">
-            <div class="flex items-center space-x-6 shrink-0">
-              <!-- Iteramos sobre las opciones de la pregunta (generalmente ['Si', 'No']) -->
-              <div *ngFor="let opcion of pregunta.opciones" class="flex items-center">
-                <input
-                  type="radio"
-                  [id]="'pregunta_' + pregunta.id_campo + '_' + opcion"
-                  [value]="opcion"
-                  [formControlName]="'pregunta_' + pregunta.id_campo"
-                  class="h-4 w-4 text-green-600 border-gray-300 focus:ring-green-500">
-                <label [for]="'pregunta_' + pregunta.id_campo + '_' + opcion" class="ml-2 block text-sm text-gray-900">
-                  {{ opcion }}
-                </label>
+          <div>
+            <label for="tiempoVivienda" class="block text-gray-700">Tiempo en la vivienda</label>
+            <input type="text" id="tiempoVivienda" formControlName="tiempoVivienda" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+          </div>
+        </div>
+        <h3 >Su lugar de vivienda cuenta con ...</h3>
+        <div *ngFor="let pregunta of preguntasPasoActualHogar; let i = index">
+          <div class="grid grid-cols-2 md:grid-cols-12 gap-4 py-3 px-4 rounded-lg transition-colors duration-150 border-b border-gray-100 items-start"
+              [ngClass]="i % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
+            <div class="col-span-1 md:col-span-8">
+              <label [for]="'pregunta_' + pregunta.id_campo" class="block text-gray-700 font-medium">{{ pregunta.nombre_campo }}</label>
+            </div>
+            <div class="col-span-1 md:col-span-4 flex justify-start md:justify-end">
+              <div class="flex items-center space-x-6 shrink-0">
+                <div *ngFor="let opcion of pregunta.opciones" class="flex items-center">
+                  <input type="radio" [id]="'pregunta_' + pregunta.id_campo + '_' + opcion" [value]="opcion" [formControlName]="'pregunta_' + pregunta.id_campo" class="h-4 w-4 text-green-600 border-gray-300 focus:ring-green-500">
+                  <label [for]="'pregunta_' + pregunta.id_campo + '_' + opcion" class="ml-2 block text-sm text-gray-900">{{ opcion }}</label>
+                </div>
               </div>
             </div>
           </div>
+          <div *ngIf="monitoreoDiagnosticoForm.get('pregunta_' + pregunta.id_campo)?.invalid && monitoreoDiagnosticoForm.get('pregunta_' + pregunta.id_campo)?.touched"
+              class="text-red-500 text-xs mt-1 px-4">
+            Esta pregunta es obligatoria.
+          </div>
         </div>
+      </form>
 
+    </div>
 
+    <div *ngIf="pasoActual === 2">
+      <h3 class="text-xl font-semibold text-gray-700 mb-4 border-b pb-2">Acceso Financiero (Parte 1)</h3>
+      <form [formGroup]="monitoreoAccesoFinancieroForm" class="space-y-4">
 
-
-
-        <!-- Mensaje de error (debajo de la pregunta) -->
-        <div *ngIf="monitoreoDiagnosticoForm.get('pregunta_' + pregunta.id_campo)?.invalid && monitoreoDiagnosticoForm.get('pregunta_' + pregunta.id_campo)?.touched"
-            class="text-red-500 text-xs mt-1 px-4">
-          Esta pregunta es obligatoria.
+        <div *ngFor="let pregunta of preguntasAF_Paso2; let i = index">
+          <div class="grid grid-cols-2 md:grid-cols-12 gap-4 py-3 px-4 rounded-lg" [ngClass]="i % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
+            <div class="col-span-1 md:col-span-8">
+              <label [for]="pregunta.controlName" class="block text-gray-700 font-medium">{{ pregunta.label }}</label>
+            </div>
+            <div class="col-span-1 md:col-span-4 flex justify-start md:justify-end">
+              <div *ngIf="pregunta.opciones.length > 0" class="flex items-center space-x-6 shrink-0">
+                <div *ngFor="let opcion of pregunta.opciones" class="flex items-center">
+                  <input type="radio" [id]="pregunta.controlName + '_' + opcion" [value]="opcion" [formControlName]="pregunta.controlName" class="h-4 w-4 text-green-600 border-gray-300 focus:ring-green-500">
+                  <label [for]="pregunta.controlName + '_' + opcion" class="ml-2 block text-sm text-gray-900">{{ opcion }}</label>
+                </div>
+              </div>
+              <div *ngIf="pregunta.opciones.length === 0" class="w-full">
+                <input [type]="pregunta.type === 'number' ? 'number' : 'text'" [id]="pregunta.controlName" [formControlName]="pregunta.controlName" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+              </div>
+            </div>
+          </div>
+          <div *ngIf="getControlEstatico(pregunta.controlName)?.invalid && getControlEstatico(pregunta.controlName)?.touched"
+              class="text-red-500 text-xs mt-1 px-4">
+            Esta pregunta es obligatoria.
+          </div>
         </div>
-      </div>
-    </form>
-
-
-    <!-- Paso a hoja de 2 -->
-    <div  *ngIf="pasoActual === 2">
-      <form [formGroup]="monitoreoAccesoFinancieroForm" (ngSubmit)="guardarDiagnostico()" class="space-y-4">
-
 
       </form>
     </div>
 
-      <div class="flex justify-between items-center mt-8">
-        <button type="button"
-            (click)="atras()"
-            *ngIf="pasoActual > 1"
-            class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200">
-          Atrás
-        </button>
-        <button type="submit"
-        class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200">
-          Guardar progreso
-        </button>
+<div *ngIf="pasoActual === 3">
+      <h3 class="text-xl font-semibold text-gray-700 mb-4 border-b pb-2">Acceso Financiero (Parte 2)</h3>
+      <form [formGroup]="monitoreoAccesoFinancieroForm" class="space-y-4">
 
-        <button type="button"
-            (click)="siguiente()"
-            *ngIf="pasoActual < totalPasos"
-            class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200">
-          Siguiente
-        </button>
-      </div>
+        <div *ngFor="let pregunta of preguntasAF_Paso3; let i = index">
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-4 py-3 px-4 rounded-lg" [ngClass]="i % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
+            <div class="col-span-1 md:col-span-8">
+              <label [for]="pregunta.controlName" class="block text-gray-700 font-medium">{{ pregunta.label }}</label>
+            </div>
+            <div class="col-span-1 md:col-span-4 flex justify-start md:justify-end">
+              <div *ngIf="pregunta.opciones.length > 0" class="flex items-center space-x-6 shrink-0">
+                <div *ngFor="let opcion of pregunta.opciones" class="flex items-center">
+                  <input type="radio" [id]="pregunta.controlName + '_' + opcion" [value]="opcion" [formControlName]="pregunta.controlName" class="h-4 w-4 text-green-600 border-gray-300 focus:ring-green-500">
+                  <label [for]="pregunta.controlName + '_' + opcion" class="ml-2 block text-sm text-gray-900">{{ opcion }}</label>
+                </div>
+              </div>
+              <div *ngIf="pregunta.opciones.length === 0" class="w-full">
+                <input type="text" [id]="pregunta.controlName" [formControlName]="pregunta.controlName" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+              </div>
+            </div>
+          </div>
+          <div *ngIf="getControlEstatico(pregunta.controlName)?.invalid && getControlEstatico(pregunta.controlName)?.touched"
+              class="text-red-500 text-xs mt-1 px-4">
+            Esta pregunta es obligatoria.
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+<div *ngIf="pasoActual === 4">
+      <h3 class="text-xl font-semibold text-gray-700 mb-4 border-b pb-2">Diagnóstico Empresarial</h3>
+      <form [formGroup]="monitoreoDiagnosticoEmpresarialForm" class="space-y-4">
+
+        <div *ngIf="preguntasDiagnosticoEmpresarial.length === 0" class="text-center py-10 text-gray-500">
+          Cargando preguntas de diagnóstico empresarial...
+        </div>
+
+        <div *ngFor="let pregunta of preguntasDiagnosticoEmpresarial; let i = index">
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-4 py-3 px-4 rounded-lg" [ngClass]="i % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
+            <div class="col-span-1 md:col-span-8">
+              <label [for]="'pregunta_' + pregunta.id_campo" class="block text-gray-700 font-medium">{{ pregunta.nombre_campo }}</label>
+            </div>
+            <div class="col-span-1 md:col-span-4 flex justify-start md:justify-end">
+              <div class="flex items-center space-x-6 shrink-0">
+                <div *ngFor="let opcion of pregunta.opciones" class="flex items-center">
+                  <input type="radio" [id]="'pregunta_' + pregunta.id_campo + '_' + opcion" [value]="opcion" [formControlName]="'pregunta_' + pregunta.id_campo" class="h-4 w-4 text-green-600 border-gray-300 focus:ring-green-500">
+                  <label [for]="'pregunta_' + pregunta.id_campo + '_' + opcion" class="ml-2 block text-sm text-gray-900">{{ opcion }}</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="monitoreoDiagnosticoEmpresarialForm.get('pregunta_' + pregunta.id_campo)?.invalid && monitoreoDiagnosticoEmpresarialForm.get('pregunta_' + pregunta.id_campo)?.touched"
+              class="text-red-500 text-xs mt-1 px-4">
+            Esta pregunta es obligatoria.
+          </div>
+        </div>
+
+      </form>
+    </div>
+    <div class="flex justify-between items-center mt-8">
+      <button type="button"
+          (click)="atras()"
+          *ngIf="pasoActual > 1"
+          class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200">
+        Atrás
+      </button>
+
+      <button type="button"
+          (click)="siguiente()"
+          *ngIf="pasoActual < totalPasos"
+          class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200">
+        Siguiente
+      </button>
+
+      <button type="button"
+          (click)="guardarFormularioCompleto()"
+          *ngIf="pasoActual === totalPasos"
+          class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200">
+        Guardar Monitoreo
+      </button>
+    </div>
   </div>
 </div>

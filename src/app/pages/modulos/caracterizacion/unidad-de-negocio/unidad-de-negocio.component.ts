@@ -92,7 +92,7 @@ ngOnInit(): void {
 
   obtenerDptoUbicacion(): void {
     // Realiza la petición GET a la API y almacena la respuesta en la variable 'paises'
-    this.http.get<any[]>('http://192.168.0.18:3900/api/basica/departamentos')
+    this.http.get<any[]>('http://20.81.172.55:3900/api/basica/departamentos')
       .subscribe({
         next: (data) => {
           this.departamentos = data.sort((a, b) => a.nombre_departamento.localeCompare(b.nombre_departamento));
@@ -106,7 +106,7 @@ ngOnInit(): void {
 
     // ✅ Nueva función para obtener municipios filtrados por el ID del departamento
   obtenerMunicipiosPorDepartamento(idDepartamento: number): void {
-    this.http.get<any[]>(`http://192.168.0.18:3900/api/basica/municipios/${idDepartamento}`)
+    this.http.get<any[]>(`http://20.81.172.55:3900/api/basica/municipios/${idDepartamento}`)
       .subscribe({
         next: (data) => {
           this.municipios = data.sort((a, b) => a.nombre_municipio.localeCompare(b.nombre_municipio));

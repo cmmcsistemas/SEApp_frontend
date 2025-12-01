@@ -25,7 +25,7 @@
             {
                 "glob": "_redirects",
                 "input": "./",
-                "output": "/"
+                "output": "/browser/"
               }
             ],
             "styles": [

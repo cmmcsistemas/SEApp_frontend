@@ -22,21 +22,15 @@
             "tsConfig": "tsconfig.app.json",
             "assets": [
               "src/assets",
-            {
-                "glob": "_redirects",
-                "input": "./",
-                "output": "/browser/"
+              {
+                "glob": "**/*",
+                "input": "public"
               }
             ],
             "styles": [
               "src/app/tailwind.css"
             ],
-            "scripts": [],
-            "server": "src/main.server.ts",
-            "prerender": true,
-            "ssr": {
-              "entry": "src/server.ts"
-            }
+            "scripts": []
           },
           "configurations": {
             "production": {

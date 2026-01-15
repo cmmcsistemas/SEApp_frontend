@@ -1,9 +1,18 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, ViewChild, OnInit, ElementRef, AfterViewInit, Inject, PLATFORM_ID} from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { Chart, ChartConfiguration, ChartData, ChartType } from 'chart.js/auto';
+import { ActivatedRoute } from '@angular/router';
+import { Chart, ChartConfiguration, ChartData, ChartType, registerables } from 'chart.js/auto';
+import { Participante, ParticipanteService } from '../../../services/participante.service';
 
+Chart.register(...registerables);
 
+interface MonitoreoData {
+  etiquetas: string[];
+  data: number[];
+  fecha: string;
+  color: string;
+}
 interface Comment {
   user: string;
   cedula: string;
@@ -32,7 +41,6 @@ interface RadarData {
   }[];
 }
 
-
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -42,8 +50,6 @@ interface RadarData {
 })
 
 export class DashboardParticipanteComponent implements OnInit, AfterViewInit{
-
-
 
   comments: Comment[] = [
     { user: 'Nombre del Usuario', cedula: '123456', contacto: '316 4537665', grupo: 'Emprendedor', proyecto: ['Bordando','CF3-'], total: 50 },
@@ -56,23 +62,56 @@ export class DashboardParticipanteComponent implements OnInit, AfterViewInit{
     },
   ];
 
+  participante: Participante | undefined;
+  isLoading: boolean = true;
+
   @ViewChild('radarCanvas') radarCanvas!: ElementRef;
   radarChart!: Chart;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) { }
+
+  rutaPasos = [
+    { codigo: 'CB', completado: true },
+    { codigo: 'CA', completado: true },
+    { codigo: 'M1', completado: true },
+    { codigo: 'M2', completado: true },
+    { codigo: 'M3', completado: true },
+    { codigo: 'M4', completado: false }
+  ];
+
+  constructor(
+    private participanteService: ParticipanteService,
+    private route: ActivatedRoute
+  ) { }
 
   ngOnInit(): void {
-   // console.log('Datos de perfiles', this.perfiles);
+    const documentoParticipante = '49779308'; // Documento de Sofía Rodríguez
+    this.cargarParticipante(documentoParticipante);
   }
 
   ngAfterViewInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      this.createRadarChart(); // Ahora creamos el gráfico de radar
-    } else {
-      console.log('No se ejecuta createRadarChart en el servidor');
+    if (this.participante) {
+      this.createRadarChart();
     }
   }
 
+  cargarParticipante(documentoOrName: string): void {
+    this.isLoading = true;
+    // 🟢 Usa el método getParticipanteDetalle, que ahora usa la API de búsqueda
+    this.participanteService.getParticipanteDetalle(documentoOrName).subscribe({
+      next: (data: Participante | undefined) => {
+        this.participante = data;
+        this.isLoading = false;
+        // Si ya está listo el ViewChild, renderizar gráfico
+        if (this.radarCanvas) {
+          this.createRadarChart();
+        }
+      },
+      error: (err) => {
+        console.error('Error al cargar detalle del participante:', err);
+        this.isLoading = false;
+      }
+    });
+  }
 
 createRadarChart(): void {
   if (this.radarCanvas?.nativeElement) {
@@ -133,6 +172,33 @@ createRadarChart(): void {
     console.error('Elemento canvas de radar no encontrado en createRadarChart!');
   }
 }
+
+  getRutaClass(index: number): string {
+    if (!this.participante) return 'bg-gray-300 text-gray-700';
+
+    // Suponemos que ruta_finalizada es el número de pasos completados (1 a 6)
+    return index < this.participante.ruta_finalizada
+      ? 'bg-green-600 text-white'
+      : 'bg-gray-300 text-gray-700';
+  }
+
+  // Datos simulados para Plan de Formación y Visitas
+  planFormacion = [
+    { nombre: 'Desarrollo productivo y calidad', cantidad: 3 },
+    { nombre: 'Desarrollo personal y familiar', cantidad: 2 },
+    { nombre: 'Desarrollo organizacional', cantidad: 2 },
+    { nombre: 'Desarrollo tecnológico', cantidad: 1 },
+  ];
+
+  visitasImplementacion = [
+    { num: 1, fecha: '09/06/2023' },
+    { num: 2, fecha: '09/06/2023' },
+    { num: 3, fecha: '09/06/2023' },
+  ];
+
+  visitasSeguimiento = [
+    { num: 1, fecha: '09/06/2024' },
+  ];
 
  }
 

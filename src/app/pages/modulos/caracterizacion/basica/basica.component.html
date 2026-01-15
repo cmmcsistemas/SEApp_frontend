@@ -20,7 +20,7 @@
         <label for="nacionalidad" class="block text-gray-700">Nacionalidad</label>
           <select id="nacionalidad" formControlName="nacionalidad" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
             <option class="text-gray-500" value="" disabled selected>País</option>
-            <option *ngFor="let pais of paises" [value]="pais">{{ pais }}</option>
+            <option *ngFor="let pais of paises" [value]="pais.nombre_pais">{{ pais.nombre_pais }}</option>
           </select>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
@@ -82,14 +82,14 @@
           <label for="grupoParticipante" class="block text-gray-700"></label>
           <select id="grupoParticipante" formControlName="grupoParticipante" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
             <option class="text-gray-500" value="" disabled selected>Grupo del participante</option>
-            <option *ngFor="let tipo of grupoParticipante" [value]="tipo">{{ tipo }}</option>
+            <option *ngFor="let grupoParticipante of gruposPertenecientes" [value]="grupoParticipante.id_grupo">{{ grupoParticipante.nombre_grupo }}</option>
           </select>
         </div>
         <div>
           <label for="proyecto" class="block text-gray-700"></label>
             <select id="proyecto" formControlName="proyecto" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
              <option class="text-gray-500" value="" disabled selected>Seleccione un proyecto</option>
-              <option *ngFor="let proyecto of proyectos" [value]="proyecto">{{ proyecto }}</option>
+              <option *ngFor="let proyecto of proyectos" [value]="proyecto.nombre_subproyecto">{{ proyecto.nombre_subproyecto }}</option>
             </select>
         </div>
       </div>
@@ -104,38 +104,37 @@
             <label for="paisResidencia" class="block text-gray-700"></label>
             <select id="paisResidencia" formControlName="paisResidencia" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
             <option class="text-gray-500" value="" disabled selected>País de residencia</option>
-            <option *ngFor="let paisResidencia of paises" [value]="paisResidencia">{{ paisResidencia }}</option>
+            <option *ngFor="let paisResidencia of paises" [value]="paisResidencia.id_pais">{{ paisResidencia.nombre_pais }}</option>
           </select>
           </div>
         </div>
 
-        <div *ngIf="caracterizacionForm.get('paisResidencia')?.value === 'COLOMBIA'" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+        <div *ngIf="caracterizacionForm.get('paisResidencia')?.value === '1'" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
         <div>
            <label for="departamentoResidencia" class="block text-gray-700">Departamento</label>
             <select id="departamentoResidencia" formControlName="departamentoResidencia" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
             <option class="text-gray-500" value="" disabled selected>Departamento</option>
-            <option *ngFor="let departamentoResidencia of departamentos" [value]="departamentoResidencia">{{ departamentoResidencia }}</option>
+            <option *ngFor="let departamentoResidencia of departamentos" [ngValue]="departamentoResidencia.id_departamento">{{ departamentoResidencia.nombre_departamento }}</option>
             </select>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
           <div>
-                     <label for="municipioResidencia" class="block text-gray-700">Municipio de residencia</label>
-          <input
-          type="text"
-          id="municipioResidencia"
-          formControlName="municipioResidencia"
-          placeholder="Digite y busque un municipio"
-          list="municipios-list"
-          (input)="onMunicipioInputChange($event)"
-          class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500"
-          >
-          <datalist id="municipios-list">
-            <option *ngFor="let municipio of municipiosFiltrados" [value]="municipio"></option>
-          </datalist>
+            <label for="municipioResidencia" class="block text-gray-700">Municipio de residencia</label>
+            <select id="municipioResidencia" formControlName="municipioResidencia" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+            <option *ngFor="let municipioResidencia of municipios" [ngValue]="municipioResidencia.id_municipio">{{ municipioResidencia.nombre_municipio }}</option>
+          </select>
           </div>
           <div>
             <label for="localidad" class="block text-gray-700">Localidad</label>
-            <input type="text" id="localidad" formControlName="localidad" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+              <div *ngIf="caracterizacionForm.get('municipioResidencia')?.value !== 149"
+                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-gray-100 text-gray-700">
+                {{ caracterizacionForm.get('localidad')?.value || 'N/A' }}
+              </div>
+            <select *ngIf="caracterizacionForm.get('municipioResidencia')?.value === 149" id="localidad" formControlName="localidad" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+              <option class="text-gray-500" value="" disabled selected>Localidad</option>
+              <option *ngFor="let localidad of localidades" [value]="localidad.id_localidad">{{ localidad.nombre_localidad }}</option>
+            </select>
           </div>
         </div>
 
@@ -145,7 +144,7 @@
           <label for="entornoResidencia" class="block text-gray-700">Entorno de residencia</label>
           <select id="entornoResidencia" formControlName="entornoResidencia" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
           <option class="text-gray-500" value="" disabled selected>RURAL / URBANO</option>
-          <option *ngFor="let tipo of entornosResidencia" [value]="tipo">{{ tipo }}</option>
+          <option *ngFor="let entornoResidencia of entornosResidencias" [value]="entornoResidencia.id_entorno">{{ entornoResidencia.tipo_entorno }}</option>
           </select>
         </div>
         <div>
@@ -169,7 +168,7 @@
             <label for="genero" class="block text-gray-700"></label>
             <select id="genero" formControlName="genero" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
             <option class="text-gray-500" value="" disabled selected>Género</option>
-            <option class="text-gray-500" value="" selected *ngFor="let genero of generos" [value]="genero">{{ genero }}</option>
+            <option class="text-gray-500" value="" selected *ngFor="let genero of generos" [value]="genero.id_genero">{{ genero.tipo_genero }}</option>
             </select>
           </div>
           <div>
@@ -184,7 +183,7 @@
             <label for="grupoVulnerable" class="block text-gray-700"></label>
             <select id="grupoVulnerable" formControlName="grupoVulnerable" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
             <option class="text-gray-500" value="" disabled selected>Grupo o poblacional vulnerable</option>
-            <option class="text-gray-500" value="" selected *ngFor="let grupoVulnerable of gruposVulnerables" [value]="grupoVulnerable">{{ grupoVulnerable }}</option>
+            <option class="text-gray-500" value="" selected *ngFor="let grupoVulnerable of gruposVulnerables" [value]="grupoVulnerable.id_grupo">{{ grupoVulnerable.tipo_grupo }}</option>
             </select>
           </div>
         </div>
@@ -194,14 +193,14 @@
             <label for="etnia" class="block text-gray-700"></label>
             <select id="etnia" formControlName="etnia" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
             <option class="text-gray-500" value="" disabled selected>Etnia</option>
-            <option class="text-gray-500" value="" selected *ngFor="let etnia of etnias" [value]="etnia">{{ etnia }}</option>
+            <option class="text-gray-500" value="" selected *ngFor="let etnia of etnias" [value]="etnia.id_etnia">{{ etnia.tipo_etnia }}</option>
             </select>
           </div>
           <div>
             <label for="discapacidad" class="block text-gray-700"></label>
             <select id="discapacidad" formControlName="discapacidad" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
             <option class="text-gray-500" value="" disabled selected>Condición de discapacidad</option>
-            <option class="text-gray-500" value="" selected *ngFor="let discapacidad of discapacidades" [value]="discapacidad">{{ discapacidad }}</option>
+            <option class="text-gray-500" value="" selected *ngFor="let discapacidad of discapacidades" [value]="discapacidad.id_discapacidad">{{ discapacidad.tipo_discapacidad }}</option>
             </select>
           </div>
         </div>

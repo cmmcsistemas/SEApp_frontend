@@ -5,6 +5,10 @@ import { CommonModule, NgFor, NgIf, NgClass } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MonitoreoService } from '../../../services/monitoreo.service';
 import { MonitoreoDiagnosticoService } from '../../../services/monitoreo-diagnostico.service';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { Subscription, merge } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+import { HandMetal } from 'lucide-angular';
 
 
 interface Pregunta {
@@ -50,7 +54,7 @@ export class MonitoreosComponent implements OnInit {
     { controlName: 'tieneSeguros', label: '¿Tiene seguros?', opciones: ['Si', 'No'], type: 'select'  },
     { controlName: 'tieneOtros', label: 'Otro', opciones: ['Si', 'No'], type: 'select'  },
     { controlName: 'dependeEconomicamente', label: '¿Depende económicamente de alguien?', opciones: ['Si', 'No'], type: 'select'  },
-    { controlName: 'deQuienDepende', label: '¿De quién depende?', opciones: [], type: 'text'  }, // Tipo texto
+    { controlName: 'deQuienDepende', label: '¿De quién depende?', opciones: ['Padres','Cónyuge','Hijos','Otro familiar', 'Otro no familiar','No aplica'], type: 'text'  }, // Tipo texto
     { controlName: 'horasCuidado', label: '¿Cuántas horas a la semana dedica al cuidado de personas a cargo?', opciones: [], type: 'number'  }, // Tipo texto
     { controlName: 'horasRecreacion', label: '¿Cuántas horas a la semana dedica a la recreación?', opciones: [] }, // Tipo texto
     { controlName: 'negocioTieneRUT', label: '¿El negocio tiene RUT?', opciones: ['Si', 'No'], type: 'select'  },
@@ -64,7 +68,7 @@ export class MonitoreosComponent implements OnInit {
     { controlName: 'ingresosNegocio', label: 'Ingresos del negocio (Mensuales)', opciones: [], type: 'number' },
     { controlName: 'costosDirectos', label: 'Costos directos (Mensuales)', opciones: [], type: 'number' },
     { controlName: 'costosIndirectos', label: 'Costos indirectos (Mensuales)', opciones: [], type: 'number' },
-    { controlName: 'gastosTotales', label: 'Gastos totales (Mensuales)', opciones: [], type: 'number' },
+    { controlName: 'gastosTotalesMensuales', label: 'Gastos totales (Mensuales)', opciones: [], type: 'number' },
     { controlName: 'excedentesNegocio', label: 'Excedentes del negocio', opciones: [], type: 'number' },
     { controlName: 'activoFijo', label: 'Activo fijo', opciones: [], type: 'number' },
     { controlName: 'activoNoFijo', label: 'Activo no fijo', opciones: [], type: 'number' },
@@ -77,7 +81,7 @@ export class MonitoreosComponent implements OnInit {
     { controlName: 'trabajadoresSinContrato', label: 'Total de trabajadores sin contrato', opciones: [], type: 'number' },
     { controlName: 'totalTrabajadores', label: 'Total de trabajadores', opciones: [], type: 'number' },
     { controlName: 'numeroSocios', label: 'Cantidad de socios', opciones: [], type: 'number' },
-    { controlName: 'tipoLocal', label: 'Tipo de local', opciones: ['Propio','Arriendo','Familiar','Otro'], type: 'select' }
+    { controlName: 'tipoLocal', label: 'Tipo de local', opciones: ['Propio','Arriendo','Familiar','Hogar','Otro'], type: 'select' }
   ];
 
   opciones: string[] = [];
@@ -88,7 +92,7 @@ export class MonitoreosComponent implements OnInit {
   opcionesCombustibleCocina: string[] = ['Gas natural','Pipeta de gas','Gasolina','ACPM','Leña','Carbón','Energía eléctrica'];
   opcionesTiempoVivienda: string[] = ['0 a 6 meses','6 a 12 meses', '13 a 24 meses', '25 a 36 meses', '37 a 48 meses', 'Más de 4 años'];
   opcionesDistribucionIngresos: string[] = ['Él o ella misma', 'Esposo (a) o compañero (a)', 'Todos los que aportan al ingreso familiar', 'Todos los integrantes del hogar']
-  codigoCiiu = ['CIIU 1', 'CIIU 2', 'CIIU 3'];
+  codigoCiiu: any[] = [];
 
   private preguntas: any[] = [];
   pasoActual: number = 1;
@@ -98,8 +102,44 @@ export class MonitoreosComponent implements OnInit {
   contador = 0;
   totalPreguntasCalculado: number = 0;
   pasoActualDiagnostico: number = 1;
+  tiposVivienda = [
+    'ARRIENDO',
+    'PROPIA',
+    'FAMILIAR',
+    'OTRA'
+  ];
+  materialesVivienda = [
+    'CARTON',
+    'OBRA GRIS',
+    'OBRA DE ACABADOS',
+    'LAMINA DE METAL',
+    'MADERA',
+    'PREFABRICADO',
+    'LONA'
+  ];
+  combustiblesCocina = [
+    'GAS NATURAL',
+    'PIPETA DE GAS',
+    'GASOLINA',
+    'ACPM',
+    'LEÑA',
+    'CARBON',
+    'ENERGIA ELECTRICA'
+  ];
+  tiemposVivienda = [
+    '0 a 6 meses',
+    '6 a 12 meses',
+    '13 a 24 meses',
+    '25 a 36 meses',
+    '37 a 48 meses',
+    'Más de 4 años'
+  ];
 
-  constructor(private fb: FormBuilder, private apiService: MonitoreoService, private apiDiagnosticoService: MonitoreoDiagnosticoService, private el: ElementRef) {  }
+
+  private formSubscription: Subscription = new Subscription();
+  private calculationSubscription: Subscription = new Subscription();
+
+  constructor(private fb: FormBuilder, private apiService: MonitoreoService, private apiDiagnosticoService: MonitoreoDiagnosticoService, private el: ElementRef, private http: HttpClient) {  }
 
   ngOnInit(): void {
     this.monitoreoGeneralForm = this.fb.group({
@@ -110,19 +150,20 @@ export class MonitoreosComponent implements OnInit {
       asociacionMujeres: ['', Validators.required],
       codigoCiiu: ['', Validators.required],
       sectorEmpresarial: ['', [Validators.required]],
-      arriendoServicios: ['', [Validators.required]],
-      educacion: ['', [Validators.required]],
-      obligaciones: ['', [Validators.required]],
-      gastosOcacionales: ['', [Validators.required]],
-      gastosTotales: ['', [Validators.required]],
-      trabajosIndependientes: ['', [Validators.required]],
-      emprendimientos: ['', [Validators.required]],
-      otrosFamiliares: ['', [Validators.required]],
-      pension: ['', [Validators.required]],
-      empleados: ['', [Validators.required]],
-      otrosIngresos: ['', [Validators.required]],
-      otrosExplique: ['', [Validators.required]],
-      totalIngresos: ['', [Validators.required]],
+      arriendoServicios: [0, [Validators.required]],
+      educacion: [0, [Validators.required]],
+      obligaciones: [0, [Validators.required]],
+      gastosOcacionales: [0, [Validators.required]],
+      gastosCorrientes: [0, [Validators.required]],
+      gastosTotales: [{ value: 0, disabled: true }, [Validators.required]],
+      trabajosIndependientes: [0, [Validators.required]],
+      emprendimientos: [0, [Validators.required]],
+      otrosFamiliares: [0, [Validators.required]],
+      pension: [0, [Validators.required]],
+      empleados: [0, [Validators.required]],
+      otrosIngresos: [0, [Validators.required]],
+      otrosExplique: [''],
+      totalIngresos: [{ value: 0, disabled: true }, [Validators.required]],
       totalIngresosDependiente: ['', [Validators.required]],
       distribucionIngresos:['', [Validators.required]]
     });
@@ -153,18 +194,21 @@ export class MonitoreosComponent implements OnInit {
     const todasPreguntasAF = [...this.preguntasAF_Paso2, ...this.preguntasAF_Paso3];
 
     todasPreguntasAF.forEach(pregunta => {
-      let validators = [Validators.required];
 
+      const camposCalculados = ['gastosTotalesMensuales', 'excedentesNegocio','totalActivos','totalPasivos','patrimonio','totalTrabajadores'];
+      const isCalculated = camposCalculados.includes(pregunta.controlName);
+      let validators = isCalculated ? [] : [Validators.required];
       if (pregunta.type === 'number') {
         // 🟢 Regex que permite solo dígitos (números enteros positivos)
         validators.push(Validators.pattern('^[0-9]+$'));
       }
-      this.monitoreoAccesoFinancieroForm.addControl(pregunta.controlName, new FormControl('', validators));
+
+      this.monitoreoAccesoFinancieroForm.addControl(pregunta.controlName, new FormControl({ value: 0, disabled: isCalculated }, validators));
     });
 
     this.monitoreoDiagnosticoEmpresarialForm = this.fb.group({});
     this.loadPreguntasDiagnosticoEmpresarial();
-
+    this.codigosCiiu();
     // Calculamos el número total de pasos basado en el total de preguntas
     //this.totalPasos = Math.ceil(this.preguntas.length / this.preguntasPorPaso);
     this.paginas = Math.ceil(this.preguntas.length / this.preguntasPorPaso);
@@ -185,13 +229,104 @@ export class MonitoreosComponent implements OnInit {
 
     // Llamada inicial para ver el estado al cargar (probablemente 0)
     // Nota: Es mejor llamar a esto TAMBIÉN después de cargar las preguntas dinámicas en tus 'subscribe'
+    this.setupGastosTotalesCalculation();
+    this.setupIngresosTotalesCalculation();
+    this.setupCalculosNegocioPaso3();
     this.actualizarContador();
+  }
+
+    setupCalculosNegocioPaso3(): void {
+    const form = this.monitoreoAccesoFinancieroForm;
+    const inputs = ['ingresosNegocio', 'costosDirectos', 'costosIndirectos', 'activoFijo', 'activoNoFijo', 'pasivoCorto', 'pasivoLargo', 'trabajadoresContrato', 'trabajadoresSinContrato'];
+
+    const observables = inputs.map(name => form.get(name)!.valueChanges);
+
+    this.calculationSubscription.add(
+      merge(...observables).pipe(debounceTime(100)).subscribe(() => {
+        const ingresos = Number(form.get('ingresosNegocio')?.value) || 0;
+        const directos = Number(form.get('costosDirectos')?.value) || 0;
+        const indirectos = Number(form.get('costosIndirectos')?.value) || 0;
+
+        const activosFijo = Number(form.get('activoFijo')?.value) || 0;
+        const activosNoFijo = Number(form.get('activoNoFijo')?.value) || 0;
+        const pasivosCorto = Number(form.get('pasivoCorto')?.value) || 0;
+        const pasivosLargo = Number(form.get('pasivoLargo')?.value) || 0;
+        const trabajadoresContratos = Number(form.get('trabajadoresContrato')?.value) || 0;
+        const trabajadoresSinContratos = Number(form.get('trabajadoresSinContrato')?.value) || 0;
+
+        const totalGastos = directos + indirectos;
+        const excedentes = ingresos - totalGastos;
+        const totalesActivos = activosFijo + activosNoFijo;
+        const totalesPasivos = pasivosCorto + pasivosLargo;
+        const patrimonios = totalesActivos - totalesPasivos;
+        const totalTrabajadores = trabajadoresContratos + trabajadoresSinContratos;
+
+        // Actualizamos los campos deshabilitados
+        form.get('gastosTotalesMensuales')?.setValue(totalGastos, { emitEvent: false });
+        form.get('excedentesNegocio')?.setValue(excedentes, { emitEvent: false });
+        form.get('totalActivos')?.setValue(totalesActivos, { emitEvent: false });
+        form.get('totalPasivos')?.setValue(totalesPasivos, { emitEvent: false });
+        form.get('patrimonio')?.setValue(patrimonios, { emitEvent: false });
+        form.get('totalTrabajadores')?.setValue(totalTrabajadores, { emitEvent: false });
+      })
+    );
+  }
+
+
+   setupGastosTotalesCalculation(): void {
+    const camposAResumir = [
+      'arriendoServicios',
+      'educacion',
+      'obligaciones',
+      'gastosCorrientes',
+      'gastosOcacionales'
+    ];
+
+    const observables = camposAResumir.map(name =>
+      this.monitoreoGeneralForm.get(name)!.valueChanges
+    );
+
+    this.calculationSubscription = merge(...observables)
+      .pipe(debounceTime(100))
+      .subscribe(() => {
+        const total = camposAResumir.reduce((acc, curr) => {
+          const valor = this.monitoreoGeneralForm.get(curr)?.value;
+          return acc + (Number(valor) || 0);
+        }, 0);
+
+        this.monitoreoGeneralForm.get('gastosTotales')?.setValue(total, { emitEvent: false });
+      });
+  }
+
+  setupIngresosTotalesCalculation (): void {
+       const camposAResumir = [
+      'trabajosIndependientes',
+      'emprendimientos',
+      'otrosFamiliares',
+      'pension',
+      'empleados',
+      'otrosIngresos'
+    ];
+
+    const observables = camposAResumir.map(name =>
+      this.monitoreoGeneralForm.get(name)!.valueChanges
+    );
+
+    this.calculationSubscription = merge(...observables)
+      .pipe(debounceTime(100))
+      .subscribe(() => {
+        const total = camposAResumir.reduce((acc, curr) => {
+          const valor = this.monitoreoGeneralForm.get(curr)?.value;
+          return acc + (Number(valor) || 0);
+        }, 0);
+
+        this.monitoreoGeneralForm.get('totalIngresos')?.setValue(total, { emitEvent: false });
+      });
   }
 
   actualizarContador(): void {
     let respuestas = 0;
     let totalControles = 0;
-
     // Array con todos tus formularios activos
     const formularios = [
       this.monitoreoGeneralForm,
@@ -225,6 +360,19 @@ export class MonitoreosComponent implements OnInit {
     // Mostrar en consola
     console.log(`📊 Progreso General: ${this.contador} de ${this.totalPreguntasCalculado} preguntas completadas.`);
   }
+
+    codigosCiiu(): void{
+      this.http.get<any[]>('http://20.81.172.55:3900/api/basica/ciiu')
+      .subscribe({
+        next: (data) => {
+          this.codigoCiiu = data.map(ciiu => `${ciiu.id} ${ciiu.data}`);
+          console.log('Codigos obtenidos de la API:', this.codigoCiiu);
+        },
+        error: (error) => {
+          console.error('Error al obtener los codigos:', error);
+        }
+      });
+    }
 
     loadPreguntasHogar(): void {
     // Llamada a la API para obtener las preguntas tipo M1 (109-121)

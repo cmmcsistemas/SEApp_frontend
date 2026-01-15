@@ -23,8 +23,8 @@ export class CaracterizacionComponent implements OnInit, OnDestroy {
     // Suscribirse al servicio para escuchar cambios
     this.subscription = this.dataSharingService.grupoParticipante$.subscribe(grupo => {
       // Habilitar los enlaces según el grupo seleccionado
-      this.showUnidadNegocio = grupo === 'MICROEMPRESARIO';
-      this.showIdeaNegocio = grupo === 'EMPRENDEDOR';
+      this.showUnidadNegocio = grupo === '2';
+      this.showIdeaNegocio = grupo === '1';
     });
   }
 

@@ -1,6 +1,6 @@
 
     <h2 class="text-2xl font-bold text-center text-gray-800 mb-2">Formulario de registro</h2>
-    <p class="text-center text-gray-500 mb-6">Preguntas de {{ pasoActual }} a la {{ pasoActual * 10 }}   de {{ totalPasos * 10}}</p>
+    <p class="text-center text-gray-500 mb-6">Preguntas contestadas, {{ contador }}  de {{ totalPasos}}</p>
 
     <form [formGroup]="caracterizacionAmpliadaForm" class="space-y-6">
     <div *ngIf="pasoActual === 1">
@@ -145,10 +145,10 @@
         <button type="button" [style.visibility]="pasoActual > 1 ? 'visible' : 'hidden'" (click)="atras()" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-600 transition-colors duration-200 disabled:opacity-25 disabled:cursor-not-allowed disabled:">
           Atrás
         </button>
-        <button type="button" [style.visibility]="pasoActual === totalPasos ? 'visible' : 'hidden'" (click)="guardarProgreso()" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-600 transition-colors duration-200 disabled:opacity-10 disabled:cursor-not-allowed">
+        <button type="button" [style.visibility]="pasoActual === paginas ? 'visible' : 'hidden'" (click)="guardarProgreso()" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-600 transition-colors duration-200 disabled:opacity-10 disabled:cursor-not-allowed">
           Guardar progreso
         </button>
-        <button type="button"  [style.visibility]="pasoActual < totalPasos ? 'visible' : 'hidden'" (click)="siguiente()" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-600 transition-colors duration-200 disabled:opacity-10 disabled:cursor-not-allowed">
+        <button type="button"  [style.visibility]="pasoActual < paginas ? 'visible' : 'hidden'" (click)="siguiente()" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-600 transition-colors duration-200 disabled:opacity-10 disabled:cursor-not-allowed">
           Siguiente
         </button>
       </div>

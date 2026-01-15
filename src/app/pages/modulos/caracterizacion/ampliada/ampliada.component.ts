@@ -16,8 +16,10 @@ import { DataSharingService } from '../../../../services/data-sharing.service';
 export class AmpliadaComponent implements OnInit, OnDestroy {
   caracterizacionAmpliadaForm!: FormGroup;
   pasoActual: number = 1;
-  preguntasPorPaso = 10;
+  preguntasPorPaso = 9;
   totalPasos = 0;
+  contador = 0;
+  paginas = 2;
 
   opciones: string[] = ['Sí', 'No'];
 
@@ -79,23 +81,42 @@ export class AmpliadaComponent implements OnInit, OnDestroy {
       observaciones: ['']
   });
     this.preguntas = Object.keys(this.caracterizacionAmpliadaForm.controls);
-    this.totalPasos = Math.ceil(this.preguntas.length / this.preguntasPorPaso);
+    this.totalPasos = this.preguntas.length ;
 
     // ✅ Nueva suscripción al valor del formulario completo
     this.formSubscription.add(this.caracterizacionAmpliadaForm.valueChanges.subscribe(value => {
       // Envía el valor del grupo de participante al servicio compartido
       this.dataSharingService.updateGrupoParticipante(value.grupoParticipante);
       // Aquí puedes realizar otras acciones basadas en los cambios de otros campos si es necesario.
+      this.actualizarContador();
       console.log('Cambios en el formulario detectados:', value);
     }));
 
-};
 
+
+    this.actualizarContador();
+};
 
   ngOnDestroy(): void {
     // Es crucial desuscribirse para evitar fugas de memoria
     this.formSubscription.unsubscribe();
   };
+
+  actualizarContador(): void {
+    let count = 0;
+    // Recorre todos los controles del formulario
+    for (const controlName in this.caracterizacionAmpliadaForm.controls) {
+      if (this.caracterizacionAmpliadaForm.controls.hasOwnProperty(controlName)) {
+        const control = this.caracterizacionAmpliadaForm.controls[controlName];
+        // Comprueba si el control tiene un valor que no sea nulo o un string vacío
+        if (control.value !== null && control.value !== '' && (typeof control.value !== 'string' || control.value.trim() !== '')) {
+          count++;
+        }
+      }
+    }
+    this.contador = count;
+    console.log(`Preguntas completadas: ${this.contador} de ${this.preguntas.length}`);
+  }
 
     // ✅ SOLUCIÓN: Agrega el método 'atras()'
   atras(): void {
@@ -107,7 +128,7 @@ export class AmpliadaComponent implements OnInit, OnDestroy {
 
   // ✅ SOLUCIÓN: Agrega el método 'siguiente()'
   siguiente(): void {
-   if (this.pasoActual === this.totalPasos) {
+   if (this.pasoActual === this.paginas) {
       this.guardarProgreso();
     } else {
       this.pasoActual++;

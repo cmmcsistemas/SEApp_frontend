@@ -5,17 +5,17 @@
         <div class="flex items-center space-x-4">
           <mat-icon>person</mat-icon>
           <div>
-            <h3 class="text-xl font-semibold text-gray-200">Nombre Apellido</h3>
-            <p class="text-sm text-gray-200">CC 123456789</p>
+              <h3 class="text-2xl font-bold text-white">{{ participante?.nombre }} {{ participante?.apellido }}</h3>
+              <p class="text-sm text-gray-200">C.C. {{ participante?.documento }}</p>
           </div>
         </div>
-        <span class="text-sm text-gray-200">100/100</span>
+        <span class="text-sm text-gray-200">{{ participante?.ruta_finalizada | number:'1.0-0' }}%</span>
       </div>
       <div class="text-sm text-gray-200 space-y-1">
-        <p>Microempresario</p>
-        <p>Correo: seap&commat;cmmcolombia.org</p>
-        <p>Nº Contacto: 313 000 0000</p>
-        <p>Correo: seap&commat;cmmcolombia.org</p>
+          <p class="font-medium">{{ participante?.microempresario }}</p>
+          <p>Correo: {{ participante?.email }}</p>
+          <p>Nº Contacto: {{ participante?.telefono }}</p>
+          <p>Proyecto: {{ participante?.proyecto }}</p>
       </div>
     </div>
     <div class="flex flex-col space-y-6">
@@ -24,21 +24,20 @@
             <h3 class="text-xl font-semibold text-gray-700">Ruta</h3>
           </div>
           <div class="flex space-x-2">
-            <span class="bg-green-600 text-white rounded-md px-3 py-1">CB</span>
-            <span class="bg-green-600 text-white rounded-md px-3 py-1">CA</span>
-            <span class="bg-green-600 text-white rounded-md px-3 py-1">M1</span>
-            <span class="bg-green-600 text-white rounded-md px-3 py-1">M2</span>
-            <span class="bg-gray-300 text-gray-700 rounded-md px-3 py-1">M3</span>
-            <span class="bg-gray-300 text-gray-700 rounded-md px-3 py-1">M4</span>
+            <span *ngFor="let paso of rutaPasos; let i = index"
+                  [class]="'rounded-md px-3 py-1 font-medium text-sm transition-colors duration-300 ' + getRutaClass(i+1)">
+              {{ paso.codigo }}
+            </span>
           </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 gap-6">
           <div class="bg-green-600 rounded-lg shadow-md p-6 ">
-              <h3 class="text-xl font-semibold text-gray-200">Proyectos</h3>
-          </div>
-
-          <div class="bg-green-600 rounded-lg shadow-md p-6">
-              <h3 class="text-xl font-semibold text-gray-200">Proyectos</h3>
+            <div class="flex justify-between items-center  text-white">
+            <h3 class="text-xl font-semibold ">Proyectos</h3>
+            <div >
+              <mat-icon>keyboard_arrow_down</mat-icon>
+            </div>
+            </div>
           </div>
           </div>
     </div>
@@ -76,26 +75,11 @@
       <div class="text-gray-700">
         <p class="font-semibold text-sm mb-2">Servicios RS</p>
         <div class="space-y-1">
-          <div class="flex justify-between items-center text-sm">
-            <span>Desarrollo productivo y calidad</span>
-            <span class="text-xs text-gray-500">(3)</span>
-          </div>
-          <div class="flex justify-between items-center text-sm">
-            <span>Desarrollo personal y familiar</span>
-            <span class="text-xs text-gray-500">(2)</span>
-          </div>
-          <div class="flex justify-between items-center text-sm">
-            <span>Desarrollo organizacional</span>
-            <span class="text-xs text-gray-500">(2)</span>
-          </div>
-          <div class="flex justify-between items-center text-sm">
-            <span>Desarrollo tecnológico</span>
-            <span class="text-xs text-gray-500">(1)</span>
-          </div>
-          <div class="flex justify-between items-center text-sm">
-            <span>HDLT IV</span>
-            <mat-icon>keyboard_arrow_down</mat-icon>
-          </div>
+              <div *ngFor="let plan of planFormacion" class="flex justify-between items-center text-sm">
+                <span>{{ plan.nombre }}</span>
+                <span class="text-xs text-gray-500">({{ plan.cantidad }})</span>
+              </div>
+              <div><mat-icon>keyboard_arrow_down</mat-icon></div>
         </div>
       </div>
     </div>
@@ -169,10 +153,5 @@
         </div>
       </div>
     </div>
-
-
-
-
-
   </div>
 </div>

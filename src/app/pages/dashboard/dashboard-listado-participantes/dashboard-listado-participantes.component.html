@@ -1,65 +1,79 @@
 <div class="p-6 bg-white rounded-lg shadow-md">
   <h2 class="text-2xl font-bold text-gray-800 mb-6">Base de datos participantes</h2>
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-    <button class="flex items-center bg-gradient-to-r justify-center w-full px-4 py-2 dark:shadow-lg dark:shadow-green-800/80 rounded-md shadow-md hover:bg-gray-100 transition-colors duration-200">
-      <mat-icon class="mr-2">person_add_alt_1</mat-icon>
+    <button  routerLink="/modulos/caracterizacion" class="flex items-center bg-gradient-to-r justify-center w-full px-4 py-2 dark:shadow-lg dark:shadow-green-800/80 rounded-md shadow-md hover:bg-gray-100 transition-colors duration-200">
+
+      <lucide-icon [name]="iconPlus" class="mr-2 h-5 w-5"></lucide-icon>
       Añadir participante
     </button>
 
     <div class="relative w-full">
-      <div class="absolute inset-y-0 left-0 flex items-center dark:shadow-lg dark:shadow-green-800/80 pl-3 pointer-events-none">
-        <mat-icon>search</mat-icon>
-      </div>
-      <input type="text" placeholder="Búsqueda" class="w-full pl-10 pr-4 py-2  rounded-md shadow-md dark:shadow-lg dark:shadow-green-800/80 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">
+            <lucide-icon [name]="iconSearch" class="h-5 w-5"></lucide-icon>
+        </div>
+        <input
+            type="text"
+            [formControl]="busquedaControl"
+            placeholder="Búsqueda por nombre o ID"
+            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-green-500">
     </div>
 
-    <button class="flex items-center justify-center w-full px-4 py-2 dark:shadow-lg dark:shadow-green-800/80 rounded-md shadow-sm hover:bg-gray-100 transition-colors duration-200">
-      <mat-icon class="mr-2">sort</mat-icon>
-      Ordenar
+    <button class="flex items-center justify-center w-full px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-md shadow-md hover:bg-gray-100 transition-colors duration-200">
+        <lucide-icon [name]="iconSort" class="mr-2 h-5 w-5"></lucide-icon>
+        Ordenar
     </button>
 
-    <button class="flex items-center justify-center w-full px-4 py-2 dark:shadow-lg dark:shadow-green-800/80 bg-green-500 text-white rounded-md shadow-md hover:bg-green-600 transition-colors duration-200">
-      <mat-icon class="mr-2">filter_list</mat-icon>
-      Filtrar
+    <button class="flex items-center justify-center w-full px-4 py-2 bg-green-600 text-white rounded-md shadow-md hover:bg-green-700 transition-colors duration-200">
+        <lucide-icon [name]="iconFilter" class="mr-2 h-5 w-5"></lucide-icon>
+        Filtrar
     </button>
   </div>
 
-  <div class="overflow-x-auto rounded-lg">
-    <table class="min-w-full  bg-white  border-gray-200">
-      <thead class="bg-green-600 text-white border-b-green-300 rounded-b-lg">
-        <tr class="rounded-b-lg-lg shadow-xl dark:shadow-gray-800">
-          <th class="py-3 px-4 text-left">Nombre</th>
-          <th class="py-3 px-4 text-left">Proyecto</th>
-          <th class="py-3 px-4 text-left">Número de Identificación</th>
-          <th class="py-3 px-4 text-left">Caracterización finalizada</th>
-          <th class="py-3 px-4 text-left">Monitoreo finalizado</th>
-          <th class="py-3 px-4 text-left">Plan de formación finalizado</th>
-          <th class="py-3 px-4 text-left">Visita de implementación finalizada</th>
-          <th class="py-3 px-4 text-left">Visita de seguimiento finalizada</th>
-        </tr>
-      </thead>
-      <tbody class="text-gray-700">
-        <tr class="border-r border-gray-200 hover:bg-gray-100">
-          <td class="border-r border-gray-200 py-3 px-4">Nombre Apellido</td>
-          <td class="border-r border-gray-200 py-3 px-4">Nombre del proyecto</td>
-          <td class="border-r border-gray-200 py-3 px-4">123456</td>
-          <td class="border-r border-gray-200 py-3 px-4">Sí</td>
-          <td class="border-r border-gray-200 py-3 px-4">No</td>
-          <td class="border-r border-gray-200 py-3 px-4">Sí</td>
-          <td class="border-r border-gray-200 py-3 px-4">No</td>
-          <td class="border-r border-gray-200 py-3 px-4">No</td>
-        </tr>
-        <tr class="border-r border-gray-200 hover:bg-gray-100">
-          <td class="border-r border-gray-200 py-3 px-4">Nombre Apellido</td>
-          <td class="border-r border-gray-200 py-3 px-4">Nombre del proyecto</td>
-          <td class="border-r border-gray-200 py-3 px-4">123456</td>
-          <td class="border-r border-gray-200 py-3 px-4">Sí</td>
-          <td class="border-r border-gray-200 py-3 px-4">No</td>
-          <td class="border-r border-gray-200 py-3 px-4">Sí</td>
-          <td class="border-r border-gray-200 py-3 px-4">No</td>
-          <td class="border-r border-gray-200 py-3 px-4">No</td>
-        </tr>
-        </tbody>
-    </table>
-  </div>
+        <!-- Tabla de Listado -->
+        <div class="overflow-x-auto rounded-lg shadow-lg">
+
+            <!-- Mensaje de Carga -->
+            <div *ngIf="isLoading" class="p-6 text-center text-green-600 font-semibold">
+                Cargando listado de participantes...
+            </div>
+
+            <!-- Mensaje de No Resultados -->
+            <div *ngIf="!isLoading && participantesFiltrados.length === 0" class="p-6 text-center text-gray-500">
+                No se encontraron participantes.
+            </div>
+
+            <!-- Contenido de la Tabla -->
+            <table *ngIf="!isLoading && participantesFiltrados.length > 0" class="min-w-full bg-white">
+                <thead class="bg-green-600 text-white shadow-xl">
+                    <tr>
+                        <!-- Encabezados de la API -->
+                        <th class="py-3 px-4 text-left">Nombre</th>
+                        <th class="py-3 px-4 text-left">Proyecto</th>
+                        <th class="py-3 px-4 text-left">Número de Identificación</th>
+                        <!-- Encabezados de Estado -->
+                        <th class="py-3 px-4 text-left">Caracterización finalizada</th>
+                        <th class="py-3 px-4 text-left">Monitoreo finalizado</th>
+                        <th class="py-3 px-4 text-left">Plan de formación finalizado</th>
+                        <th class="py-3 px-4 text-left">Visita de implementación finalizada</th>
+                        <th class="py-3 px-4 text-left">Visita de seguimiento finalizada</th>
+                    </tr>
+                </thead>
+                 <tbody class="text-gray-700 divide-y divide-gray-200">
+                    <tr *ngFor="let participante of participantesFiltrados" class="hover:bg-green-50 transition-colors duration-150">
+                        <!-- Datos de la API -->
+                        <td class="py-3 px-4 font-semibold text-gray-800 whitespace-nowrap">{{ participante.nombre }} {{ participante.apellido }}</td>
+                        <td class="py-3 px-4 whitespace-nowrap">{{ participante.proyecto || 'N/A' }}</td>
+                        <td class="py-3 px-4 whitespace-nowrap">{{ participante.documento }}</td>
+
+                        <!-- Campos de Estado (Adaptados a 'Sí'/'No') -->
+                        <td class="py-3 px-4 whitespace-nowrap text-sm" [ngClass]="{'text-green-600 font-medium': participante.caracterizacion_finalizada}">{{ getSiNo(participante.caracterizacion_finalizada) }}</td>
+                        <td class="py-3 px-4 whitespace-nowrap text-sm" [ngClass]="{'text-green-600 font-medium': participante.monitoreo_finalizado}">{{ getSiNo(participante.monitoreo_finalizado) }}</td>
+                        <!-- 🟢 CORRECCIÓN NG1: plan_formacion_finalizado -->
+                        <td class="py-3 px-4 whitespace-nowrap text-sm" [ngClass]="{'text-green-600 font-medium': participante.plan_formacion_finalizado}">{{ getSiNo(participante.plan_formacion_finalizado) }}</td>
+                        <td class="py-3 px-4 whitespace-nowrap text-sm" [ngClass]="{'text-green-600 font-medium': participante.visita_implementacion_finalizada}">{{ getSiNo(participante.visita_implementacion_finalizada) }}</td>
+                        <td class="py-3 px-4 whitespace-nowrap text-sm" [ngClass]="{'text-green-600 font-medium': participante.visita_seguimiento_finalizada}">{{ getSiNo(participante.visita_seguimiento_finalizada) }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 </div>

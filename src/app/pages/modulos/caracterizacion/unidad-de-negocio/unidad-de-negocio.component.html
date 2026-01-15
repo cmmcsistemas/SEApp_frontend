@@ -6,7 +6,7 @@
     <form [formGroup]="unidadDeNegocioForm" class="space-y-6">
       <!-- Sección del formulario que cambia por cada paso -->
       <div *ngIf="pasoActual === 1">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30 mb-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-4">
           <div>
             <label for="nombreUnidad" class="block text-gray-700">Nombre de la unidad de negocio</label>
             <input type="text" id="nombreUnidad" formControlName="nombreUnidad" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
@@ -19,7 +19,7 @@
           </select>
           </div>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30 mb-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-4">
           <div>
             <label for="ciudadUbicacion" class="block text-gray-700">Ciudad donde está ubicado su negocio</label>
                <select id="ciudadUbicacion" formControlName="ciudadUbicacion" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
@@ -29,10 +29,17 @@
           </div>
           <div>
             <label for="localidadUbicacion" class="block text-gray-700">Localidad donde está ubicado su negocio</label>
-              <input type="text" id="localidadUbicacion" formControlName="localidadUbicacion" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+              <div *ngIf="unidadDeNegocioForm.get('ciudadUbicacion')?.value?.nombre_municipio !== 'BOGOTA'"
+                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-gray-100 text-gray-700">
+                {{ unidadDeNegocioForm.get('localidadUbicacion')?.value || 'N/A' }}
+              </div>
+            <select *ngIf="unidadDeNegocioForm.get('ciudadUbicacion')?.value?.nombre_municipio === 'BOGOTA'" id="localidadUbicacion" formControlName="localidadUbicacion" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+              <option class="text-gray-500" value="" disabled selected>Localidad</option>
+              <option *ngFor="let localidadUbicacion of localidades" [value]="localidadUbicacion">{{ localidadUbicacion }}</option>
+            </select>
           </div>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30 mb-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-4">
 
           <div>
             <label for="direccion" class="block text-gray-700">Dirección</label>
@@ -46,7 +53,7 @@
       </div>
 
       <div *ngIf="pasoActual === 2">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30 mb-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-4">
           <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
             <div>
               <label for="celular" class="block text-gray-700">Celular</label>
@@ -62,7 +69,7 @@
             <input type="text" id="paginaWeb" formControlName="paginaWeb" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
           </div>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-30 mb-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-4">
             <div>
               <label for="descripcionUnidad" class="block text-gray-700">Descripción de la unidad de negocio</label>
               <input type="text" id="descripcionUnidad" formControlName="descripcionUnidad" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">

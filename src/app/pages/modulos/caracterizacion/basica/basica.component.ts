@@ -8,7 +8,15 @@ import { DataSharingService } from '../../../../services/data-sharing.service';
 import { Subscription, Observable } from 'rxjs';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 
-
+interface RegisterResponse {
+  status?: string;
+  message?: string;
+  id_participante?: number | string;
+  participante?: {
+  id_participante: number | string;
+  [key: string]: any;
+  };
+};
 @Component({
   selector: 'app-basica',
   imports: [ReactiveFormsModule, CommonModule, HttpClientModule],
@@ -33,16 +41,6 @@ caracterizacionForm!: FormGroup;
     'TARJETA DE IDENTIDAD'
   ];
 
-  grupoParticipante = [
-    'EMPRENDEDOR',
-    'MICROEMPRESARIO'
-  ];
-
-  entornosResidencia = [
-    'RURAL',
-    'URBANO'
-  ];
-
   sexos = [
     'HOMBRE',
     'MUJER',
@@ -61,15 +59,19 @@ caracterizacionForm!: FormGroup;
   proyectos: any[] = [];
   departamentos: any[] = [];
   municipios: any[] = [];
+  localidades: any[] = [];
   paises: any[] = [];
   municipiosFiltrados: any[] = [];
   generos: any[] = [];
   etnias: any[] = [];
   discapacidades: any[] = [];
   gruposVulnerables: any[] = [];
+  gruposPertenecientes: any [] =  [];
+  entornosResidencias: any [] = [];
 
 private formSubscription: Subscription = new Subscription();
 private preguntas: any[] = [];
+private apiUrlRegister = 'http://20.81.172.55:3900/api/participantes/register/';
 
 constructor(private fb: FormBuilder, private dataSharingService: DataSharingService, private http: HttpClient) {}
 
@@ -81,17 +83,17 @@ constructor(private fb: FormBuilder, private dataSharingService: DataSharingServ
       email: ['', [Validators.required, Validators.email]],
       proyecto: ['', Validators.required],
       tipoDocumento: ['', Validators.required],
-      noDocumento: ['', Validators.required, Validators.minLength(5)],
+      noDocumento: ['', [Validators.required, Validators.minLength(5)]],
       nacionalidad: ['', Validators.required],
       estadoCivil: ['', Validators.required],
       dptoExpedicion: ['', Validators.required],
       ciudadExpedicion: ['', Validators.required],
       fechaNacimiento: ['', Validators.required],
             // ✅ Segundo bloque de preguntas (Paso 2)
-      edad: [''],
+      edad: [{value: '', disabled: true}],
       grupoParticipante: ['', Validators.required],
       paisResidencia: ['', Validators.required],
-      departamentoResidencia: ['' ],
+      departamentoResidencia: [''],
       municipioResidencia: [''],
       localidad: [''],
       entornoResidencia: ['', Validators.required],
@@ -110,15 +112,39 @@ constructor(private fb: FormBuilder, private dataSharingService: DataSharingServ
     this.totalPasos = this.preguntas.length ;
 
     this.caracterizacionForm.get('paisResidencia')?.valueChanges.subscribe(pais => {
-      if (pais === 'COLOMBIA') {
-        this.caracterizacionForm.get('municipioResidencia')?.enable();
-        this.obtenerMunicipios();
+      const esColombia = pais === '1';
+      if (esColombia) {
+          this.caracterizacionForm.get('municipioResidencia')?.enable();
+          this.caracterizacionForm.get('departamentoResidencia')?.valueChanges.subscribe(departamentoSeleccionado => {
+          if (departamentoSeleccionado) {
+            this.obtenerMunicipios(departamentoSeleccionado);
+            this.caracterizacionForm.get('municipioResidencia')?.enable();
+          } else {
+            this.caracterizacionForm.get('municipioResidencia')?.disable();
+            this.caracterizacionForm.get('municipioResidencia')?.reset('');
+            this.municipios = [];
+          }
+    });
       } else {
         this.caracterizacionForm.get('municipioResidencia')?.disable();
         this.caracterizacionForm.get('municipioResidencia')?.reset('');
-        this.caracterizacionForm.get('localidad')?.reset('');
+        this.caracterizacionForm.get('localidad')?.setValue('');
         this.municipiosFiltrados = [];
       }
+    });
+
+    this.caracterizacionForm.get('municipioResidencia')?.valueChanges.subscribe(municipio => {
+     const esBogota = municipio === 149;
+    console.log('Seleccionado:', esBogota);
+      if (esBogota) {
+        this.caracterizacionForm.get('localidad')?.setValidators(Validators.required);
+        this.caracterizacionForm.get('localidad')?.reset();
+        this.obtenerLocalidades();
+      } else {
+        this.caracterizacionForm.get('localidad')?.clearValidators();
+        this.caracterizacionForm.get('localidad')?.setValue(null, {emitEvent: false});
+      }
+      this.caracterizacionForm.get('localidad')?.updateValueAndValidity();
     });
 
         // Suscripción para calcular la edad automáticamente cuando cambie la fecha de nacimiento
@@ -141,15 +167,15 @@ constructor(private fb: FormBuilder, private dataSharingService: DataSharingServ
     }));
 
     this.actualizarContador();
-
     this.obtenerProyectos();
     this.obtenerPaises();
     this.obtenerDepartamentos();
-    this.obtenerMunicipios();
     this.obtenerGeneros();
     this.obtenerEtnias(),
     this.obtenerDiscapacidades();
     this.obtenerGruposVulnerables();
+    this.obtenerGrupoPerteneciente();
+    this.obtenerEntornoResidencia();
 
   }
 
@@ -171,129 +197,51 @@ constructor(private fb: FormBuilder, private dataSharingService: DataSharingServ
   }
 
     obtenerProyectos(): void {
-    // Realiza la petición GET a la API y almacena la respuesta en la variable 'proyectos'
-    this.http.get<any[]>('http://20.81.172.55:3900/api/basica/subproyectos')
-      .subscribe({
-        next: (data) => {
-          this.proyectos = data.map(proyecto => proyecto.nombre_subproyecto);
-          console.log('Proyectos obtenidos de la API:', this.proyectos);
-        },
-        error: (error) => {
-          console.error('Error al obtener los proyectos:', error);
-        }
-      });
+   this.http.get<any[]>('http://20.81.172.55:3900/api/basica/subproyectos').subscribe(data => this.proyectos = data);
   }
 
   obtenerDepartamentos(): void {
-    // Realiza la petición GET a la API y almacena la respuesta en la variable 'municipios'
-    this.http.get<any[]>('http://20.81.172.55:3900/api/basica/departamentos')
-      .subscribe({
-        next: (data) => {
-          const listadoDepartamentos = data.map(departamento => departamento.nombre_departamento);
-          this.departamentos = listadoDepartamentos.sort((a,b) => a.localeCompare(b));
-
-          console.log('Municipios obtenidos de la API:', this.departamentos);
-        },
-        error: (error) => {
-          console.error('Error al obtener los proyectos:', error);
-        }
-      });
+    this.http.get<any[]>('http://20.81.172.55:3900/api/basica/departamentos').subscribe(data => {
+      this.departamentos = data.sort((a, b) => a.nombre_departamento.localeCompare(b.nombre_departamento));
+    });
   };
 
-    obtenerMunicipios(): void {
-    // Realiza la petición GET a la API y almacena la respuesta en la variable 'municipios'
-    this.http.get<any[]>('http://20.81.172.55:3900/api/basica/municipios')
-      .subscribe({
-        next: (data) => {
-          const listadoMunicipios = data.map(municipio => municipio.nombre_municipio);
-          this.municipios = listadoMunicipios.sort((a,b) => a.localeCompare(b));
+    obtenerMunicipios(idDepartamento: number): void {
+    this.http.get<any[]>(`http://20.81.172.55:3900/api/basica/municipios/${idDepartamento}`).subscribe(data => {
+      this.municipios = data.sort((a, b) => a.nombre_municipio.localeCompare(b.nombre_municipio));
+    });
+  };
 
-          console.log('Municipios obtenidos de la API:', this.municipios);
-        },
-        error: (error) => {
-          console.error('Error al obtener los proyectos:', error);
-        }
-      });
+  obtenerLocalidades(): void {
+   this.http.get<any[]>('http://20.81.172.55:3900/api/basica/localidades').subscribe(data => this.localidades = data);
   };
 
     obtenerPaises(): void {
-    // Realiza la petición GET a la API y almacena la respuesta en la variable 'paises'
-    this.http.get<any[]>('http://20.81.172.55:3900/api/basica/paises')
-      .subscribe({
-        next: (data) => {
-          const listadoPaises = data.map(pais => pais.nombre_pais);
-          this.paises = listadoPaises.sort((a,b) => a.localeCompare(b));
-
-          console.log('Paises obtenidos de la API:', this.paises);
-        },
-        error: (error) => {
-          console.error('Error al obtener los proyectos:', error);
-        }
-      });
+   this.http.get<any[]>('http://20.81.172.55:3900/api/basica/paises').subscribe(data => this.paises = data);
   };
 
     obtenerGeneros(): void {
-    // Realiza la petición GET a la API y almacena la respuesta en la variable 'paises'
-    this.http.get<any[]>('http://20.81.172.55:3900/api/basica/generos')
-      .subscribe({
-        next: (data) => {
-          const listadoGeneros = data.map(genero => genero.tipo_genero);
-          this.generos = listadoGeneros.sort((a,b) => a.localeCompare(b));
-
-          console.log('Generos obtenidos de la API:', this.generos);
-        },
-        error: (error) => {
-          console.error('Error al obtener los generos:', error);
-        }
-      });
+    this.http.get<any[]>('http://20.81.172.55:3900/api/basica/generos').subscribe(data => this.generos = data);
   };
 
     obtenerDiscapacidades(): void {
-    // Realiza la petición GET a la API y almacena la respuesta en la variable 'paises'
-    this.http.get<any[]>('http://20.81.172.55:3900/api/basica/discapacidades')
-      .subscribe({
-        next: (data) => {
-          const listadoDiscapacidades = data.map(discapacidad => discapacidad.tipo_discapacidad);
-          this.discapacidades = listadoDiscapacidades.sort((a,b) => a.localeCompare(b));
-
-          console.log('Discapacidades obtenidos de la API:', this.discapacidades);
-        },
-        error: (error) => {
-          console.error('Error al obtener las discapacidades:', error);
-        }
-      });
+    this.http.get<any[]>('http://20.81.172.55:3900/api/basica/discapacidades').subscribe(data => this.discapacidades = data);
   };
 
     obtenerEtnias(): void {
-    // Realiza la petición GET a la API y almacena la respuesta en la variable 'paises'
-    this.http.get<any[]>('http://20.81.172.55:3900/api/basica/etnias')
-      .subscribe({
-        next: (data) => {
-          const listadoEtnias = data.map(etnia => etnia.tipo_etnia);
-          this.etnias = listadoEtnias.sort((a,b) => a.localeCompare(b));
-
-          console.log('Generos obtenidos de la API:', this.etnias);
-        },
-        error: (error) => {
-          console.error('Error al obtener los generos:', error);
-        }
-      });
+    this.http.get<any[]>('http://20.81.172.55:3900/api/basica/etnias').subscribe(data => this.etnias = data);
   };
 
     obtenerGruposVulnerables(): void {
-    // Realiza la petición GET a la API y almacena la respuesta en la variable 'paises'
-    this.http.get<any[]>('http://20.81.172.55:3900/api/basica/vulnerable')
-      .subscribe({
-        next: (data) => {
-          const listadoGruposVulneravilidades = data.map(grupo_vulnerable => grupo_vulnerable.tipo_grupo);
-          this.gruposVulnerables = listadoGruposVulneravilidades.sort((a,b) => a.localeCompare(b));
+    this.http.get<any[]>('http://20.81.172.55:3900/api/basica/vulnerable').subscribe(data => this.gruposVulnerables = data);
+  };
 
-          console.log('Grupos vulnerables obtenidos de la API:', this.gruposVulnerables);
-        },
-        error: (error) => {
-          console.error('Error al obtener los grupos vulnerables:', error);
-        }
-      });
+  obtenerGrupoPerteneciente(): void {
+    this.http.get<any[]>('http://20.81.172.55:3900/api/basica/grupoPerteneciente').subscribe(data => this.gruposPertenecientes = data);
+  };
+
+  obtenerEntornoResidencia(): void {
+    this.http.get<any[]>('http://20.81.172.55:3900/api/basica/entornos').subscribe(data => this.entornosResidencias = data);
   };
 
     // Método para filtrar la lista de proyectos basado en la entrada del usuario
@@ -351,22 +299,56 @@ constructor(private fb: FormBuilder, private dataSharingService: DataSharingServ
     }
   }
 
-  guardarProgreso() {
+  guardarProgreso() : void {
     if (this.caracterizacionForm.valid) {
-      const data = this.caracterizacionForm.value;
-      const jsonString = JSON.stringify(data, null, 2);
-      console.log('Datos del formulario:', jsonString);
-      alert('Progreso guardado correctamente.');
-    } else {
-      // ✅ Líneas añadidas para depuración
-      this.caracterizacionForm.markAllAsTouched();
-      console.error('El formulario no es válido. Los siguientes campos tienen errores:');
-      Object.keys(this.caracterizacionForm.controls).forEach(controlName => {
-        const control = this.caracterizacionForm.get(controlName);
-        if (control?.invalid) {
-          console.error(`Campo: ${controlName}, Errores: `, control.errors);
+      const rawValues = this.caracterizacionForm.getRawValue();
+
+      // Mapeo de IDs (Buscamos el ID basado en el objeto seleccionado en el formulario)
+      // Nota: Si tus [ngValue] en el HTML ya pasan el objeto completo, esto es directo.
+      const payload = {
+        nombre: rawValues.nombre,
+        apellido: rawValues.apellido,
+        documento: Number(rawValues.noDocumento),
+        email: rawValues.email,
+        telefono: Number(rawValues.numeroCelular),
+        fecha_nacimiento: rawValues.fechaNacimiento,
+        id_genero: rawValues.genero,
+        id_etnia: rawValues.etnia,
+        id_discapacidad: rawValues.discapacidad,
+        id_entorno: rawValues.entornoResidencia,
+        id_grupo: rawValues.grupoParticipante,
+        id_grupo_vulnerable: rawValues.grupoVulnerable,
+        id_direccion_info: {
+          tipo_via: "", // Valores temporales ya que el form actual tiene un solo string 'direccion'
+          numero_principal: 0,
+          prefijo: "",
+          numero_via: 0,
+          prefijo_dos: "",
+          complemento: rawValues.direccion
+        },
+        ubicacion_info: {
+          id_pais: rawValues.paisResidencia,
+          id_municipio: rawValues.municipioResidencia,
+          id_departamento: rawValues.departamentoResidencia,
+          id_localidad: rawValues.localidad || null
+        }
+      };
+
+      console.log('Enviando datos al backend:', payload);
+
+      this.http.post<RegisterResponse>(this.apiUrlRegister, payload).subscribe({
+        next: (response) => {
+          // Buscamos el ID en la raíz o dentro del objeto participante
+          const idGenerado = response.id_participante || response.participante?.id_participante || 'generado';
+          alert(`Participante ${idGenerado} registrado correctamente.`);
+        },
+        error: (error) => {
+          console.error('Error en el registro:', error);
+          alert('Hubo un error al registrar al participante.');
         }
       });
+    } else {
+      this.caracterizacionForm.markAllAsTouched();
       alert('Por favor, complete todos los campos requeridos.');
     }
   }

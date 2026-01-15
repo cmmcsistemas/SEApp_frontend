@@ -22,6 +22,7 @@ export class UnidadDeNegocioComponent implements OnInit, OnDestroy {
   private preguntas: any[] = [];
   departamentos: any[] = [];
   municipios: any[] = [];
+  localidades: any[] = [];
 
   constructor(private fb: FormBuilder, private http: HttpClient) {}
 
@@ -57,6 +58,21 @@ ngOnInit(): void {
         this.municipios = [];
       }
     });
+
+        this.unidadDeNegocioForm.get('ciudadUbicacion')?.valueChanges.subscribe(municipio => {
+      const esBogota = municipio && municipio.nombre_municipio === 'BOGOTA';
+      if (esBogota) {
+        this.unidadDeNegocioForm.get('localidadUbicacion')?.setValidators(Validators.required);
+        this.unidadDeNegocioForm.get('localidadUbicacion')?.reset();
+        this.obtenerLocalidades();
+      } else {
+        this.unidadDeNegocioForm.get('localidadUbicacion')?.clearValidators();
+        this.unidadDeNegocioForm.get('localidadUbicacion')?.reset();
+        this.unidadDeNegocioForm.get('localidadUbicacion')?.setValue('N/A', {emitEvent: false});
+      }
+      this.unidadDeNegocioForm.get('localidadUbicacion')?.updateValueAndValidity();
+    });
+
 
     // ✅ Nueva suscripción al valor del formulario completo
     this.formSubscription.add(this.unidadDeNegocioForm.valueChanges.subscribe(value => {
@@ -117,6 +133,20 @@ ngOnInit(): void {
           this.municipios = []; // Limpiar la lista en caso de error
         }
       });
+  }
+
+    obtenerLocalidades(): void {
+    this.http.get<any[]>('http://20.81.172.55:3900/api/basica/localidades')
+    .subscribe({
+      next: (data) => {
+        const listadoLocalidades = data.map(localidad => localidad.nombre_localidad);
+        this.localidades = listadoLocalidades.sort((a,b) => a.localeCompare(b));
+        console.log('Localidades obtenidos de la API:', this.localidades);
+      },
+      error: (error) => {
+        console.error('Error al obtener las localidades:', error);
+      }
+    });
   }
 
   siguiente(): void {

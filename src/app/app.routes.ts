@@ -11,8 +11,13 @@ import { VisitasSeguimientoComponent } from './pages/modulos/visitas-seguimiento
 import { DashboardListadoParticipantesComponent } from './pages/dashboard/dashboard-listado-participantes/dashboard-listado-participantes.component';
 
 export const routes: Routes = [
- {path: '', redirectTo: 'dashboard/odp', pathMatch: 'full'},
-    {
+ {path: '', redirectTo: 'login', pathMatch: 'full'},
+  {path: 'login', loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent)},
+  {path: 'account', loadComponent: () => import('./pages/account/account.component').then(m => m.AccountComponent)},
+
+
+
+  {
       path: 'dashboard',
       component: DashboardComponent, // Contenedor padre
       children: [
@@ -61,8 +66,6 @@ export const routes: Routes = [
         },
     ]
   },
-  {path: 'login', loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent)},
-  {path: 'account', loadComponent: () => import('./pages/account/account.component').then(m => m.AccountComponent)},
 
 
 ];

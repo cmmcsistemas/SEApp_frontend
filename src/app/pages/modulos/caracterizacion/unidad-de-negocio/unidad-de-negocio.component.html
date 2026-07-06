@@ -3,6 +3,25 @@
     <h2 class="text-2xl font-bold text-center text-gray-800 mb-2">Formulario de Unidad de Negocio</h2>
     <p class="text-center text-gray-500 mb-6">Preguntas contestadas {{ contador}} de {{totalPasos}} </p>
 
+    <div *ngIf="idRespuestaActual" class=" block text-left text-sm/6 bg-white border-2 border-gray-300 rounded-xl shadow-sm justify-between items-start md:items-center space-y-4 md:space-y-0 mb-4">
+    <div class="block items-start space-x-4 px-6 text-sm/6">
+      <div>
+        <p class="text-sm font-bold text-gray-700 uppercase tracking-widest">Participante en edición</p>
+        <h3 class="text-sm  font-black text-gray-500 leading-tight uppercase">
+          {{ nombreParticipanteActual || '---' }}
+        </h3>
+        <p class="text-sm text-gray-500 font-medium">
+          Doc: {{ documentoParticipanteActual }} | ID: {{ idParticipanteActual }}
+        </p>
+      </div>
+    </div>
+    </div>
+
+    <div *ngIf="idRespuestaActual" class="bg-emerald-50 border border-gray-300 p-4 rounded-lg mb-6 shadow-sm">
+      <p class="text-gray-600 font-bold">Participante: <span class="font-normal text-gray-500">{{ nombreParticipanteActual }} (ID: {{ idParticipanteActual }})</span></p>
+      <p class="text-gray-600 font-bold">ID Respuesta: <span class="font-normal text-gray-500">#{{ idRespuestaActual }}</span></p>
+    </div>
+
     <form [formGroup]="unidadDeNegocioForm" class="space-y-6">
       <!-- Sección del formulario que cambia por cada paso -->
       <div *ngIf="pasoActual === 1">
@@ -88,13 +107,13 @@
       </div>
 
       <div class="flex justify-between items-center mt-8">
-        <button type="button" (click)="atras()" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200" [disabled]="pasoActual === 1">
+        <button type="button" [style.visibility]="pasoActual > 1 ? 'visible' : 'hidden'" (click)="atras()" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200">
           Atrás
         </button>
-        <button type="button" (click)="guardarProgreso()" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200">
+        <button type="button" [style.visibility]="pasoActual === paginas ? 'visible' : 'hidden'"(click)="guardarProgreso()" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200">
           Guardar progreso
         </button>
-        <button type="button" (click)="siguiente()" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200" [disabled]="pasoActual === 2">
+        <button type="button" [style.visibility]="pasoActual < paginas ? 'visible' : 'hidden'" (click)="siguiente()" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200 ">
           Siguiente
         </button>
       </div>

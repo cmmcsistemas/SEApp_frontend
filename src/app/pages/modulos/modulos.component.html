@@ -1,1 +1,14 @@
-<router-outlet></router-outlet>
+<div class="flex h-screen bg-gray-100 font-sans">
+  <!-- El Sidebar solo aparece cuando estamos en la ruta /modulos -->
+  <app-sidebar></app-sidebar>
+
+  <div class="flex-1 flex flex-col overflow-hidden">
+    <!-- El Header solo aparece cuando estamos en la ruta /modulos -->
+    <app-header></app-header>
+
+    <main class="flex-1 overflow-y-auto p-6 bg-slate-50">
+      <!-- Aquí se cargarán caracterización, misiones, etc. -->
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

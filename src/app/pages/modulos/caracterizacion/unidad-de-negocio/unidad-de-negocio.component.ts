@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CommonModule } from '@angular/common';
 import { Subscription, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { DataSharingService } from '../../../../services/data-sharing.service';
 
 @Component({
   selector: 'app-unidad-de-negocio',
@@ -18,13 +19,37 @@ export class UnidadDeNegocioComponent implements OnInit, OnDestroy {
   paginas = 0;
   contador = 0;
 
+  idParticipanteActual: any = null;
+  nombreParticipanteActual: string | null = null;
+  idRespuestaActual: any = null;
+  documentoParticipanteActual: string | number | null = null;
+
   private formSubscription: Subscription = new Subscription();
   private preguntas: any[] = [];
   departamentos: any[] = [];
   municipios: any[] = [];
   localidades: any[] = [];
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {}
+    // 🟢 MAPEO DE IDs DE CAMPO PARA UNIDAD DE NEGOCIO
+  // Estos IDs deben coincidir con los registros en tu tabla 'campo_formulario'
+  private readonly campoIdMapping: { [key: string]: number } = {
+    nombreUnidad: 44,
+    dptoUbicacion: 52,
+    ciudadUbicacion: 54,
+    localidadUbicacion: 55,
+    direccion: 45,
+    telefonoFijo: 57,
+    celular: 58,
+    email: 59,
+    paginaWeb: 60,
+    descripcionUnidad: 61,
+    listadoProducto: 62,
+    fechaCreacion: 63
+  };
+
+   private apiUrlAddData = 'http://20.81.172.55:3900/api/participantes/add-data/';
+
+  constructor(private fb: FormBuilder, private http: HttpClient, private dataSharingService: DataSharingService) {}
 
 ngOnInit(): void {
     this.unidadDeNegocioForm = this.fb.group({
@@ -163,28 +188,55 @@ ngOnInit(): void {
 
   guardarProgreso(): void {
     if (this.unidadDeNegocioForm.valid) {
-      const data = this.unidadDeNegocioForm.value;
+      const idRespuesta = this.dataSharingService.getIdRespuesta();
 
-      const sanitizedData = {
-        ...data,
-        dptoUbicacion: data.dptoUbicacion?.nombre_departamento || null,
-        ciudadUbicacion: data.ciudadUbicacion?.nombre_municipio || null,
+      if (!idRespuesta) {
+        alert('Error: No se encontró el ID de respuesta. Por favor, complete primero los datos básicos.');
+        return;
+      }
+
+      const rawValues = this.unidadDeNegocioForm.getRawValue();
+
+      // Mapeamos los campos del formulario al array formulario_data
+      const formulario_data = Object.keys(rawValues).map(key => {
+        const valorOriginal = rawValues[key];
+        let valorFinal = valorOriginal;
+
+        // Tratamiento para objetos (Deptos, Municipios, Localidades)
+        if (valorOriginal && typeof valorOriginal === 'object') {
+          valorFinal = valorOriginal.nombre_municipio ||
+                       valorOriginal.nombre_departamento ||
+                       valorOriginal.nombre_localidad ||
+                       JSON.stringify(valorOriginal);
+        }
+
+        return {
+          id_campo: this.campoIdMapping[key],
+          valor: (valorFinal === null || valorFinal === undefined) ? '' : valorFinal.toString()
+        };
+      }).filter(item => item.id_campo !== undefined);
+
+      const payload = {
+        id_respuesta: idRespuesta,
+        formulario_data: formulario_data
       };
-      const jsonString = JSON.stringify(sanitizedData, null, 2);
-      console.log('Datos del formulario:', jsonString);
-      alert('Progreso guardado correctamente.');
-    } else {
-      // ✅ Líneas añadidas para depuración
-      this.unidadDeNegocioForm.markAllAsTouched();
-      console.error('El formulario no es válido. Los siguientes campos tienen errores:');
-      Object.keys(this.unidadDeNegocioForm.controls).forEach(controlName => {
-        const control = this.unidadDeNegocioForm.get(controlName);
-        if (control?.invalid) {
-          console.error(`Campo: ${controlName}, Errores: `, control.errors);
+
+      console.log('Enviando Unidad de Negocio:', payload);
+
+      this.http.post(this.apiUrlAddData, payload).subscribe({
+        next: (response) => {
+          console.log('Inserción exitosa:', response);
+          alert('Información de la Unidad de Negocio guardada correctamente.');
+        },
+        error: (error) => {
+          console.error('Error al insertar datos:', error);
+          alert('Hubo un error al guardar la información en la base de datos.');
         }
       });
+
+    } else {
+      this.unidadDeNegocioForm.markAllAsTouched();
       alert('Por favor, complete todos los campos requeridos.');
     }
-
   }
 }

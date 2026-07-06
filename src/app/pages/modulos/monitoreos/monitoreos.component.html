@@ -31,17 +31,36 @@
     <p class="text-center text-gray-500 mb-8">
       Preguntas contestadas, {{ contador }}  de {{ totalPreguntasCalculado}}. Por favor, responde a todas las preguntas de esta sección.
     </p>
+
+    <div *ngIf="idRespuestaActual" class=" block text-left text-sm/6 bg-white border-2 border-gray-300 rounded-xl shadow-sm justify-between items-start md:items-center space-y-4 md:space-y-0 mb-4">
+    <div class="block items-start space-x-4 px-6 text-sm/6">
+      <div>
+        <p class="text-sm font-bold text-gray-700 uppercase tracking-widest">Participante en edición</p>
+        <h3 class="text-sm  font-black text-gray-500 leading-tight uppercase">
+          {{ nombreParticipanteActual || '---' }}
+        </h3>
+        <p class="text-sm text-gray-500 font-medium">
+          Doc: {{ documentoParticipanteActual }} | ID: {{ idParticipanteActual }}
+        </p>
+      </div>
+    </div>
+    </div>
+
+    <div *ngIf="idRespuestaActual" class="bg-emerald-50 border border-gray-300 p-4 rounded-lg mb-6 shadow-sm">
+      <p class="text-gray-600 font-bold">Participante: <span class="font-normal text-gray-500">{{ nombreParticipanteActual }} (ID: {{ idParticipanteActual }})</span></p>
+      <p class="text-gray-600 font-bold">ID Respuesta: <span class="font-normal text-gray-500">#{{ idRespuestaActual }}</span></p>
+    </div>
     <div *ngIf="pasoActual === 1" >
       <h3 class="text-xl font-semibold text-gray-700 mb-4 border-b pb-2">Información General</h3>
        <form [formGroup]="monitoreoGeneralForm" class="space-y-4">
           <div class="flex gap-4 ">
-            <div class="flex-1 w-32 gap-4">
+            <!-- <div class="flex-1 w-32 gap-4">
               <label for="grupoParticipante" class="block text-gray-700">Grupo de participantes</label>
               <select id="grupoParticipante" formControlName="grupoParticipante" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
                 <option *ngFor="let grupoParticipante of opcionesGrupoParticipante" [value]="grupoParticipante">{{ grupoParticipante }}</option>
                 <option class="text-gray-500" value="" disabled selected>Seleccione</option>
           </select>
-            </div>
+            </div> -->
             <div class="flex-1 w-32 gap-4">
               <label for="estadoParticipante" class="block text-gray-700">Estado actual del participante</label>
                 <select id="estadoParticipante" formControlName="estadoParticipante" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
@@ -56,11 +75,37 @@
                 <option class="text-gray-500" value="" disabled selected>Seleccione</option>
                 </select>
             </div>
+                        <div class="flex-1 w-32 gap-4">
+                <label for="nombreAsociacion" class="block text-gray-700 ">Nombre de la asociación</label>
+
+                <!-- Se muestra el input si la respuesta NO es 'No' -->
+                <input *ngIf="monitoreoGeneralForm.get('perteneceAsociacion')?.value !== 'No'; else showNullNombre"
+                  type="text" id="nombreAsociacion" formControlName="nombreAsociacion"
+                  class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+
+                <!-- Plantilla para mostrar NULL -->
+                <ng-template #showNullNombre>
+                  <div class="mt-1 p-2 bg-gray-100 border border-gray-200 rounded-md text-gray-400 font-mono text-sm italic select-none">
+                    NULL
+                  </div>
+                </ng-template>
+            </div>
             </div>
           <div class="flex gap-4">
             <div class="flex-1 w-32 gap-4">
-              <label for="nombreAsociacion" class="block text-gray-700">Nombre de la asociación</label>
-              <input type="text" id="nombreAsociacion" formControlName="nombreAsociacion"  placeholder="" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+              <label for="asociacionMujeres" class="block text-gray-700">¿Es una asociación de mujeres?</label>
+              <select *ngIf="monitoreoGeneralForm.get('perteneceAsociacion')?.value !== 'No'; else showNullMujeres"
+                    id="asociacionMujeres" formControlName="asociacionMujeres"
+                    class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+                    <option value="" disabled selected>Seleccione</option>
+                    <option *ngFor="let opt of opcionesSiNo" [value]="opt">{{ opt }}</option>
+                  </select>
+                  <!-- Plantilla para mostrar NULL -->
+                  <ng-template #showNullMujeres>
+                    <div class="mt-1 p-2 bg-gray-100 border border-gray-200 rounded-md text-gray-400 font-mono text-sm italic select-none">
+                      NULL
+                    </div>
+                  </ng-template>
             </div>
             <div class="flex-1 w-32 gap-4">
               <label for="codigoCiiu" class="block text-gray-700">Código CIIU</label>
@@ -70,22 +115,13 @@
               </select>
             </div>
             <div class="flex-1 w-32 gap-4">
-              <label for="asociacionMujeres" class="block text-gray-700">¿Es una asociación de mujeres?</label>
-              <select id="asociacionMujeres" formControlName="asociacionMujeres" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
-                <option class="text-gray-500" value="" disabled selected>Seleccione</option>
-                <option *ngFor="let asociacionMujeres of opcionesSiNo" [value]="asociacionMujeres">{{ asociacionMujeres }}</option>
-              </select>
-            </div>
-          </div>
-          <div class="flex gap-4">
-            <div class="flex-1 w-32 gap-4">
             <label for="sectorEmpresarial" class="block text-gray-700">Sector empresarial</label>
               <select id="sectorEmpresarial" formControlName="sectorEmpresarial" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
                 <option class="text-gray-500" value="" disabled selected>Seleccione</option>
                 <option *ngFor="let sectorEmpresarial of opcionesSectorEmpresarial" [value]="sectorEmpresarial">{{ sectorEmpresarial }}</option>
               </select>
             </div>
-            </div>
+          </div>
             <div>
               <h2 class="text-xl font-semibold text-gray-700 mb-4 border-b mt-4 ">Formato gastos del grupo familiar</h2>
             </div>
@@ -217,7 +253,21 @@
         <div class="grid grid-cols-2 md:grid-cols-2 gap-6 mb-4">
           <div>
             <label for="estrato" class="block text-gray-700">Estrato</label>
-            <input type="text" id="estrato" formControlName="estrato" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <input type="number"
+         id="estrato"
+         formControlName="estrato"
+         min="0"
+         max="6"
+         (keypress)="soloNumeros($event)"
+         class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500"
+         [ngClass]="{'border-red-500': monitoreoDiagnosticoForm.get('estrato')?.invalid && monitoreoDiagnosticoForm.get('estrato')?.touched}">
+        <div *ngIf="monitoreoDiagnosticoForm.get('estrato')?.invalid && (monitoreoDiagnosticoForm.get('estrato')?.dirty || monitoreoDiagnosticoForm.get('estrato')?.touched)"
+            class="text-red-500 text-xs mt-1">
+          <span *ngIf="monitoreoDiagnosticoForm.get('estrato')?.errors?.['required']">El estrato es obligatorio.</span>
+          <span *ngIf="monitoreoDiagnosticoForm.get('estrato')?.errors?.['min'] || monitoreoDiagnosticoForm.get('estrato')?.errors?.['max'] || monitoreoDiagnosticoForm.get('estrato')?.errors?.['pattern']">
+            Debe ser un número entre 0 y 6.
+          </span>
+        </div>
           </div>
           <div>
             <label for="tiempoVivienda" class="block text-gray-700">Tiempo en la vivienda</label>

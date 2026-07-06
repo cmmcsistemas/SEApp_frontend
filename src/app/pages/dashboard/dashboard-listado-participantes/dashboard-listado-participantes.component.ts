@@ -1,110 +1,104 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, ReactiveFormsModule } from '@angular/forms'; // 🟢 Importación de ReactiveFormsModule
-import { Participante, ParticipanteService } from '../../../services/participante.service';
-import { LucideAngularModule, Search, Plus, SortAsc, Filter } from 'lucide-angular';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-
+import { LucideAngularModule, Search, Plus, Filter, X, Download } from 'lucide-angular';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import {
+  ReporteParticipantesService,
+  ColumnaReporte,
+  FiltrosListado,
+} from '../../../services/reporte-participantes.service';
 
 @Component({
   selector: 'app-dashboard-listado-participantes',
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    LucideAngularModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule, RouterLink],
   templateUrl: './dashboard-listado-participantes.component.html',
-  styleUrl: './dashboard-listado-participantes.component.css'
+  styleUrl: './dashboard-listado-participantes.component.css',
 })
 export class DashboardListadoParticipantesComponent implements OnInit {
-// Íconos de Lucide (reemplazo de mat-icon)
+  private reporteService = inject(ReporteParticipantesService);
+
+  // Íconos de Lucide
   iconPlus = Plus;
   iconSearch = Search;
-  iconSort = SortAsc;
   iconFilter = Filter;
+  iconClear = X;
+  iconDownload = Download;
 
-  // Datos
-  participantesOriginales: Participante[] = [];
-  participantesFiltrados: Participante[] = [];
+  // Datos de la tabla
+  columnas: ColumnaReporte[] = [];
+  datos: Array<Record<string, any>> = [];
+  total = 0;
 
-  // Búsqueda
-  busquedaControl = new FormControl('');
+  // Opciones para los desplegables
+  modulosDisponibles: string[] = [];
+  proyectosDisponibles: string[] = [];
 
-  // Estado de carga
-  isLoading: boolean = true;
+  isLoading = true;
 
-  // Mapeo para los encabezados de la tabla
-  columnasVisibles = [
-    { key: 'nombre_completo', label: 'Nombre' },
-    { key: 'proyecto', label: 'Proyecto' },
-    { key: 'documento', label: 'Número de Identificación' },
-    { key: 'caracterizacion_finalizada', label: 'Caracterización finalizada' },
-    { key: 'monitoreo_finalizado', label: 'Monitoreo finalizado' },
-    { key: 'plan_formacion_finalizado', label: 'Plan de formación finalizado' },
-    { key: 'visita_implementacion_finalizada', label: 'Visita de implementación finalizada' },
-    { key: 'visita_seguimiento_finalizada', label: 'Visita de seguimiento finalizada' },
-  ];
-
-  constructor(private participanteService: ParticipanteService) {
-    // Inicializar Lucide Icons
-    LucideAngularModule.pick({ Search, Plus, SortAsc, Filter });
-  }
+  // Formulario de filtros
+  filtros = new FormGroup({
+    participante: new FormControl(''),
+    nombres: new FormControl(''),
+    apellidos: new FormControl(''),
+    modulo: new FormControl(''),
+    proyecto: new FormControl(''),
+  });
 
   ngOnInit(): void {
-    this.cargarParticipantes();
-    this.setupBusquedaListener();
+    this.cargar();
+
+    this.filtros.valueChanges
+      .pipe(
+        debounceTime(350),
+        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
+      )
+      .subscribe(() => this.cargar());
   }
 
-  /**
-   * Carga los participantes desde el servicio
-   */
-  cargarParticipantes(): void {
+  /** Consulta el listado aplicando los filtros actuales. */
+  cargar(): void {
     this.isLoading = true;
-    this.participanteService.getListadoParticipantes().subscribe({
-      next: (data: Participante[]) => {
-        this.participantesOriginales = data;
-        this.participantesFiltrados = [...this.participantesOriginales];
+    const valores = this.filtros.value as FiltrosListado;
+
+    this.reporteService.getListado(valores).subscribe({
+      next: (resp) => {
+        this.columnas = resp.columnas;
+        this.datos = resp.datos;
+        this.total = resp.total;
+        this.modulosDisponibles = resp.opciones.modulos;
+        this.proyectosDisponibles = resp.opciones.proyectos;
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Error al cargar la lista de participantes:', err);
+        console.error('Error al cargar el listado de participantes:', err);
         this.isLoading = false;
-      }
+      },
     });
   }
 
-  /**
-   * Configura el listener de búsqueda con debounce
-   */
-  setupBusquedaListener(): void {
-    this.busquedaControl.valueChanges
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged()
-      )
-      .subscribe(query => {
-        this.aplicarFiltro(query || '');
-      });
-  }
-
-  /**
-   * Aplica el filtro de búsqueda por nombre o documento
-   */
-  aplicarFiltro(query: string): void {
-    const lowerCaseQuery = query.toLowerCase();
-
-    if (!lowerCaseQuery) {
-      this.participantesFiltrados = [...this.participantesOriginales];
-      return;
-    }
-
-    this.participantesFiltrados = this.participantesOriginales.filter(p => {
-      const nombreCompleto = `${p.nombre} ${p.apellido}`.toLowerCase();
-      return nombreCompleto.includes(lowerCaseQuery) || p.documento.includes(lowerCaseQuery);
+  limpiarFiltros(): void {
+    this.filtros.reset({
+      participante: '',
+      nombres: '',
+      apellidos: '',
+      modulo: '',
+      proyecto: '',
     });
   }
 
-  getSiNo(value: boolean): string {
-    return value ? 'Sí' : 'No';
+  descargarExcel(): void {
+    const url = this.reporteService.urlExcel(this.filtros.value as FiltrosListado);
+    window.open(url, '_blank');
   }
+
+  /** Muestra un guion cuando el valor está vacío. */
+  mostrarValor(valor: any): string {
+    if (valor === null || valor === undefined || valor === '') return '—';
+    return String(valor);
+  }
+
+  trackByColumna = (_: number, c: ColumnaReporte) => c.key;
+  trackByFila = (_: number, f: Record<string, any>) => f['id_respuesta'];
 }

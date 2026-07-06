@@ -1,79 +1,113 @@
 <div class="p-6 bg-white rounded-lg shadow-md">
   <h2 class="text-2xl font-bold text-gray-800 mb-6">Base de datos participantes</h2>
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-    <button  routerLink="/modulos/caracterizacion" class="flex items-center bg-gradient-to-r justify-center w-full px-4 py-2 dark:shadow-lg dark:shadow-green-800/80 rounded-md shadow-md hover:bg-gray-100 transition-colors duration-200">
 
+  <!-- Fila 1: acciones + búsqueda general -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+    <button
+      routerLink="/modulos/caracterizacion"
+      class="flex items-center bg-gradient-to-r justify-center w-full px-4 py-2 dark:shadow-lg dark:shadow-green-800/80 rounded-md shadow-md hover:bg-gray-100 transition-colors duration-200">
       <lucide-icon [name]="iconPlus" class="mr-2 h-5 w-5"></lucide-icon>
       Añadir participante
     </button>
 
     <div class="relative w-full">
-        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">
-            <lucide-icon [name]="iconSearch" class="h-5 w-5"></lucide-icon>
-        </div>
-        <input
-            type="text"
-            [formControl]="busquedaControl"
-            placeholder="Búsqueda por nombre o ID"
-            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-green-500">
+      <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">
+        <lucide-icon [name]="iconSearch" class="h-5 w-5"></lucide-icon>
+      </div>
+      <input
+        type="text"
+        [formControl]="filtros.controls.participante"
+        placeholder="Buscar por nombre, apellido o documento"
+        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-green-500">
     </div>
 
-    <button class="flex items-center justify-center w-full px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-md shadow-md hover:bg-gray-100 transition-colors duration-200">
-        <lucide-icon [name]="iconSort" class="mr-2 h-5 w-5"></lucide-icon>
-        Ordenar
+    <button
+      type="button"
+      (click)="limpiarFiltros()"
+      class="flex items-center justify-center w-full px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-md shadow-md hover:bg-gray-100 transition-colors duration-200">
+      <lucide-icon [name]="iconClear" class="mr-2 h-5 w-5"></lucide-icon>
+      Limpiar filtros
     </button>
 
-    <button class="flex items-center justify-center w-full px-4 py-2 bg-green-600 text-white rounded-md shadow-md hover:bg-green-700 transition-colors duration-200">
-        <lucide-icon [name]="iconFilter" class="mr-2 h-5 w-5"></lucide-icon>
-        Filtrar
+    <button
+      type="button"
+      (click)="descargarExcel()"
+      class="flex items-center justify-center w-full px-4 py-2 bg-green-600 text-white rounded-md shadow-md hover:bg-green-700 transition-colors duration-200">
+      <lucide-icon [name]="iconDownload" class="mr-2 h-5 w-5"></lucide-icon>
+      Exportar Excel
     </button>
   </div>
 
-        <!-- Tabla de Listado -->
-        <div class="overflow-x-auto rounded-lg shadow-lg">
+  <!-- Fila 2: filtros específicos -->
+  <div [formGroup]="filtros" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <input
+      type="text"
+      formControlName="nombres"
+      placeholder="Filtrar por nombres"
+      class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-green-500">
 
-            <!-- Mensaje de Carga -->
-            <div *ngIf="isLoading" class="p-6 text-center text-green-600 font-semibold">
-                Cargando listado de participantes...
-            </div>
+    <input
+      type="text"
+      formControlName="apellidos"
+      placeholder="Filtrar por apellidos"
+      class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-green-500">
 
-            <!-- Mensaje de No Resultados -->
-            <div *ngIf="!isLoading && participantesFiltrados.length === 0" class="p-6 text-center text-gray-500">
-                No se encontraron participantes.
-            </div>
+    <select
+      formControlName="modulo"
+      class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-md bg-white focus:outline-none focus:ring-2 focus:ring-green-500">
+      <option value="">Todos los módulos</option>
+      <option *ngFor="let m of modulosDisponibles" [value]="m">{{ m }}</option>
+    </select>
 
-            <!-- Contenido de la Tabla -->
-            <table *ngIf="!isLoading && participantesFiltrados.length > 0" class="min-w-full bg-white">
-                <thead class="bg-green-600 text-white shadow-xl">
-                    <tr>
-                        <!-- Encabezados de la API -->
-                        <th class="py-3 px-4 text-left">Nombre</th>
-                        <th class="py-3 px-4 text-left">Proyecto</th>
-                        <th class="py-3 px-4 text-left">Número de Identificación</th>
-                        <!-- Encabezados de Estado -->
-                        <th class="py-3 px-4 text-left">Caracterización finalizada</th>
-                        <th class="py-3 px-4 text-left">Monitoreo finalizado</th>
-                        <th class="py-3 px-4 text-left">Plan de formación finalizado</th>
-                        <th class="py-3 px-4 text-left">Visita de implementación finalizada</th>
-                        <th class="py-3 px-4 text-left">Visita de seguimiento finalizada</th>
-                    </tr>
-                </thead>
-                 <tbody class="text-gray-700 divide-y divide-gray-200">
-                    <tr *ngFor="let participante of participantesFiltrados" class="hover:bg-green-50 transition-colors duration-150">
-                        <!-- Datos de la API -->
-                        <td class="py-3 px-4 font-semibold text-gray-800 whitespace-nowrap">{{ participante.nombre }} {{ participante.apellido }}</td>
-                        <td class="py-3 px-4 whitespace-nowrap">{{ participante.proyecto || 'N/A' }}</td>
-                        <td class="py-3 px-4 whitespace-nowrap">{{ participante.documento }}</td>
+    <select
+      formControlName="proyecto"
+      class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-md bg-white focus:outline-none focus:ring-2 focus:ring-green-500">
+      <option value="">Todos los proyectos</option>
+      <option *ngFor="let p of proyectosDisponibles" [value]="p">{{ p }}</option>
+    </select>
+  </div>
 
-                        <!-- Campos de Estado (Adaptados a 'Sí'/'No') -->
-                        <td class="py-3 px-4 whitespace-nowrap text-sm" [ngClass]="{'text-green-600 font-medium': participante.caracterizacion_finalizada}">{{ getSiNo(participante.caracterizacion_finalizada) }}</td>
-                        <td class="py-3 px-4 whitespace-nowrap text-sm" [ngClass]="{'text-green-600 font-medium': participante.monitoreo_finalizado}">{{ getSiNo(participante.monitoreo_finalizado) }}</td>
-                        <!-- 🟢 CORRECCIÓN NG1: plan_formacion_finalizado -->
-                        <td class="py-3 px-4 whitespace-nowrap text-sm" [ngClass]="{'text-green-600 font-medium': participante.plan_formacion_finalizado}">{{ getSiNo(participante.plan_formacion_finalizado) }}</td>
-                        <td class="py-3 px-4 whitespace-nowrap text-sm" [ngClass]="{'text-green-600 font-medium': participante.visita_implementacion_finalizada}">{{ getSiNo(participante.visita_implementacion_finalizada) }}</td>
-                        <td class="py-3 px-4 whitespace-nowrap text-sm" [ngClass]="{'text-green-600 font-medium': participante.visita_seguimiento_finalizada}">{{ getSiNo(participante.visita_seguimiento_finalizada) }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+  <!-- Contador de resultados -->
+  <div *ngIf="!isLoading" class="mb-3 text-sm text-gray-500">
+    {{ total }} {{ total === 1 ? 'registro encontrado' : 'registros encontrados' }}
+  </div>
+
+  <!-- Tabla de Listado -->
+  <div class="overflow-x-auto rounded-lg shadow-lg">
+
+    <!-- Mensaje de Carga -->
+    <div *ngIf="isLoading" class="p-6 text-center text-green-600 font-semibold">
+      Cargando listado de participantes...
+    </div>
+
+    <!-- Mensaje de No Resultados -->
+    <div *ngIf="!isLoading && datos.length === 0" class="p-6 text-center text-gray-500">
+      No se encontraron participantes.
+    </div>
+
+    <!-- Contenido de la Tabla -->
+    <table *ngIf="!isLoading && datos.length > 0" class="min-w-full bg-white">
+      <thead class="bg-green-600 text-white shadow-xl">
+        <tr>
+          <th
+            *ngFor="let col of columnas; trackBy: trackByColumna"
+            class="py-3 px-4 text-left whitespace-nowrap text-sm">
+            {{ col.label }}
+          </th>
+        </tr>
+      </thead>
+      <tbody class="text-gray-700 divide-y divide-gray-200">
+        <tr
+          *ngFor="let fila of datos; trackBy: trackByFila"
+          class="hover:bg-green-50 transition-colors duration-150">
+          <td
+            *ngFor="let col of columnas; trackBy: trackByColumna"
+            class="py-3 px-4 whitespace-nowrap text-sm"
+            [ngClass]="{ 'font-semibold text-gray-800': col.fija }">
+            {{ mostrarValor(fila[col.key]) }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

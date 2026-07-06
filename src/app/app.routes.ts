@@ -9,6 +9,11 @@ import { PlanFormacionComponent } from './pages/modulos/plan-formacion/plan-form
 import { VisitasImplementacionComponent } from './pages/modulos/visitas-implementacion/visitas-implementacion.component';
 import { VisitasSeguimientoComponent } from './pages/modulos/visitas-seguimiento/visitas-seguimiento.component';
 import { DashboardListadoParticipantesComponent } from './pages/dashboard/dashboard-listado-participantes/dashboard-listado-participantes.component';
+import { CaracterizacionFormularioDosComponent } from './pages/modulos/caracterizacion/caracterizacion-formulario-dos/caracterizacion-formulario-dos.component';
+import { CaracterizacionKoboComponent } from './pages/modulos/caracterizacion/caracterizacion-kobo/caracterizacion-kobo.component';
+import { CaracterizacionKoboAmpliadaComponent } from './pages/modulos/caracterizacion/caracterizacion-kobo-ampliada/caracterizacion-kobo-ampliada.component';
+import { CaracterizacionKoboDiagnosticoComponent } from './pages/modulos/caracterizacion/caracterizacion-kobo-diagnostico/caracterizacion-kobo-diagnostico.component';
+import { CaracterizacionColectivosComponent } from './pages/modulos/caracterizacion-colectivos/caracterizacion-colectivos.component';
 
 export const routes: Routes = [
  {path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -16,10 +21,9 @@ export const routes: Routes = [
   {path: 'account', loadComponent: () => import('./pages/account/account.component').then(m => m.AccountComponent)},
 
 
-
   {
       path: 'dashboard',
-      component: DashboardComponent, // Contenedor padre
+      component: DashboardComponent,
       children: [
         {path: '', redirectTo: 'odp', pathMatch: 'full'},
         {
@@ -35,9 +39,18 @@ export const routes: Routes = [
         {path: 'participantes', loadComponent: () => import('./pages/dashboard/dashboard-listado-participantes/dashboard-listado-participantes.component').then(m => m.DashboardListadoParticipantesComponent)},
       ]
     },
+
   {path: 'modulos', loadComponent: () => import('./pages/modulos/modulos.component').then(m => m.ModulosComponent),
     children: [
-
+          { path: 'caracterizacion',
+          component: CaracterizacionComponent,
+          children: [
+            { path: 'caracterizacion-kobo', loadComponent: () => import('./pages/modulos/caracterizacion/caracterizacion-kobo/caracterizacion-kobo.component').then(m => m.CaracterizacionKoboComponent) },
+            { path: 'caracterizacion-kobo-ampliada', loadComponent: () => import('./pages/modulos/caracterizacion/caracterizacion-kobo-ampliada/caracterizacion-kobo-ampliada.component').then(m => m.CaracterizacionKoboAmpliadaComponent)},
+            { path: 'caracterizacion-kobo-diagnostico', loadComponent: () => import('./pages/modulos/caracterizacion/caracterizacion-kobo-diagnostico/caracterizacion-kobo-diagnostico.component').then(m => m.CaracterizacionKoboDiagnosticoComponent)}
+          ]
+          }
+      /*
         { path: 'monitoreos', loadComponent: () => import('./pages/modulos/monitoreos/monitoreos.component').then(m => m.MonitoreosComponent) },
         { path: 'plan-formacion', loadComponent: () => import('./pages/modulos/plan-formacion/plan-formacion.component').then(m => m.PlanFormacionComponent) },
         { path: 'visitas-implementacion', loadComponent: () => import('./pages/modulos/visitas-implementacion/visitas-implementacion.component').then(m => m.VisitasImplementacionComponent) },
@@ -63,9 +76,19 @@ export const routes: Routes = [
               loadComponent: () => import('./pages/modulos/caracterizacion/basica/basica.component').then(m => m.BasicaComponent)
         }
         ]
-        },
+        }, */
     ]
   },
+  {path: 'modulos', loadComponent: () => import('./pages/modulos/modulos.component').then(m => m.ModulosComponent),
+    children: [
+          { path: 'caracterizacion-colectivos',
+          component: CaracterizacionColectivosComponent,
+          children: [
+             { path: 'caracterizacion-kobo-colectivos', loadComponent: () => import('./pages/modulos/caracterizacion-colectivos/caracterizacion-colectivos.component').then(m => m.CaracterizacionColectivosComponent)}
+          ]
+          }
+        ]
+        }
 
 
 ];

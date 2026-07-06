@@ -9,6 +9,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Subscription, merge } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { HandMetal } from 'lucide-angular';
+import { DataSharingService } from '../../../services/data-sharing.service';
 
 
 interface Pregunta {
@@ -27,7 +28,7 @@ interface PreguntaEstatica {
 
 @Component({
   selector: 'app-monitoreos',
-  imports: [ReactiveFormsModule, NgIf, NgFor, NgClass, RouterLink, RouterLinkActive, CommonModule],
+  imports: [ReactiveFormsModule, NgIf, NgFor, NgClass, RouterLink, RouterLinkActive, CommonModule, HttpClientModule],
   templateUrl: './monitoreos.component.html',
   styleUrl: './monitoreos.component.css'
 })
@@ -42,6 +43,29 @@ export class MonitoreosComponent implements OnInit {
   preguntasDiagnosticoEmpresarial: Pregunta[] = []; // Dinámicas (Paso 4)
 
   preguntasAccesoFinanciero: Pregunta[] = [];
+
+    private readonly staticCampoIdMapping: { [key: string]: number } = {
+    // Paso 1A: General
+     estadoParticipante: 93, perteneceAsociacion: 161, nombreAsociacion: 66,
+    asociacionMujeres: 164, codigoCiiu: 133, sectorEmpresarial: 132, arriendoServicios: 165,
+    educacion: 166, obligaciones: 167, gastosOcacionales: 169, gastosCorrientes: 168,
+    gastosTotales: 170, trabajosIndependientes: 95, emprendimientos: 96, otrosFamiliares: 97,
+    pension: 98, empleados: 94, otrosIngresos: 99, otrosExplique: 100,
+    totalIngresos: 101, totalIngresosDependiente: 102, distribucionIngresos: 163,
+    // Paso 1B: Hogar (Fijos)
+    tipoVivienda: 103, materialVivienda: 106, numeroDormitorios: 107, combustibleCocina: 108,
+    estrato: 105, tiempoVivienda: 104,
+    // Pasos 2 y 3: Acceso Financiero
+    tieneCuentaAhorros: 136, tieneCuentaCorriente: 137, tieneCDT: 138, montoCredito: 139,
+    numeroCuotas: 140, tieneSeguros: 141, tieneOtros: 142, dependeEconomicamente: 124,
+    deQuienDepende: 125, horasCuidado: 126, horasRecreacion: 127, negocioTieneRUT: 131,
+    registradoCC: 128, negocioNit: 129, numeroNit: 130, dondeOpera: 135,
+    ingresosNegocio: 149, costosDirectos: 150, costosIndirectos: 151, gastosTotalesMensuales: 152,
+    excedentesNegocio: 153, activoFijo: 154, activoNoFijo: 155, totalActivos: 156,
+    pasivoCorto: 157, pasivoLargo: 158, totalPasivos: 159, patrimonio: 160,
+    trabajadoresContrato: 145, trabajadoresSinContrato: 146, totalTrabajadores: 147,
+    numeroSocios: 148, tipoLocal: 79
+  };
 
   // Preguntas ESTÁTICAS para Acceso Financiero (Pasos 2 y 3)
 
@@ -102,6 +126,12 @@ export class MonitoreosComponent implements OnInit {
   contador = 0;
   totalPreguntasCalculado: number = 0;
   pasoActualDiagnostico: number = 1;
+
+  idParticipanteActual: any = null;
+  nombreParticipanteActual: string | null = null;
+  idRespuestaActual: any = null;
+  documentoParticipanteActual: string | number | null = null;
+
   tiposVivienda = [
     'ARRIENDO',
     'PROPIA',
@@ -138,30 +168,31 @@ export class MonitoreosComponent implements OnInit {
 
   private formSubscription: Subscription = new Subscription();
   private calculationSubscription: Subscription = new Subscription();
+  private apiUrlAddData = 'http://20.81.172.55:3900/api/participantes/add-data/';
 
-  constructor(private fb: FormBuilder, private apiService: MonitoreoService, private apiDiagnosticoService: MonitoreoDiagnosticoService, private el: ElementRef, private http: HttpClient) {  }
+  constructor(private fb: FormBuilder, private apiService: MonitoreoService, private apiDiagnosticoService: MonitoreoDiagnosticoService, private el: ElementRef, private http: HttpClient, private dataSharingService: DataSharingService
+  ) {  }
 
   ngOnInit(): void {
     this.monitoreoGeneralForm = this.fb.group({
-      grupoParticipante: ['', Validators.required],
       estadoParticipante: ['', Validators.required],
       perteneceAsociacion: ['', [Validators.required]],
       nombreAsociacion: ['', [Validators.required]],
       asociacionMujeres: ['', Validators.required],
       codigoCiiu: ['', Validators.required],
       sectorEmpresarial: ['', [Validators.required]],
-      arriendoServicios: [0, [Validators.required]],
-      educacion: [0, [Validators.required]],
-      obligaciones: [0, [Validators.required]],
-      gastosOcacionales: [0, [Validators.required]],
-      gastosCorrientes: [0, [Validators.required]],
+      arriendoServicios: ['', [Validators.required]],
+      educacion: ['', [Validators.required]],
+      obligaciones: ['', [Validators.required]],
+      gastosOcacionales: ['', [Validators.required]],
+      gastosCorrientes: ['', [Validators.required]],
       gastosTotales: [{ value: 0, disabled: true }, [Validators.required]],
-      trabajosIndependientes: [0, [Validators.required]],
-      emprendimientos: [0, [Validators.required]],
-      otrosFamiliares: [0, [Validators.required]],
-      pension: [0, [Validators.required]],
-      empleados: [0, [Validators.required]],
-      otrosIngresos: [0, [Validators.required]],
+      trabajosIndependientes: ['', [Validators.required]],
+      emprendimientos: ['', [Validators.required]],
+      otrosFamiliares: ['', [Validators.required]],
+      pension: ['', [Validators.required]],
+      empleados: ['', [Validators.required]],
+      otrosIngresos: ['', [Validators.required]],
       otrosExplique: [''],
       totalIngresos: [{ value: 0, disabled: true }, [Validators.required]],
       totalIngresosDependiente: ['', [Validators.required]],
@@ -174,12 +205,11 @@ export class MonitoreosComponent implements OnInit {
       materialVivienda: ['', Validators.required],
       numeroDormitorios: ['', Validators.required], // Asumo este controlName
       combustibleCocina: ['', Validators.required], // Asumo este controlName
-      estrato: ['', Validators.required], // Asumo este controlName
+      estrato: ['', Validators.required, Validators.min(0), Validators.max(6), Validators.pattern('^[0-6]$')], // Asumo este controlName
       tiempoVivienda: ['', Validators.required] // Asumo este controlName
     });
 
     this.loadPreguntasHogar();
-
 
     this.monitoreoAccesoFinancieroForm = this.fb.group({});
 
@@ -233,6 +263,8 @@ export class MonitoreosComponent implements OnInit {
     this.setupIngresosTotalesCalculation();
     this.setupCalculosNegocioPaso3();
     this.actualizarContador();
+    this.setupControlCondicionalAsociacion();
+
   }
 
     setupCalculosNegocioPaso3(): void {
@@ -243,16 +275,16 @@ export class MonitoreosComponent implements OnInit {
 
     this.calculationSubscription.add(
       merge(...observables).pipe(debounceTime(100)).subscribe(() => {
-        const ingresos = Number(form.get('ingresosNegocio')?.value) || 0;
-        const directos = Number(form.get('costosDirectos')?.value) || 0;
-        const indirectos = Number(form.get('costosIndirectos')?.value) || 0;
+        const ingresos = Number(form.get('ingresosNegocio')?.value);
+        const directos = Number(form.get('costosDirectos')?.value) ;
+        const indirectos = Number(form.get('costosIndirectos')?.value);
 
-        const activosFijo = Number(form.get('activoFijo')?.value) || 0;
-        const activosNoFijo = Number(form.get('activoNoFijo')?.value) || 0;
-        const pasivosCorto = Number(form.get('pasivoCorto')?.value) || 0;
-        const pasivosLargo = Number(form.get('pasivoLargo')?.value) || 0;
-        const trabajadoresContratos = Number(form.get('trabajadoresContrato')?.value) || 0;
-        const trabajadoresSinContratos = Number(form.get('trabajadoresSinContrato')?.value) || 0;
+        const activosFijo = Number(form.get('activoFijo')?.value) ;
+        const activosNoFijo = Number(form.get('activoNoFijo')?.value) ;
+        const pasivosCorto = Number(form.get('pasivoCorto')?.value) ;
+        const pasivosLargo = Number(form.get('pasivoLargo')?.value) ;
+        const trabajadoresContratos = Number(form.get('trabajadoresContrato')?.value) ;
+        const trabajadoresSinContratos = Number(form.get('trabajadoresSinContrato')?.value) ;
 
         const totalGastos = directos + indirectos;
         const excedentes = ingresos - totalGastos;
@@ -271,6 +303,41 @@ export class MonitoreosComponent implements OnInit {
       })
     );
   }
+
+  private setupControlCondicionalAsociacion(): void {
+    this.formSubscription.add(
+      this.monitoreoGeneralForm.get('perteneceAsociacion')?.valueChanges.subscribe(value => {
+        const nombreCtrl = this.monitoreoGeneralForm.get('nombreAsociacion');
+        const mujeresCtrl = this.monitoreoGeneralForm.get('asociacionMujeres');
+
+        if (value === 'No') {
+          nombreCtrl?.setValue(null);
+          mujeresCtrl?.setValue(null);
+          nombreCtrl?.disable();
+          mujeresCtrl?.disable();
+        } else {
+          nombreCtrl?.enable();
+          mujeresCtrl?.enable();
+        }
+      })
+    );
+  }
+
+  soloNumeros(event: KeyboardEvent): void {
+  const target = event.target as HTMLInputElement;
+  const charCode = event.which ? event.which : event.keyCode;
+
+  // Bloquear si no es número
+  if (charCode < 48 || charCode > 57) {
+    event.preventDefault();
+    return;
+  }
+
+  // Si el campo es 'estrato', limitar a 1 solo dígito
+  if (target.id === 'estrato' && target.value.length >= 1) {
+    event.preventDefault();
+  }
+}
 
 
    setupGastosTotalesCalculation(): void {
@@ -500,6 +567,9 @@ export class MonitoreosComponent implements OnInit {
             // 5. Si lo encuentra, hace scroll y lo enfoca
             invalidControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
             invalidControl.focus();
+            invalidControl.style.outline = '1px solid #008f4c';
+            invalidControl.style.boxShadow = '0 0 2px rgba(18, 161, 75, 0.5)';
+            invalidControl.style.borderRadius = '0.375rem';
 
             // Muestra un mensaje más útil
             console.warn(`Se ha movido el foco al campo "${controlName}" que falta por completar.`);
@@ -526,31 +596,61 @@ export class MonitoreosComponent implements OnInit {
   }
 
   guardarFormularioCompleto(): void {
-    if (this.monitoreoGeneralForm.valid &&
-        this.monitoreoDiagnosticoForm.valid &&
-        this.monitoreoAccesoFinancieroForm.valid &&
-        this.monitoreoDiagnosticoEmpresarialForm.valid) {
+    const idRespuesta = this.dataSharingService.getIdRespuesta();
+    if (!idRespuesta) {
+      alert('Error: No se encontró el ID de respuesta. Registre los datos básicos primero en el módulo de Caracterización');
+      return;
+    }
 
-      const datosCompletos = {
-        general: this.monitoreoGeneralForm.value,
-        diagnosticoHogar: this.monitoreoDiagnosticoForm.value,
-        accesoFinanciero: this.monitoreoAccesoFinancieroForm.value,
-        diagnosticoEmpresarial: this.monitoreoDiagnosticoEmpresarialForm.value
+    if (this.monitoreoGeneralForm.valid && this.monitoreoDiagnosticoForm.valid &&
+        this.monitoreoAccesoFinancieroForm.valid && this.monitoreoDiagnosticoEmpresarialForm.valid) {
+
+      const formulario_data: { id_campo: number, valor: string }[] = [];
+
+      // 1. Procesar formularios estáticos mediante el mapa
+      const staticForms = [this.monitoreoGeneralForm, this.monitoreoDiagnosticoForm, this.monitoreoAccesoFinancieroForm];
+      staticForms.forEach(form => {
+        const values = form.getRawValue();
+        Object.keys(values).forEach(key => {
+          const id = this.staticCampoIdMapping[key];
+          if (id) {
+            formulario_data.push({ id_campo: id, valor: values[key]?.toString() || '' });
+          }
+        });
+      });
+
+      // 2. Procesar formularios dinámicos (Paso 1B y Paso 4) extrayendo el ID del nombre
+      const dynamicForms = [this.monitoreoDiagnosticoForm, this.monitoreoDiagnosticoEmpresarialForm];
+      dynamicForms.forEach(form => {
+        const values = form.getRawValue();
+        Object.keys(values).forEach(key => {
+          if (key.startsWith('pregunta_')) {
+            const id = Number(key.replace('pregunta_', ''));
+            formulario_data.push({ id_campo: id, valor: values[key]?.toString() || '' });
+          }
+        });
+      });
+
+      const payload = {
+        id_respuesta: idRespuesta,
+        formulario_data: formulario_data
       };
 
-      console.log('FORMULARIO COMPLETO GUARDADO:', datosCompletos);
-      alert('Monitoreo guardado con éxito. Revisa la consola.');
-      // Aquí iría la llamada final al servicio
-      // this.apiService.guardarMonitoreoCompleto(datosCompletos).subscribe(...)
+      console.log('Enviando Monitoreo Completo:', payload);
+
+      this.http.post(this.apiUrlAddData, payload).subscribe({
+        next: (res) => {
+          console.log('Monitoreo guardado exitosamente:', res);
+          alert('Monitoreo guardado con éxito.');
+        },
+        error: (err) => {
+          console.error('Error al guardar monitoreo:', err);
+          alert('Hubo un error al guardar el monitoreo.');
+        }
+      });
 
     } else {
-      console.error('El formulario no es válido. Revisa todos los pasos.');
-      // Marcar todos los campos de todos los formularios como "tocados"
-      this.monitoreoGeneralForm.markAllAsTouched();
-      this.monitoreoDiagnosticoForm.markAllAsTouched();
-      this.monitoreoAccesoFinancieroForm.markAllAsTouched();
-      this.monitoreoDiagnosticoEmpresarialForm.markAllAsTouched();
-      alert('Error: Faltan respuestas en uno o más pasos. Por favor, revisa.');
+      alert('Error: El formulario contiene campos inválidos.');
     }
   }
 

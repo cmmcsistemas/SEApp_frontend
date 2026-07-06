@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Subscription, Observable, merge } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { debounceTime, startWith, map } from 'rxjs/operators';
+import { DataSharingService } from '../../../../services/data-sharing.service';
 
 @Component({
   selector: 'app-idea-de-negocio',
@@ -18,6 +19,11 @@ export class IdeaDeNegocioComponent implements OnInit, OnDestroy {
   preguntasPorPaso = 11;
   paginas = 0;
   contador = 0;
+
+  idParticipanteActual: any = null;
+  nombreParticipanteActual: string | null = null;
+  idRespuestaActual: any = null;
+  documentoParticipanteActual: string | number | null = null;
 
   opciones: string[] = ['Sí', 'No'];
 
@@ -47,13 +53,48 @@ export class IdeaDeNegocioComponent implements OnInit, OnDestroy {
     'De 1 a 4 Horas',
     'De 5 a 8 Horas',
     'Más de 8 horas'
-  ]
+  ];
+
+    // 🟢 MAPEO DE IDs DE CAMPO (Ajusta estos números según tu base de datos)
+  private readonly campoIdMapping: { [key: string]: number } = {
+    nombreEmprendimiento: 13,
+    dptoUbicacion: 15,
+    ciudadUbicacion: 17,
+    localidadUbicacion: 18,
+    ubicacionNegocio: 19,
+    sectorEmpresarial: 20,
+    infoEmprendimiento: 21,
+    ideaNegocio: 22,
+    cualesClientes: 23,
+    necesidad: 24,
+    listadoProductoServicio: 25,
+    productoAgropecuario: 26,
+    colaboradores: 27,
+    quienes: 28,
+    tiempoMarchaEmprendimiento: 29,
+    tiempoDedicaEmprendimiento: 30,
+    tiempoFormacionEmprendimiento: 31,
+    conocimientoEmprendimiento: 32,
+    experienciaEmprendimiento: 33,
+    razonEmprendimiento: 34,
+    listadoProductos: 35,
+    cuantoNecesitaInversion: 36,
+    cuantoNecesitaCapital: 37,
+    totalInversion: 38,
+    porcentajeInversionActual: 39,
+    ventasPrimerMes: 40,
+    ventasPrimerAno: 41,
+    perteneceA: 42,
+    perteneceACual: 43
+  };
 
   private formSubscription: Subscription = new Subscription();
   private preguntas: any[] = [];
   private totalInversionSubscription: Subscription = new Subscription();
+  private apiUrlAddData = 'http://20.81.172.55:3900/api/participantes/add-data/';
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {}
+
+  constructor(private fb: FormBuilder, private http: HttpClient, private dataSharingService: DataSharingService) {}
 
 ngOnInit(): void {
     this.ideaDeNegocioForm = this.fb.group({
@@ -251,20 +292,51 @@ ngOnInit(): void {
 
   guardarProgreso(): void{
     if (this.ideaDeNegocioForm.valid) {
-      const data = this.ideaDeNegocioForm.value;
-      const jsonString = JSON.stringify(data, null, 2);
-      console.log('Datos del formulario:', jsonString);
-      alert('Progreso guardado correctamente.');
-    } else {
-      // ✅ Líneas añadidas para depuración
-      this.ideaDeNegocioForm.markAllAsTouched();
-      console.error('El formulario no es válido. Los siguientes campos tienen errores:');
-      Object.keys(this.ideaDeNegocioForm.controls).forEach(controlName => {
-        const control = this.ideaDeNegocioForm.get(controlName);
-        if (control?.invalid) {
-          console.error(`Campo: ${controlName}, Errores: `, control.errors);
+      const idRespuesta = this.dataSharingService.getIdRespuesta();
+
+      if (!idRespuesta) {
+        alert('Error: No se encontró el ID de respuesta. Por favor, complete primero los datos básicos.');
+        return;
+      }
+
+      const rawValues = this.ideaDeNegocioForm.getRawValue();
+
+      // Construimos el array formulario_data usando el mapeo de IDs
+      const formulario_data = Object.keys(rawValues).map(key => {
+        const valorOriginal = rawValues[key];
+        let valorFinal = valorOriginal;
+
+        // Si el valor es un objeto (como municipio o depto), extraemos el nombre
+        if (valorOriginal && typeof valorOriginal === 'object') {
+          valorFinal = valorOriginal.nombre_municipio || valorOriginal.nombre_departamento || valorOriginal.nombre_localidad || JSON.stringify(valorOriginal);
+        }
+
+        return {
+          id_campo: this.campoIdMapping[key],
+          valor: valorFinal === null ? '' : valorFinal.toString()
+        };
+      }).filter(item => item.id_campo !== undefined); // Filtramos si algún campo no tiene ID asignado
+
+      const payload = {
+        id_respuesta: idRespuesta,
+        formulario_data: formulario_data
+      };
+
+      console.log('Enviando Idea de Negocio:', payload);
+
+      this.http.post(this.apiUrlAddData, payload).subscribe({
+        next: (res) => {
+          console.log('Respuesta servidor:', res);
+          alert('Datos de Idea de Negocio guardados con éxito.');
+        },
+        error: (err) => {
+          console.error('Error al guardar:', err);
+          alert('Hubo un error al guardar la información.');
         }
       });
+
+    } else {
+      this.ideaDeNegocioForm.markAllAsTouched();
       alert('Por favor, complete todos los campos requeridos.');
     }
 

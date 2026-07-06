@@ -1,9 +1,192 @@
-<div class="p-8 bg-gray-100 min-h-screen">
-  <div class="flex justify-start items-center space-x-4 mb-6">
-    <a routerLink="./caracterizacion-basica" routerLinkActive="bg-green-600 text-white shadow-md"
-     class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">
-      Caracterización
-    </a>
+<div class="w-full h-screen bg-gradient-to-r bg-white flex flex-col font-sans">
+
+     <div class=" p-5 shadow-sm border-b border-slate-200 flex justify-between items-center z-10">
+        <div *ngIf="mostrarFormulario()" class="flex items-center space-x-4 ">
+          <div class="flex flex-col p-2" style="color: aliceblue;">
+            <button (click)="resetear()" class="  z-50 p-2  rounded-lg shadow-md bg-green-700 border-green-700 hover:bg-emerald-50  transition-all active:scale-90">
+              <mat-icon class="text-amber-50  pl-2">arrow_back</mat-icon>
+              <span class=" text-shadow-white right-2 pl-2 pr-4">Volver a buscar</span>
+            </button>
+          </div>
+        </div>
+      <div class="flex  items-center  justify-between">
+          <span class="text-[10px] font-bold text-emerald-600 uppercase  tracking-widest">Caracterización a personas</span>
+        </div>
+        <!-- Info del Técnico Logueado -->
+        <div class="flex flex-col items-end pr-4">
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Nombre del ODP</span>
+          <span class="text-sm font-black text-slate-700 uppercase">{{ nombreTecnico() }}</span>
+        </div>
+      </div>
+
+      <main class="flex-1 relative flex items-center justify-center p-4 rounded-lg shadow-xl ">
+        <!-- MODAL DE CONSULTA -->
+        <div *ngIf="!mostrarFormulario()" class=" flex w-[900px] h-[550px] bg-white rounded-lg shadow-xl overflow-hidden">
+          <div class="relative z-10 text-center opacity-[0.03] flex flex-col items-center justify-center p-10 bg-white  w-1/2">
+            <div class="text-center mb-10 pb-4">
+            <h3 class="text-2xl font-black text-slate-800 mb-3 p-2">Verificar Participante</h3>
+            <p class="text-sm text-slate-500">Ingrese el documento para redirigir al formulario.</p>
+
+            </div>
+
+          <div class="relative w-full mb-8 pt-6  flex items-center">
+            <input
+              type="text"
+              [(ngModel)]="searchQuery"
+              (keyup.enter)="consultarParticipante()"
+              placeholder="Número de documento..."
+              class="w-full p-2 bg-gray-400 border-none rounded-xl text-gray-400 focus:ring-2 shadow-lg focus:ring-emerald-500 focus:border-transparent outline-none transition-all placeholder:text-slate-300"
+            >
+            <button
+              (click)="consultarParticipante()"
+              [disabled]="isSearching()"
+              class="items-center w-10 h-10  bg-[#00a859] text-gray-700 rounded-xl hover:bg-emerald-700 disabled:bg-slate-200 transition-all flex  justify-center shadow-md active:scale-90 z-10"
+              style="background-color: oklch(41.793% 0.09293 155.778); justify-content: flex-end;">
+              <mat-icon style="color: azure; width: 35px;">search</mat-icon>
+              <div *ngIf="isSearching()" class="w-8 h-8 border-2 border-green-600  rounded-full animate-spin"></div>
+            </button>
+          </div>
+        <div *ngIf="!participanteData() && errorBusqueda == 'NOT_FOUND'" class="text-center p-8 animate-fadeIn">
+          <h4 class="text-sm font-black text-slate-500 uppercase tracking-widest mb-1">No hay datos disponibles</h4>
+        </div>
+             <button
+              (click)="abrirFormularioKobo('BASICA')"
+              class="w-8 p-4 m-4 font-black rounded-full hover:bg-emerald-700 transition-all uppercase tracking-widest text-xs shadow-xl" style="background-color: oklch(0.448 0.119 151.328); color: lightcyan">
+              Iniciar Registro Nuevo
+            </button>
+
+          <!-- CASO EXISTENTE -->
+          <div *ngIf="participanteSeleccionado()" class="bg-emerald-50 rounded-b-xl p-6  border-emerald-100 animate-slideUp">
+            <div class="flex justify-between items-start mb-4">
+              <span class="px-3 py-1 bg-emerald-600 text-gray-500 text-[10px] font-black rounded-full uppercase">Existente</span>
+              <p class="text-xs font-bold text-emerald-700">ID: #{{ participanteSeleccionado().id_participante }}</p>
+            </div>
+            <p class="text-lg font-black text-slate-800 uppercase mb-6">{{ participanteSeleccionado().nombre }} {{ participanteSeleccionado().apellido }}</p>
+                    <!-- Basica-->
+          <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex justify-between items-center group hover:shadow-md transition-all">
+              <div class="flex items-center space-x-4">
+                <div [class]="estaCompletado('BASICA') ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-300'" class="w-10 h-10 rounded-full flex items-center justify-center">
+                  <mat-icon>{{ estaCompletado('BASICA') ? 'check_circle' : 'pending' }}</mat-icon>
+                </div>
+                <div>
+                  <p class="text-xs font-black text-slate-800 uppercase tracking-tight">1. Caracterización Básica</p>
+                  <p class="text-[10px] font-bold mt-0.5" [class]="estaCompletado('BASICA') ? 'text-emerald-500' : 'text-amber-500'">
+                    {{ estaCompletado('BASICA') ? 'DILIGENCIADO' : 'PENDIENTE' }}
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Ampliada-->
+              <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex justify-between items-center group hover:shadow-md transition-all">
+              <div class="flex items-center space-x-4">
+                <div [class]="estaCompletado('AMPLIADA') ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-300'" class="w-10 h-10 rounded-full flex items-center justify-center">
+                  <mat-icon>{{ estaCompletado('AMPLIADA') ? 'check_circle' : 'pending' }}</mat-icon>
+                </div>
+                <div>
+                  <p class="text-xs font-black text-slate-800 uppercase tracking-tight">2. Caracterización Ampliada</p>
+                  <p class="text-[10px] font-bold mt-0.5" [class]="estaCompletado('AMPLIADA') ? 'text-emerald-500' : 'text-amber-500'">
+                    {{ estaCompletado('AMPLIADA') ? 'DILIGENCIADO' : 'PENDIENTE' }}
+                  </p>
+                </div>
+              </div>
+              <div *ngIf="!estaCompletado('AMPLIADA')">
+              <button (click)="abrirFormularioKobo('AMPLIADA')" class="p-3 bg-slate-50 text-slate-400 rounded-xl group-hover:bg-emerald-600 group-hover:text-white transition-all shadow-sm">
+                <mat-icon class="text-sm">chevron_right</mat-icon>
+              </button>
+              </div>
+            </div>
+
+            <!-- Diagnostico -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex justify-between items-center group hover:shadow-md transition-all">
+              <div class="flex items-center space-x-4">
+                <div [class]="estaCompletado('DIAGNOSTICO') ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-300'" class="w-10 h-10 rounded-full flex items-center justify-center">
+                  <mat-icon>{{ estaCompletado('DIAGNOSTICO') ? 'check_circle' : 'pending' }}</mat-icon>
+                </div>
+                <div>
+                  <p class="text-xs font-black text-slate-800 uppercase tracking-tight">3. Diagnóstico Socioeconómico</p>
+                  <p class="text-[10px] font-bold mt-0.5" [class]="estaCompletado('DIAGNOSTICO') ? 'text-emerald-500' : 'text-amber-500'">
+                    {{ estaCompletado('DIAGNOSTICO') ? 'DILIGENCIADO' : 'PENDIENTE' }}
+                  </p>
+                </div>
+              </div>
+              <div *ngIf="!estaCompletado('DIAGNOSTICO')">
+              <button (click)="abrirFormularioKobo('DIAGNOSTICO')" class="p-3 bg-slate-50 text-slate-400 rounded-xl group-hover:bg-emerald-600 group-hover:text-white transition-all shadow-sm">
+                <mat-icon class="text-sm">chevron_right</mat-icon>
+              </button>
+              </div>
+
+            </div>
+
+              <!-- Plan de formacion -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex justify-between items-center group hover:shadow-md transition-all">
+              <div class="flex items-center space-x-4">
+                <div [class]="estaCompletado('FORMACION') ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-300'" class="w-10 h-10 rounded-full flex items-center justify-center">
+                  <mat-icon>{{ estaCompletado('FORMACION') ? 'check_circle' : 'pending' }}</mat-icon>
+                </div>
+                <div>
+                  <p class="text-xs font-black text-slate-800 uppercase tracking-tight">4. Plan de formación</p>
+                  <p class="text-[10px] font-bold mt-0.5" [class]="estaCompletado('PLANFORMACION') ? 'text-emerald-500' : 'text-amber-500'">
+                    {{ estaCompletado('FORMACION') ? 'MODIFICAR' : 'PENDIENTE' }}
+                  </p>
+                </div>
+              </div>
+              <div >
+              <button (click)="abrirFormularioKobo('FORMACION')" class="p-3 bg-slate-50 text-slate-400 rounded-xl group-hover:bg-emerald-600 group-hover:text-white transition-all shadow-sm">
+                <mat-icon class="text-sm">chevron_right</mat-icon>
+              </button>
+              </div>
+
+            </div>
+
+            <!--
+            <button
+              (click)="abrirFormularioKobo('AMPLIADA')"
+              class="w-full p-4 font-black rounded-b-lg hover:bg-emerald-700 transition-all uppercase tracking-widest text-xs shadow-xl" style="background-color: oklch(0.448 0.119 151.328); color: lightcyan">
+              Continuar Caracterización ampliada
+            </button>-->
+          </div>
+
+        <!--
+        <div *ngIf="errorBusqueda === 'Not Found'" class="bg-amber-50 rounded-3xl p-6 border border-amber-100 animate-slideUp">
+            <div class="flex items-center justify-center space-x-3 text-amber-700 mb-4">
+              <mat-icon>assignment</mat-icon>
+              <p class="text-sm font-bold uppercase">Sin registros</p>
+            </div>
+            <p class="text-xs text-amber-600 mb-6 leading-relaxed">El documento <b>{{ searchQuery }}</b> no existe. Proceda con la caracterización inicial.</p>
+            <button
+              (click)="abrirFormularioKobo('BASICA')"
+              class="w-full py-4 bg-emerald-600 text-green-600 font-black rounded-2xl hover:bg-emerald-700 transition-all uppercase tracking-widest text-xs shadow-xl">
+              Iniciar Registro Nuevo
+            </button>
+          </div>-->
+
+
+
+
+          <!-- CASO NUEVO -->
+
+
+          </div>
+              <div class="inset-0 z-0 flex opacity-[0.03] pointer-events-none flex-col  bg-linear-to-r/srgb from-indigo-500 to-teal-400 relative  items-end justify-end">
+              <img src="introLogin.png" class="w-1/2 object-contain" alt="watermark">
+            </div>
+        </div>
+
+        <!-- IFRAME KOBO -->
+        <div *ngIf="mostrarFormulario()" class="w-full h-full animate-fadeIn bg-white rounded-3xl overflow-hidden shadow-2xl border border-slate-200 relative">
+
+
+          @if (koboSafeUrl()) {
+            <iframe [src]="koboSafeUrl()" class="w-full h-full border-none" allow="geolocation; camera; microphone"></iframe>
+          }
+        </div>
+      </main>
+
+  </div>
+
+<!--
     <a routerLink="./diagnostico" routerLinkActive="bg-green-600 text-white shadow-md"
      class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">
     Diagnóstico
@@ -31,10 +214,26 @@
   <a routerLink="/modulos/plan-formacion" routerLinkActive="bg-green-600 text-white shadow-md"
      class="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200">
     Plan de formación
-  </a>
-  </div>
+  </a> -->
 
-  <div class="bg-white rounded-lg shadow-md p-8 mx-auto">
-    <router-outlet></router-outlet>
+
+  <!--
+  <div>
+       <h1 class="text-2xl font-bold text-center text-gray-600 mb-2">FORMULARIO DE REGISTRO</h1>
+   <div *ngIf="idRespuestaActual" class=" block text-left text-sm/6 bg-white border-2 border-gray-300 rounded-xl shadow-sm justify-between items-start md:items-center space-y-4 md:space-y-0 mb-4">
+    <div class="block items-start space-x-4 px-6 text-sm/6">
+      <div>
+        <p class="text-sm font-bold text-gray-700 uppercase tracking-widest">Participante en edición</p>
+        <h3 class="text-sm  font-black text-gray-500 leading-tight uppercase">
+          {{ nombreParticipanteActual || '---' }}
+        </h3>
+        <p class="text-sm text-gray-500 font-medium">
+          Doc: {{ documentoParticipanteActual }} | ID: {{ idParticipanteActual }}
+        </p>
+      </div>
+    </div>
   </div>
-</div>
+  </div>
+  -->
+
+

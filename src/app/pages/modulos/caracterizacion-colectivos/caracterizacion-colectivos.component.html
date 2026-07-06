@@ -1,0 +1,187 @@
+<div class="w-full h-screen bg-gradient-to-r bg-white flex flex-col font-sans">
+
+  <div class="bg-white p-5 shadow-sm border-b border-slate-200 flex justify-between items-center z-10">
+    <div *ngIf="mostrarFormulario()" class="flex items-center space-x-4">
+      <div class="flex flex-col" style="color: aliceblue;">
+        <button (click)="resetear()" class="z-50 p-2 rounded-lg shadow-md bg-green-700 border-green-700 hover:bg-emerald-50 transition-all active:scale-90">
+          <mat-icon class="text-amber-50 pl-2">arrow_back</mat-icon>
+          <span class="text-shadow-white right-2 pl-2 pr-4">Volver a buscar</span>
+        </button>
+      </div>
+    </div>
+    <div class="flex flex-col items-start">
+      <span class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">Caracterización de colectivos</span>
+    </div>
+    <!-- Info del Técnico Logueado -->
+    <div class="flex flex-col items-end pr-4">
+      <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Nombre del ODP</span>
+      <span class="text-sm font-black text-slate-700 uppercase">{{ nombreTecnico() }}</span>
+    </div>
+  </div>
+
+  <main class="flex-1 relative flex items-center justify-center p-4 rounded-lg shadow-xl">
+
+    <!-- MODAL DE CONSULTA -->
+    <div *ngIf="!mostrarFormulario()" class="flex w-[900px] h-[550px] bg-white rounded-lg shadow-xl overflow-hidden">
+
+      <!-- COLUMNA IZQUIERDA: Búsqueda y listado -->
+      <div class="relative z-10 flex flex-col items-center justify-start p-10 bg-white w-1/2 overflow-y-auto">
+        <div class="text-center mb-6 pb-2">
+          <h3 class="text-2xl font-black text-slate-800 mb-3 p-2">Verificar Colectivo</h3>
+          <p class="text-sm text-slate-500">Ingrese el nombre del colectivo.</p>
+        </div>
+
+        <div class="relative w-full mb-6 flex">
+          <input
+            type="text"
+            [(ngModel)]="searchQuery"
+            (keyup.enter)="consultarColectivo()"
+            placeholder="Nombre del colectivo..."
+            class="w-full p-2 bg-gray-400 border-none rounded-xl text-gray-400 focus:ring-2 shadow-lg focus:ring-emerald-500 focus:border-transparent outline-none transition-all placeholder:text-slate-300">
+          <button
+            (click)="consultarColectivo()"
+            [disabled]="isSearching()"
+            class="items-center w-10 h-10 bg-[#00a859] text-gray-700 rounded-xl hover:bg-emerald-700 disabled:bg-slate-200 transition-all flex justify-center shadow-md active:scale-90 z-10"
+            style="background-color: oklch(41.793% 0.09293 155.778); justify-content: flex-end;">
+            <mat-icon style="color: azure; width: 35px;">search</mat-icon>
+            <div *ngIf="isSearching()" class="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+          </button>
+        </div>
+
+        <button
+          (click)="abrirFormularioKobo('NUEVO')"
+          class="w-auto p-4 m-4 font-black rounded-full hover:bg-emerald-700 transition-all uppercase tracking-widest text-xs shadow-xl"
+          style="background-color: oklch(0.448 0.119 151.328); color: lightcyan">
+          Iniciar Registro Nuevo
+        </button>
+
+        <!-- 🟢 LISTADO DE RESULTADOS ENCONTRADOS -->
+        <div *ngIf="listaColectivos().length > 0" class="w-full space-y-3 max-h-[300px] overflow-y-auto pr-1 custom-scrollbar">
+          <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">
+            Colectivos Coincidentes ({{ listaColectivos().length }})
+          </p>
+
+          <div *ngFor="let c of listaColectivos()"
+               (click)="seleccionarColectivo(c)"
+               [ngClass]="colectivoSeleccionado()?.id_colectivo === c.id_colectivo ? 'border-emerald-500 bg-emerald-50/50 shadow-inner' : 'border-slate-100 bg-white hover:border-slate-300'"
+               class="p-4 rounded-xl border-2 cursor-pointer transition-all flex justify-between items-center group shadow-sm">
+            <div class="flex-1 pr-3">
+              <p class="text-[9px] font-black text-emerald-600 font-mono mb-0.5">NIT: {{ c.nit || 'Sin nit' }}</p>
+              <h4 class="text-sm font-black text-slate-800 uppercase leading-snug group-hover:text-emerald-900 transition-colors">
+                {{ c.nombre_colectivo || c.colectivo }}
+              </h4>
+            </div>
+            <mat-icon [ngClass]="colectivoSeleccionado()?.id_colectivo === c.id_colectivo ? 'text-emerald-600' : 'text-slate-300'" class="text-lg">
+              touch_app
+            </mat-icon>
+          </div>
+        </div>
+
+        <!-- CASO NUEVO (no encontrado) -->
+        <div *ngIf="errorBusqueda === 'NOT_FOUND'" class="w-full bg-amber-50 rounded-xl p-6 border border-amber-100 animate-slideUp mt-4">
+          <div class="flex items-center space-x-3 text-amber-700 mb-4">
+            <mat-icon>assignment</mat-icon>
+            <p class="text-sm font-bold uppercase">Sin registros</p>
+          </div>
+          <p class="text-xs text-amber-600 mb-6 leading-relaxed">
+            El colectivo <b>{{ searchQuery }}</b> no existe. Proceda con el registro inicial.
+          </p>
+          <button
+            (click)="abrirFormularioKobo('NUEVO')"
+            class="w-full py-4 bg-emerald-600 text-white font-black rounded-2xl hover:bg-emerald-700 transition-all uppercase tracking-widest text-xs shadow-xl">
+            Iniciar Registro Nuevo
+          </button>
+        </div>
+
+        <!-- ERROR DE SERVIDOR -->
+        <div *ngIf="errorBusqueda && errorBusqueda !== 'NOT_FOUND'" class="w-full p-4 bg-rose-50 text-rose-600 text-sm font-bold rounded-2xl border border-rose-100 text-center mt-4">
+          <div class="flex items-center justify-center space-x-3 text-rose-700 mb-4">
+            <mat-icon>error</mat-icon>
+            <p class="text-sm font-bold uppercase">Error de servidor</p>
+          </div>
+          <p class="text-xs text-rose-600 font-light leading-relaxed">
+            No se pudo procesar la consulta. Intente nuevamente.
+          </p>
+        </div>
+      </div>
+
+      <!-- COLUMNA DERECHA: Detalle del colectivo seleccionado con módulos -->
+      <div class="flex flex-col w-1/2 bg-slate-50 border-l border-slate-100 overflow-y-auto">
+
+        <!-- CASO EXISTENTE: Mostrar módulos cuando hay un colectivo seleccionado -->
+        <div *ngIf="colectivoSeleccionado()" class="p-6 animate-slideUp">
+
+          <div class="flex justify-between items-start mb-4">
+            <span class="px-3 py-1 bg-emerald-600 text-white text-[10px] font-black rounded-full uppercase">Existente</span>
+            <p class="text-xs font-bold text-emerald-700">ID: #{{ colectivoSeleccionado().id_colectivo }}</p>
+          </div>
+
+          <p class="text-[9px] font-black text-emerald-600 font-mono mb-1">
+            NIT: {{ colectivoSeleccionado().nit || 'Sin registrar' }}
+          </p>
+          <p class="text-base font-black text-slate-800 uppercase mb-6 leading-tight">
+            {{ colectivoSeleccionado().nombre_colectivo || colectivoSeleccionado().colectivo }}
+          </p>
+
+          <div class="space-y-3">
+
+            <!-- Módulo 1: Básica -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex justify-between items-center group hover:shadow-md transition-all">
+              <div class="flex items-center space-x-4">
+                <div [class]="estaCompletado('BASICA') ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-300'"
+                     class="w-10 h-10 rounded-full flex items-center justify-center">
+                  <mat-icon>{{ estaCompletado('BASICA') ? 'check_circle' : 'pending' }}</mat-icon>
+                </div>
+                <div>
+                  <p class="text-xs font-black text-slate-800 uppercase tracking-tight">1. Caracterización Básica</p>
+                  <p class="text-[10px] font-bold mt-0.5"
+                     [class]="estaCompletado('BASICA') ? 'text-emerald-500' : 'text-amber-500'">
+                    {{ estaCompletado('BASICA') ? 'DILIGENCIADO' : 'PENDIENTE' }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Módulo 2: Ampliada -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex justify-between items-center group hover:shadow-md transition-all">
+              <div class="flex items-center space-x-4">
+                <div [class]="estaCompletado('AMPLIADA') ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-300'"
+                     class="w-10 h-10 rounded-full flex items-center justify-center">
+                  <mat-icon>{{ estaCompletado('AMPLIADA') ? 'check_circle' : 'pending' }}</mat-icon>
+                </div>
+                <div>
+                  <p class="text-xs font-black text-slate-800 uppercase tracking-tight">2. Caracterización Ampliada</p>
+                  <p class="text-[10px] font-bold mt-0.5"
+                     [class]="estaCompletado('AMPLIADA') ? 'text-emerald-500' : 'text-amber-500'">
+                    {{ estaCompletado('AMPLIADA') ? 'DILIGENCIADO' : 'PENDIENTE' }}
+                  </p>
+                </div>
+              </div>
+              <div *ngIf="!estaCompletado('AMPLIADA')">
+                <button (click)="abrirFormularioKobo('AMPLIADA')"
+                        class="p-3 bg-slate-50 text-slate-400 rounded-xl group-hover:bg-emerald-600 group-hover:text-white transition-all shadow-sm">
+                  <mat-icon class="text-sm">chevron_right</mat-icon>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Marca de agua cuando no hay selección -->
+        <div *ngIf="!colectivoSeleccionado()" class="flex flex-1 opacity-[0.05] pointer-events-none flex-col items-center justify-center">
+          <img src="introLogin.png" class="w-1/2 object-contain" alt="watermark">
+        </div>
+
+      </div>
+    </div>
+
+    <!-- IFRAME KOBO -->
+    <div *ngIf="mostrarFormulario()" class="w-full h-full animate-fadeIn bg-white rounded-3xl overflow-hidden shadow-2xl border border-slate-200 relative">
+      @if (koboSafeUrl()) {
+        <iframe [src]="koboSafeUrl()" class="w-full h-full border-none" allow="geolocation; camera; microphone"></iframe>
+      }
+    </div>
+
+  </main>
+</div>

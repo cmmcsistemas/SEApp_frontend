@@ -77,9 +77,12 @@ loginForm: FormGroup;
             localStorage.setItem('token', response.token);
           }
 
+          if (response.user) {
+            localStorage.setItem('user', JSON.stringify(response.user));
+          }
           // Redirigir al dashboard o listado tras éxito
           console.log('Login exitoso:', response.message);
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/modulos/caracterizacion/caracterizacion-kobo']);
         }
       },
       error: (error) => {

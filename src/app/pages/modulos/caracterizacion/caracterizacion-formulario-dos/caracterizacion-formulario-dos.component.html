@@ -1,0 +1,229 @@
+
+
+<h2 class="text-2xl font-bold text-center text-gray-800 mb-2">IDENTIFICACIÓN E INTERSECCIONALIDAD</h2>
+
+    <form [formGroup]="caracterizacionForm" class="space-y-3">
+    <div *ngIf="pasoActual === 1">
+      <div class="flex flex-col sm:flex-row sm:items-center gap-4 mb-4">
+          <label for="proyecto" class="block  text-gray-700 sm:w-24">Proyecto</label>
+            <select id="proyecto" formControlName="proyecto" class="block w-full text-gray-500 border border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500 outline-none">
+             <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+              <option *ngFor="let proyecto of proyectos" [value]="proyecto.id_subproyecto">{{ proyecto.nombre_subproyecto }}</option>
+            </select>
+        </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                <div >
+          <label for="nombre" class="block text-gray-700">Nombres</label>
+          <input type="text" id="nombre" formControlName="nombre" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+        </div>
+        <div>
+          <label for="apellido" class="block text-gray-700">Apellidos</label>
+          <input type="text" id="apellido" formControlName="apellido" class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+        </div>
+
+        <div>
+          <label for="tipoDocumento" class="block text-gray-700">Tipo documento</label>
+          <select id="tipoDocumento" formControlName="tipoDocumento" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+            <option *ngFor="let tipo of tiposDocumento" [value]="tipo">{{ tipo }}</option>
+          </select>
+        </div>
+        <div>
+          <label for="noDocumento" class="block text-gray-700">No. documento</label>
+          <input type="text" id="noDocumento" formControlName="noDocumento"  class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+          <div *ngIf="caracterizacionForm.get('noDocumento')?.touched && caracterizacionForm.get('noDocumento')?.errors?.['pattern']" class="text-red-500 text-xs mt-1">
+            <span *ngIf="['CEDULA DE CIUDADANIA', 'PERMISO DE PROTECCION TEMPORAL', 'TARJETA DE IDENTIDAD'].includes(caracterizacionForm.get('tipoDocumento')?.value)">
+              Este campo solo permite números.
+            </span>
+            <span *ngIf="!['CEDULA DE CIUDADANIA', 'PERMISO DE PROTECCION TEMPORAL', 'TARJETA DE IDENTIDAD'].includes(caracterizacionForm.get('tipoDocumento')?.value)">
+              Formato alfanumérico inválido (sin caracteres especiales).
+            </span>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
+          <div>
+            <label for="dptoExpedicion" class="block text-gray-700">Departamento de expedición</label>
+            <select id="dptoExpedicion" formControlName="dptoExpedicion" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <option class="text-gray-500" value="" disabled selected></option>
+            <option *ngFor="let dptoExpedicion of departamentos" [ngValue]="dptoExpedicion.id_departamento">{{ dptoExpedicion.nombre_departamento }}</option>
+            </select>
+          </div>
+          <div>
+            <label for="ciudadExpedicion" class="block text-gray-700">Ciudad de expedición</label>
+            <select id="ciudadExpedicion" formControlName="ciudadExpedicion" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <option class="text-gray-500" value="" disabled selected></option>
+            <option *ngFor="let ciudadExpedicion of municipios" [ngValue]="ciudadExpedicion.id_municipio">{{ ciudadExpedicion.nombre_municipio }}</option>
+          </select>
+
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
+          <div>
+            <label for="fechaNacimiento" class="block text-gray-700">Fecha de nacimiento</label>
+            <input type="date" id="fechaNacimiento" formControlName="fechaNacimiento"  class="mt-1 text-gray-500 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+          </div>
+        <div>
+          <label for="estadoCivil" class="block text-gray-700">Estado civil</label>
+            <select id="estadoCivil" formControlName="estadoCivil" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+            <option *ngFor="let estadoCivil of estadosCivil" [value]="estadoCivil">{{ estadoCivil }}</option>
+          </select>
+        </div>
+        </div>
+      </div>
+    <div class="grid grid-cols-2 md:grid-cols-2 gap-6 mb-4">
+        <div>
+            <label for="paisResidencia" class="block text-gray-700">Nacionalidad</label>
+            <select id="paisResidencia" formControlName="paisResidencia" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+            <option *ngFor="let paisResidencia of paises" [value]="paisResidencia.id_pais">{{ paisResidencia.nombre_pais }}</option>
+          </select>
+          </div>
+        <div *ngIf="caracterizacionForm.get('paisResidencia')?.value === '1'" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+        <div>
+           <label for="departamentoResidencia" class="block text-gray-700">Departamento</label>
+            <select id="departamentoResidencia" formControlName="departamentoResidencia" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <option class="text-gray-500" value="" disabled selected>Departamento</option>
+            <option *ngFor="let departamentoResidencia of departamentos" [ngValue]="departamentoResidencia.id_departamento">{{ departamentoResidencia.nombre_departamento }}</option>
+            </select>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
+          <div>
+            <label for="municipioResidencia" class="block text-gray-700">Municipio de residencia</label>
+            <select id="municipioResidencia" formControlName="municipioResidencia" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+            <option *ngFor="let municipioResidencia of municipios" [ngValue]="municipioResidencia.id_municipio">{{ municipioResidencia.nombre_municipio }}</option>
+          </select>
+          </div>
+          <div>
+            <label for="localidad" class="block text-gray-700">Localidad</label>
+              <div *ngIf="caracterizacionForm.get('municipioResidencia')?.value !== 149"
+                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-gray-100 text-gray-700">
+                {{ caracterizacionForm.get('localidad')?.value || 'N/A' }}
+              </div>
+            <select *ngIf="caracterizacionForm.get('municipioResidencia')?.value === 149" id="localidad" formControlName="localidad" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+              <option class="text-gray-500" value="" disabled selected>Localidad</option>
+              <option *ngFor="let localidad of localidades" [value]="localidad.id_localidad">{{ localidad.nombre_localidad }}</option>
+            </select>
+          </div>
+        </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-2 gap-6 mb-4">
+              <div>
+          <label for="entornoResidencia" class="block text-gray-700">Zona de residencia</label>
+          <select id="entornoResidencia" formControlName="entornoResidencia" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+          <option class="text-gray-500" value="" disabled selected>RURAL / URBANO</option>
+          <option *ngFor="let entornoResidencia of entornosResidencias" [value]="entornoResidencia.id_entorno">{{ entornoResidencia.tipo_entorno }}</option>
+          </select>
+        </div>
+                <div>
+          <label for="direccion" class="block text-gray-700">Dirección</label>
+          <input type="text" id="direccion" formControlName="direccion" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+        </div>
+      </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+      <div>
+        <label for="estrato" class="block text-gray-700">Estrato</label>
+          <select id="estrato" formControlName="estrato" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <option class="text-gray-500" value="" disabled selected>Seleccione</option>
+            <option *ngFor="let estrato of estratos" [value]="estrato">{{ estrato}}</option>
+            </select>
+      </div>
+      <div>
+        <label for="numeroCelular" class="block text-gray-700">Número celular</label>
+        <input type="text" inputmode="numeric" pattern="[0-9]*" (keypress)="soloNumeros($event)" formControlName="numeroCelular" id="numeroCelular" formControlName="numeroCelular"  class="text-gray-500 mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+      </div>
+    </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+        <div>
+          <label for="email" class="block text-gray-700">Correo</label>
+          <input type="email" id="email" formControlName="email"  class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500"
+        [ngClass]="{'border-red-500': caracterizacionForm.get('email')?.invalid && (caracterizacionForm.get('email')?.dirty || caracterizacionForm.get('email')?.touched)}">
+          <div *ngIf="caracterizacionForm.get('email')?.invalid && (caracterizacionForm.get('email')?.dirty || caracterizacionForm.get('email')?.touched)"
+              class="text-red-500 text-xs mt-1">
+            <span *ngIf="caracterizacionForm.get('email')?.errors?.['required']">
+              El correo electrónico es obligatorio.
+            </span>
+            <span *ngIf="caracterizacionForm.get('email')?.errors?.['email'] || caracterizacionForm.get('email')?.errors?.['pattern']">
+              Por favor, ingresa un formato de correo válido (ejemplo"&#64;"correo.com).
+            </span>
+          </div>
+        </div>
+        <div>
+          <label for="nivelEscolaridad" class="block text-gray-700">¿Cuál es el nivel de escolaridad más alto que has alcanzado?</label>
+            <select id="nivelEscolaridad" formControlName="nivelEscolaridad" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <option class="text-gray-500" value="" disabled selected>Elija una opción del listado</option>
+            <option *ngFor="let nivelEscolaridad of nivelesEscolaridad" [value]="nivelEscolaridad">{{ nivelEscolaridad }}</option>
+          </select>
+        </div>
+      </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+          <div>
+            <label for="genero" class="block text-gray-700">¿Con cuál identidad de género te identificas actualmente?</label>
+            <select id="genero" formControlName="genero" class="mt-1 block w-full text-gray-500 border-gray-300 rounded-md shadow-sm p-2 focus:ring-green-500 focus:border-green-500">
+            <option class="text-gray-500" value="" disabled selected>Elija una opción del listado</option>
+            <option class="text-gray-500" value="" selected *ngFor="let genero of generos" [value]="genero.id_genero">{{ genero.tipo_genero }}</option>
+            </select>
+          </div>
+        </div>
+<!-- Aquí van las preguntas que trae desde el backend-->
+ <div class="text-gray-400 inline-flex items-center justify-center w-full">
+  <hr class="w-48 h-px mx-auto my-4 bg-neutral-quaternary border-b-gray-400 rounded-sm md:my-10 mt-6 mb-6">
+  <span class="absolute px-3 font-medium text-heading -translate-x-1/2 bg-neutral-primary left-1/2">Segunda parte</span>
+</div>
+
+    <div  class="animate-fadeIn space-y-4">
+      <div *ngFor="let pregunta of preguntasBackend; let i = index">
+
+        <!-- Contenedor condicional para ocultar preguntas dependientes deshabilitadas -->
+        <div *ngIf="caracterizacionForm.get('pregunta_' + pregunta.id_campo)?.enabled"
+             class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm transition-all hover:border-emerald-200 group">
+
+          <div class="mb-5">
+            <span class="inline-block px-2 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded mb-2 uppercase tracking-widest">Pregunta {{ i + 1 }}</span>
+            <label class="block text-gray-800 font-bold text-base leading-relaxed group-hover:text-emerald-900">
+              {{ pregunta.nombre_campo }} <span class="text-emerald-500">*</span>
+            </label>
+          </div>
+
+          <!-- Grid de Opciones (Solución a lo "abultado") -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div *ngFor="let opcion of pregunta.opciones" class="relative">
+              <input type="radio"
+                     [id]="'opt_' + pregunta.id_campo + '_' + opcion"
+                     [formControlName]="'pregunta_' + pregunta.id_campo"
+                     [value]="opcion"
+                     class="peer hidden">
+              <label [for]="'opt_' + pregunta.id_campo + '_' + opcion"
+           class="block w-full text-center p-4 rounded-xl cursor-pointer transition-all duration-300 select-none
+                  bg-gray-50 text-gray-700 text-sm font-semibold shadow-sm
+                  /* Hover */
+                  hover:shadow-md hover:bg-white hover:ring-1 hover:ring-gray-200
+                  /* Peer Checked State */
+                  peer-checked:bg-green-800 peer-checked:text-white peer-checked:shadow-lg peer-checked:shadow-green-900/20
+                  /* Active State */
+                  active:scale-95">
+                {{ opcion }}
+              </label>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+        <button type="button"  (click)="atras()" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200">
+          Atrás
+        </button>
+        <button type="button" (click)="guardarProgreso()" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200">
+          Guardar progreso
+        </button>
+        <button type="button"  (click)="siguiente()" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-800 transition-colors duration-200 ">
+          Siguiente
+        </button>
+      </div>
+    </form>
+

@@ -5,13 +5,12 @@ import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import { DiagnosticoService, DiagnosticoPregunta } from '../../../../services/diagnostico.service';
 import { Subscription } from 'rxjs';
-
-
-
+import { DataSharingService } from '../../../../services/data-sharing.service';
+import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-diagnostico',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, HttpClientModule],
   templateUrl: './diagnostico.component.html',
   styleUrl: './diagnostico.component.css'
 })
@@ -20,16 +19,26 @@ export class DiagnosticoComponent implements OnInit, OnDestroy {
   diagnosticoForm!: FormGroup;
   preguntas: DiagnosticoPregunta[] = [];
 
-
   pasoActual: number = 1;
   preguntasPorPaso = 10;
   totalPasos = 0;
   totalPreguntas = 0;
   contador = 0;
 
-  private formValueChangesSubscription: Subscription = new Subscription();
 
-  constructor(private fb: FormBuilder, private diagnosticoService: DiagnosticoService) {
+  idParticipanteActual: any = null;
+  nombreParticipanteActual: string | null = null;
+  idRespuestaActual: any = null;
+  documentoParticipanteActual: string | number | null = null;
+
+  private formValueChangesSubscription: Subscription = new Subscription();
+  private apiUrlAddData = 'http://20.81.172.55:3900/api/participantes/add-data/';
+  private idSubscription: Subscription = new Subscription();
+
+  constructor(private fb: FormBuilder, private diagnosticoService: DiagnosticoService,
+    private dataSharingService: DataSharingService,
+    private http: HttpClient
+  ) {
     // Inicializamos el formulario vacío
     this.diagnosticoForm = this.fb.group({});
  }
@@ -54,6 +63,30 @@ export class DiagnosticoComponent implements OnInit, OnDestroy {
       }
     );
 
+    this.idSubscription.add(
+      this.dataSharingService.idRespuesta$.subscribe(id => {
+        this.idRespuestaActual = id;
+        if (id && this.preguntas.length > 0) {
+          console.log('📢 Ampliada detectó una señal de búsqueda. ID:', id);
+          this.cargarDatosSeccion(id);
+        }
+      })
+    );
+
+    this.idSubscription.add(
+      this.dataSharingService.idParticipante$.subscribe(id => this.idParticipanteActual = id)
+    );
+
+    this.idSubscription.add(
+      this.dataSharingService.nombreParticipante$.subscribe(n => this.nombreParticipanteActual = n)
+    );
+
+    this.idSubscription.add(
+      this.dataSharingService.documentoParticipante$.subscribe(doc => this.documentoParticipanteActual = doc)
+    );
+    this.idSubscription.add(
+      this.diagnosticoForm.valueChanges.subscribe(() => this.actualizarContador())
+    );
 
   }
 
@@ -125,15 +158,75 @@ export class DiagnosticoComponent implements OnInit, OnDestroy {
     }
   }
 
-  guardarDiagnostico(): void {
+  cargarDatosSeccion(id: number | string): void {
+     const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
+    const timestamp = new Date().getTime();
+    const url = `http://20.81.172.55:3900/api/participantes/formulario-completo?id_respuesta=${id}&_t=${timestamp}`;
+
+    this.http.get<any>(url, { headers }).subscribe({
+      next: (res) => {
+        const datosBD = res?.data?.detalles || [];
+        const payloadParaFormulario: any = {};
+
+        if (datosBD.length === 0) return;
+
+        // 🟢 LÓGICA DE MAPEO:
+        // Como los controles se llaman 'pregunta_ID', buscamos directamente por ID
+        datosBD.forEach((item: any) => {
+          const controlName = `pregunta_${item.id_campo}`;
+          // Solo si el control existe en este formulario de diagnóstico
+          if (this.diagnosticoForm.contains(controlName)) {
+            payloadParaFormulario[controlName] = item.valor;
+          }
+        });
+
+        this.diagnosticoForm.patchValue(payloadParaFormulario, { emitEvent: false });
+        this.actualizarContador();
+        console.log('✨ Diagnóstico autocompletado con éxito.');
+      },
+      error: (err) => console.error('❌ Error al cargar datos de diagnóstico:', err)
+    });
+  }
+
+ guardarDiagnostico(): void {
     if (this.diagnosticoForm.valid) {
-      console.log('Formulario válido. Respuestas:');
-      console.log(this.diagnosticoForm.value);
-      alert('Diagnóstico guardado con éxito. Revisa la consola para ver los datos.');
+      // Obtenemos el ID guardado previamente en BasicaComponent
+      const idRespuesta = this.dataSharingService.getIdRespuesta();
+
+      if (!idRespuesta) {
+        alert('Error: No se ha encontrado el ID de respuesta. Registre los datos básicos primero.');
+        return;
+      }
+
+      // Mapeamos los valores del formulario al formato id_campo / valor
+      const formulario_data = Object.keys(this.diagnosticoForm.value).map(key => {
+        return {
+          id_campo: Number(key.replace('pregunta_', '')),
+          valor: this.diagnosticoForm.value[key]
+        };
+      });
+
+      const payload = {
+        id_respuesta: idRespuesta,
+        formulario_data: formulario_data
+      };
+
+      console.log('Enviando diagnóstico:', payload);
+
+      this.http.post(this.apiUrlAddData, payload).subscribe({
+        next: (response) => {
+          console.log('Datos adicionales guardados:', response);
+          alert('Diagnóstico guardado con éxito en el servidor.');
+        },
+        error: (error) => {
+          console.error('Error al guardar datos adicionales:', error);
+          alert('Hubo un error al guardar el diagnóstico en el servidor.');
+        }
+      });
     } else {
-      console.error('El formulario no es válido. Faltan respuestas.');
       this.diagnosticoForm.markAllAsTouched();
-      alert('Por favor, responde todas las preguntas antes de guardar.');
+      alert('Completa todas las preguntas.');
     }
   }
 }

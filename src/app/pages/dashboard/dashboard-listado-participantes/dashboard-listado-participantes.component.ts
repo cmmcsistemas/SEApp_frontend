@@ -44,6 +44,7 @@ export class DashboardListadoParticipantesComponent implements OnInit {
     apellidos: new FormControl(''),
     modulo: new FormControl(''),
     proyecto: new FormControl(''),
+    agruparPorParticipante: new FormControl(false),
   });
 
   ngOnInit(): void {
@@ -57,10 +58,17 @@ export class DashboardListadoParticipantesComponent implements OnInit {
       .subscribe(() => this.cargar());
   }
 
+    private construirFiltros(): FiltrosListado {
+    const { agruparPorParticipante, ...resto } = this.filtros.value;
+    return {
+      ...resto,
+      ...(agruparPorParticipante ? { agrupar: 'participante' } : {}),
+    } as FiltrosListado;
+  }
   /** Consulta el listado aplicando los filtros actuales. */
   cargar(): void {
     this.isLoading = true;
-    const valores = this.filtros.value as FiltrosListado;
+    const valores = this.construirFiltros();
 
     this.reporteService.getListado(valores).subscribe({
       next: (resp) => {
@@ -85,11 +93,12 @@ export class DashboardListadoParticipantesComponent implements OnInit {
       apellidos: '',
       modulo: '',
       proyecto: '',
+       agruparPorParticipante: false,
     });
   }
 
   descargarExcel(): void {
-    const url = this.reporteService.urlExcel(this.filtros.value as FiltrosListado);
+    const url = this.reporteService.urlExcel(this.construirFiltros());
     window.open(url, '_blank');
   }
 

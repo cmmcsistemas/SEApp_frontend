@@ -28,6 +28,7 @@ export interface FiltrosListado {
   apellidos?: string;
   modulo?: string;
   proyecto?: string;
+  agrupar?: 'participante';
 }
 
 @Injectable({ providedIn: 'root' })
@@ -35,6 +36,7 @@ export class ReporteParticipantesService {
   private http = inject(HttpClient);
   private apiUrl = `http://20.81.172.55:3900/api/formularios/reportes/participantes`;
 private apiUrlexcel = `http://20.81.172.55:3900/api/formularios/informe-kobo-participantes`;
+
 
   /** Trae las respuestas de formularios con sus columnas (label) y filtros aplicados. */
   getListado(filtros: FiltrosListado = {}): Observable<RespuestaListado> {
@@ -56,6 +58,6 @@ private apiUrlexcel = `http://20.81.172.55:3900/api/formularios/informe-kobo-par
       }
     }
     const qs = params.toString();
-    return `${this.apiUrlexcel}/${qs ? '?' + qs : ''}`;
+    return `${this.apiUrlexcel}${qs ? '?' + qs : ''}`;
   }
 }
